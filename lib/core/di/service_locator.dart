@@ -15,6 +15,7 @@ import '../storage/secure_storage.dart';
 import '../storage/cache_manager.dart';
 import '../../features/auth/data/repositories/auth_repository.dart';
 import '../../features/auth/data/services/auth_api_service.dart';
+import '../../features/auth/data/services/users_api_service.dart';
 import '../../features/dashboard/data/repositories/dashboard_repository.dart';
 import '../../features/dashboard/data/services/dashboard_api_service.dart';
 import '../../features/learning/data/repositories/learning_repository.dart';
@@ -43,7 +44,7 @@ Future<void> setupLocator() async {
   locator.registerLazySingleton<SecureStorage>(() => SecureStorage());
   locator.registerLazySingleton<PreferenceManager>(() => PreferenceManager());
   locator.registerLazySingleton<CacheManager>(() => CacheManager());
-  
+
   // Initialize PreferenceManager immediately as it's needed by others
   await locator<PreferenceManager>().init();
   await locator<CacheManager>().init();
@@ -51,9 +52,13 @@ Future<void> setupLocator() async {
   // ── Managers (Zentriva Singleton Pattern) ──
   locator.registerLazySingleton<SessionManager>(() => SessionManager());
   locator.registerLazySingleton<ThemeManager>(() => ThemeManager());
-  locator.registerLazySingleton<ConnectivityManager>(() => ConnectivityManager());
+  locator.registerLazySingleton<ConnectivityManager>(
+    () => ConnectivityManager(),
+  );
   locator.registerLazySingleton<NavigationManager>(() => NavigationManager());
-  locator.registerLazySingleton<NotificationManager>(() => NotificationManager());
+  locator.registerLazySingleton<NotificationManager>(
+    () => NotificationManager(),
+  );
   locator.registerLazySingleton<DownloadManager>(() => DownloadManager());
   locator.registerLazySingleton<OfflineSyncManager>(() => OfflineSyncManager());
 
@@ -63,7 +68,7 @@ Future<void> setupLocator() async {
     final prefs = locator<PreferenceManager>();
     final config = locator<AppConfig>();
     final savedUrl = prefs.getServerUrl();
-    
+
     return ApiClient(
       initialBaseUrl: savedUrl ?? config.apiBaseUrl,
       config: config,
@@ -77,6 +82,9 @@ Future<void> setupLocator() async {
   // ── Auth Module ──
   locator.registerLazySingleton<AuthApiService>(
     () => AuthApiService(apiClient: locator<ApiClient>()),
+  );
+  locator.registerLazySingleton<UsersApiService>(
+    () => UsersApiService(apiClient: locator<ApiClient>()),
   );
   locator.registerLazySingleton<AuthRepository>(
     () => AuthRepository(
@@ -150,6 +158,7 @@ Future<void> setupLocator() async {
     () => NotificationsApiService(apiClient: locator<ApiClient>()),
   );
   locator.registerLazySingleton<NotificationsRepository>(
-    () => NotificationsRepository(apiService: locator<NotificationsApiService>()),
+    () =>
+        NotificationsRepository(apiService: locator<NotificationsApiService>()),
   );
 }
