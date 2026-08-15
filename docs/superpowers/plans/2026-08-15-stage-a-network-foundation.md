@@ -77,6 +77,7 @@ void main() {
       expect(ApiErrorCode.fromWire('ACCOUNT_NOT_ACTIVE'), ApiErrorCode.accountNotActive);
       expect(ApiErrorCode.fromWire('UNAUTHORIZED'), ApiErrorCode.unauthorized);
       expect(ApiErrorCode.fromWire('VALIDATION_ERROR'), ApiErrorCode.validationError);
+      expect(ApiErrorCode.fromWire('ACTIVATION_REQUIRED'), ApiErrorCode.activationRequired);
     });
 
     test('unknown code degrades instead of throwing', () {
@@ -108,9 +109,17 @@ Expected: FAIL — `Target of URI doesn't exist: 'package:tbn_lms/core/network/a
 
 /// The backend's `error.code` vocabulary.
 ///
-/// Values are verbatim from `server/src/lib/response.ts` (the `ApiError`
-/// factories) plus the custom codes raised in `middlewares/authenticate.ts`,
-/// `middlewares/region.ts`, `app.ts` and `lib/auth.ts`.
+/// Values are verbatim from the backend. Two distinct shapes feed this list:
+///   * `new ApiError(status, 'CODE', …)` — `server/src/lib/response.ts`
+///     factories, plus `middlewares/authenticate.ts`, `middlewares/region.ts`,
+///     `middlewares/errorHandler.ts`, `app.ts`, `modules/staff/staff.service.ts`,
+///     `modules/learning/quiz.service.ts`, `lib/monitoringKey.ts`.
+///   * `new APIError('STATUS', { code: 'CODE' })` — Better Auth, in
+///     `lib/auth.ts`. These do NOT ride the `{success,error}` envelope.
+///
+/// Webhook-only codes (`INVALID_SIGNATURE`, `PROVIDER_UNCONFIGURED`,
+/// `WEBHOOK_ERROR`) are deliberately absent: those endpoints are
+/// server-to-server, so a mobile client can never receive them.
 ///
 /// [unknown] is deliberate: the backend gains codes without a client release,
 /// and an unrecognised code must degrade rather than crash.
@@ -142,6 +151,10 @@ enum ApiErrorCode {
 
   /// Not in the envelope — Better Auth raises this on a weak password.
   weakPassword('WEAK_PASSWORD'),
+
+  /// Signup matched an existing account — the user should activate it rather
+  /// than create a second one. Also a Better Auth `APIError`, not the envelope.
+  activationRequired('ACTIVATION_REQUIRED'),
 
   unknown('UNKNOWN');
 
