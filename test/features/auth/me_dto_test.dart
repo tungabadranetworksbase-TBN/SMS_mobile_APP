@@ -68,4 +68,26 @@ void main() {
 
     expect(me.user.mustChangePassword, isFalse);
   });
+
+  test('a module key absent from the payload stays absent, not false', () {
+    // An absent key means ENABLED. Collapsing it to false would silently
+    // hide navigation for every staff user.
+    final me = MeDto.fromJson({
+      'user': {
+        'id': 'usr_4',
+        'name': 'Y',
+        'email': 'y@example.com',
+        'emailVerified': true,
+        'userType': 'STAFF',
+        'status': 'ACTIVE',
+        'mustChangePassword': false,
+      },
+      'permissions': ['crm.lead.view'],
+      'modules': {'crm': false},
+    });
+
+    expect(me.modules['crm'], isFalse);
+    expect(me.modules.containsKey('students'), isFalse);
+    expect(me.modules['students'], isNull);
+  });
 }
