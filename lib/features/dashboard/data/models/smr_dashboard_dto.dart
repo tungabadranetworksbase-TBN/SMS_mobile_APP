@@ -48,11 +48,11 @@ class SmrStatsDto {
   Map<String, dynamic> toJson() => _$SmrStatsDtoToJson(this);
 
   factory SmrStatsDto.empty() => SmrStatsDto(
-        totalStudents: 0,
-        activeBatches: 0,
-        pendingTickets: 0,
-        todayAttendance: 0,
-      );
+    totalStudents: 0,
+    activeBatches: 0,
+    pendingTickets: 0,
+    todayAttendance: 0,
+  );
 }
 
 @JsonSerializable()

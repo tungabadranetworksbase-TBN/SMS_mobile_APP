@@ -4,11 +4,14 @@ import '../../../../core/network/api_exception.dart';
 
 class PaymentGatewayService {
   final Razorpay _razorpay;
-  
+
   // Streams for passing events back to the UI controller
-  final _paymentSuccessController = StreamController<PaymentSuccessResponse>.broadcast();
-  final _paymentErrorController = StreamController<PaymentFailureResponse>.broadcast();
-  final _externalWalletController = StreamController<ExternalWalletResponse>.broadcast();
+  final _paymentSuccessController =
+      StreamController<PaymentSuccessResponse>.broadcast();
+  final _paymentErrorController =
+      StreamController<PaymentFailureResponse>.broadcast();
+  final _externalWalletController =
+      StreamController<ExternalWalletResponse>.broadcast();
 
   PaymentGatewayService() : _razorpay = Razorpay() {
     _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
@@ -16,9 +19,12 @@ class PaymentGatewayService {
     _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
   }
 
-  Stream<PaymentSuccessResponse> get onPaymentSuccess => _paymentSuccessController.stream;
-  Stream<PaymentFailureResponse> get onPaymentError => _paymentErrorController.stream;
-  Stream<ExternalWalletResponse> get onExternalWallet => _externalWalletController.stream;
+  Stream<PaymentSuccessResponse> get onPaymentSuccess =>
+      _paymentSuccessController.stream;
+  Stream<PaymentFailureResponse> get onPaymentError =>
+      _paymentErrorController.stream;
+  Stream<ExternalWalletResponse> get onExternalWallet =>
+      _externalWalletController.stream;
 
   void openCheckout({
     required String keyId,
@@ -32,17 +38,13 @@ class PaymentGatewayService {
   }) {
     final options = {
       'key': keyId,
-      'amount': (amount * 100).toInt(), // Razorpay expects amount in subunits (paisa)
+      'amount': (amount * 100)
+          .toInt(), // Razorpay expects amount in subunits (paisa)
       'name': name,
       'description': description,
       'order_id': orderId,
-      'prefill': {
-        'contact': prefillContact,
-        'email': prefillEmail,
-      },
-      'theme': {
-        'color': themeColor,
-      }
+      'prefill': {'contact': prefillContact, 'email': prefillEmail},
+      'theme': {'color': themeColor},
     };
 
     try {

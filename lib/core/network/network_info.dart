@@ -8,7 +8,7 @@ class NetworkInfo {
   final Connectivity _connectivity;
 
   NetworkInfo({Connectivity? connectivity})
-      : _connectivity = connectivity ?? Connectivity();
+    : _connectivity = connectivity ?? Connectivity();
 
   /// Check if device has any network connection.
   Future<bool> get isConnected async {

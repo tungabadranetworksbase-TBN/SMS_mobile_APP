@@ -13,11 +13,36 @@ class StudentShell extends ConsumerWidget {
   const StudentShell({super.key, required this.child});
 
   static const _tabs = [
-    _TabItem(icon: Icons.home_rounded, activeIcon: Icons.home_rounded, label: 'Home', route: RoutePaths.studentDashboard),
-    _TabItem(icon: Icons.school_outlined, activeIcon: Icons.school_rounded, label: 'Courses', route: RoutePaths.studentCourses),
-    _TabItem(icon: Icons.notifications_outlined, activeIcon: Icons.notifications_rounded, label: 'Alerts', route: RoutePaths.studentAttendance),
-    _TabItem(icon: Icons.support_agent_outlined, activeIcon: Icons.support_agent_rounded, label: 'Support', route: RoutePaths.studentSupport),
-    _TabItem(icon: Icons.person_outline_rounded, activeIcon: Icons.person_rounded, label: 'Profile', route: RoutePaths.studentProfile),
+    _TabItem(
+      icon: Icons.home_rounded,
+      activeIcon: Icons.home_rounded,
+      label: 'Home',
+      route: RoutePaths.studentDashboard,
+    ),
+    _TabItem(
+      icon: Icons.school_outlined,
+      activeIcon: Icons.school_rounded,
+      label: 'Courses',
+      route: RoutePaths.studentCourses,
+    ),
+    _TabItem(
+      icon: Icons.notifications_outlined,
+      activeIcon: Icons.notifications_rounded,
+      label: 'Alerts',
+      route: RoutePaths.studentAttendance,
+    ),
+    _TabItem(
+      icon: Icons.support_agent_outlined,
+      activeIcon: Icons.support_agent_rounded,
+      label: 'Support',
+      route: RoutePaths.studentSupport,
+    ),
+    _TabItem(
+      icon: Icons.person_outline_rounded,
+      activeIcon: Icons.person_rounded,
+      label: 'Profile',
+      route: RoutePaths.studentProfile,
+    ),
   ];
 
   /// Derive the active tab from the current location so that deep links,

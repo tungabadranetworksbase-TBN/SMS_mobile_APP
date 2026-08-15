@@ -15,19 +15,25 @@ class LearningApiService {
       '/student/courses', // Replace with ApiEndpoints.studentCourses when added
       fromJson: (json) {
         if (json is List) {
-          return json.map((e) => CourseDto.fromJson(e as Map<String, dynamic>)).toList();
+          return json
+              .map((e) => CourseDto.fromJson(e as Map<String, dynamic>))
+              .toList();
         }
         return [];
       },
     );
   }
 
-  Future<ApiResponse<List<ModuleDto>>> fetchCourseModules(String courseId) async {
+  Future<ApiResponse<List<ModuleDto>>> fetchCourseModules(
+    String courseId,
+  ) async {
     return _apiClient.get<List<ModuleDto>>(
       '/student/courses/$courseId/modules', // Replace with ApiEndpoints.courseModules when added
       fromJson: (json) {
         if (json is List) {
-          return json.map((e) => ModuleDto.fromJson(e as Map<String, dynamic>)).toList();
+          return json
+              .map((e) => ModuleDto.fromJson(e as Map<String, dynamic>))
+              .toList();
         }
         return [];
       },

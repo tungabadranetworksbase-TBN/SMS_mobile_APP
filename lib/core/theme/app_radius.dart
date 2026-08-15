@@ -20,5 +20,7 @@ class AppRadius {
   static final BorderRadius roundedPill = BorderRadius.circular(pill);
 
   // Specific treatments
-  static const BorderRadius topSheet = BorderRadius.vertical(top: Radius.circular(xxl));
+  static const BorderRadius topSheet = BorderRadius.vertical(
+    top: Radius.circular(xxl),
+  );
 }

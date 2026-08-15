@@ -13,7 +13,7 @@ class AuthInterceptor extends Interceptor {
   final Logger _logger = Logger();
 
   AuthInterceptor({required SecureStorage secureStorage})
-      : _secureStorage = secureStorage;
+    : _secureStorage = secureStorage;
 
   @override
   void onRequest(

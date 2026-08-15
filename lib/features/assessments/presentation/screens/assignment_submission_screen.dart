@@ -20,10 +20,12 @@ class AssignmentSubmissionScreen extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<AssignmentSubmissionScreen> createState() => _AssignmentSubmissionScreenState();
+  ConsumerState<AssignmentSubmissionScreen> createState() =>
+      _AssignmentSubmissionScreenState();
 }
 
-class _AssignmentSubmissionScreenState extends ConsumerState<AssignmentSubmissionScreen> {
+class _AssignmentSubmissionScreenState
+    extends ConsumerState<AssignmentSubmissionScreen> {
   String? _selectedFilePath;
   String? _selectedFileName;
 
@@ -62,7 +64,9 @@ class _AssignmentSubmissionScreenState extends ConsumerState<AssignmentSubmissio
       final state = ref.read(assessmentControllerProvider);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(state.error?.toString() ?? 'Failed to submit assignment.'),
+          content: Text(
+            state.error?.toString() ?? 'Failed to submit assignment.',
+          ),
           backgroundColor: AppColors.error,
         ),
       );
@@ -93,13 +97,17 @@ class _AssignmentSubmissionScreenState extends ConsumerState<AssignmentSubmissio
             const SizedBox(height: AppSpacing.xl),
             Text(
               'Upload Submission',
-              style: AppTypography.headlineSmall.copyWith(color: AppColors.textPrimary),
+              style: AppTypography.headlineSmall.copyWith(
+                color: AppColors.textPrimary,
+              ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: AppSpacing.sm),
             Text(
               'Supported formats: PDF, DOCX, ZIP',
-              style: AppTypography.bodyMedium.copyWith(color: AppColors.textSecondary),
+              style: AppTypography.bodyMedium.copyWith(
+                color: AppColors.textSecondary,
+              ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: AppSpacing.xxxl),
@@ -112,7 +120,9 @@ class _AssignmentSubmissionScreenState extends ConsumerState<AssignmentSubmissio
                 padding: const EdgeInsets.all(AppSpacing.xl),
                 decoration: BoxDecoration(
                   border: Border.all(
-                    color: _selectedFilePath != null ? AppColors.primary : AppColors.border,
+                    color: _selectedFilePath != null
+                        ? AppColors.primary
+                        : AppColors.border,
                     width: 2,
                     style: BorderStyle.solid,
                   ),
@@ -122,15 +132,21 @@ class _AssignmentSubmissionScreenState extends ConsumerState<AssignmentSubmissio
                 child: Column(
                   children: [
                     Icon(
-                      _selectedFilePath != null ? Icons.check_circle_outline : Icons.add_circle_outline,
+                      _selectedFilePath != null
+                          ? Icons.check_circle_outline
+                          : Icons.add_circle_outline,
                       size: 40,
-                      color: _selectedFilePath != null ? AppColors.primaryLight : AppColors.textSecondary,
+                      color: _selectedFilePath != null
+                          ? AppColors.primaryLight
+                          : AppColors.textSecondary,
                     ),
                     const SizedBox(height: AppSpacing.md),
                     Text(
                       _selectedFileName ?? 'Tap to select a file',
                       style: AppTypography.bodyLarge.copyWith(
-                        color: _selectedFilePath != null ? AppColors.textPrimary : AppColors.textSecondary,
+                        color: _selectedFilePath != null
+                            ? AppColors.textPrimary
+                            : AppColors.textSecondary,
                       ),
                       textAlign: TextAlign.center,
                     ),
@@ -138,7 +154,7 @@ class _AssignmentSubmissionScreenState extends ConsumerState<AssignmentSubmissio
                 ),
               ),
             ),
-            
+
             const Spacer(),
             GradientButton(
               text: 'Submit Assignment',

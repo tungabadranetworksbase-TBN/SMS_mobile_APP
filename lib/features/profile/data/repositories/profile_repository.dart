@@ -12,8 +12,8 @@ class ProfileRepository {
   ProfileRepository({
     required ProfileApiService apiService,
     required SessionManager sessionManager,
-  })  : _apiService = apiService,
-        _sessionManager = sessionManager;
+  }) : _apiService = apiService,
+       _sessionManager = sessionManager;
 
   Future<ProfileDto> getProfile() async {
     if (DemoMode().isActive) {
@@ -72,7 +72,9 @@ class ProfileRepository {
         );
         return profile;
       }
-      throw ApiException(message: response.message ?? 'Failed to update profile');
+      throw ApiException(
+        message: response.message ?? 'Failed to update profile',
+      );
     } catch (e) {
       rethrow;
     }
@@ -101,10 +103,11 @@ class ProfileRepository {
         );
         return profile;
       }
-      throw ApiException(message: response.message ?? 'Failed to upload avatar');
+      throw ApiException(
+        message: response.message ?? 'Failed to upload avatar',
+      );
     } catch (e) {
       rethrow;
     }
   }
 }
-

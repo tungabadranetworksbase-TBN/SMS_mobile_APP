@@ -47,7 +47,7 @@ class _ServerConfigScreenState extends ConsumerState<ServerConfigScreen> {
     if (!_formKey.currentState!.validate()) return;
 
     setState(() => _isLoading = true);
-    
+
     // Clean URL
     String url = _urlController.text.trim();
     if (url.endsWith('/')) {
@@ -61,14 +61,16 @@ class _ServerConfigScreenState extends ConsumerState<ServerConfigScreen> {
     locator<ApiClient>().updateBaseUrl(url);
 
     // Ping Health Check
-    final isHealthy = await ref.read(authControllerProvider.notifier).checkServerHealth();
+    final isHealthy = await ref
+        .read(authControllerProvider.notifier)
+        .checkServerHealth();
 
     if (!mounted) return;
 
     if (isHealthy) {
       // Deactivate demo if active
       DemoMode().deactivate();
-      
+
       // Save valid URL globally
       await locator<PreferenceManager>().setServerUrl(url);
       if (!mounted) return;
@@ -79,7 +81,7 @@ class _ServerConfigScreenState extends ConsumerState<ServerConfigScreen> {
           backgroundColor: AppColors.success,
         ),
       );
-      
+
       // Navigate to login
       context.goNamed(RouteNames.login);
     } else {
@@ -88,7 +90,7 @@ class _ServerConfigScreenState extends ConsumerState<ServerConfigScreen> {
       if (previousUrl != null) {
         locator<ApiClient>().updateBaseUrl(previousUrl);
       }
-      
+
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Failed to connect to server. Please check the URL.'),
@@ -105,7 +107,9 @@ class _ServerConfigScreenState extends ConsumerState<ServerConfigScreen> {
     DemoMode().activate(role: role);
 
     // 2. Set dummy server URL so router doesn't block access
-    await locator<PreferenceManager>().setServerUrl('https://demo.tungabadranetworks.com');
+    await locator<PreferenceManager>().setServerUrl(
+      'https://demo.tungabadranetworks.com',
+    );
     locator<ApiClient>().updateBaseUrl('https://demo.tungabadranetworks.com');
 
     // 3. Save dummy session
@@ -155,14 +159,25 @@ class _ServerConfigScreenState extends ConsumerState<ServerConfigScreen> {
               children: [
                 Text(
                   'Choose Demo Role',
-                  style: AppTypography.titleLarge.copyWith(color: AppColors.textPrimary),
+                  style: AppTypography.titleLarge.copyWith(
+                    color: AppColors.textPrimary,
+                  ),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: AppSpacing.md),
                 ListTile(
-                  leading: const Icon(Icons.school_rounded, color: AppColors.primary),
-                  title: const Text('Student Dashboard', style: TextStyle(color: AppColors.textPrimary)),
-                  subtitle: const Text('View courses, modules, videos, assignments', style: TextStyle(color: AppColors.textSecondary)),
+                  leading: const Icon(
+                    Icons.school_rounded,
+                    color: AppColors.primary,
+                  ),
+                  title: const Text(
+                    'Student Dashboard',
+                    style: TextStyle(color: AppColors.textPrimary),
+                  ),
+                  subtitle: const Text(
+                    'View courses, modules, videos, assignments',
+                    style: TextStyle(color: AppColors.textSecondary),
+                  ),
                   onTap: () {
                     Navigator.pop(context);
                     _startDemo('student');
@@ -170,9 +185,18 @@ class _ServerConfigScreenState extends ConsumerState<ServerConfigScreen> {
                 ),
                 const Divider(color: AppColors.outlineVariant),
                 ListTile(
-                  leading: const Icon(Icons.badge_rounded, color: AppColors.primary),
-                  title: const Text('SMR (Staff) Dashboard', style: TextStyle(color: AppColors.textPrimary)),
-                  subtitle: const Text('Monitor student progress, attendance, support tickets', style: TextStyle(color: AppColors.textSecondary)),
+                  leading: const Icon(
+                    Icons.badge_rounded,
+                    color: AppColors.primary,
+                  ),
+                  title: const Text(
+                    'SMR (Staff) Dashboard',
+                    style: TextStyle(color: AppColors.textPrimary),
+                  ),
+                  subtitle: const Text(
+                    'Monitor student progress, attendance, support tickets',
+                    style: TextStyle(color: AppColors.textSecondary),
+                  ),
                   onTap: () {
                     Navigator.pop(context);
                     _startDemo('smr');
@@ -180,9 +204,18 @@ class _ServerConfigScreenState extends ConsumerState<ServerConfigScreen> {
                 ),
                 const Divider(color: AppColors.outlineVariant),
                 ListTile(
-                  leading: const Icon(Icons.admin_panel_settings_rounded, color: AppColors.primary),
-                  title: const Text('Admin Dashboard', style: TextStyle(color: AppColors.textPrimary)),
-                  subtitle: const Text('Analytics, revenue data, server status', style: TextStyle(color: AppColors.textSecondary)),
+                  leading: const Icon(
+                    Icons.admin_panel_settings_rounded,
+                    color: AppColors.primary,
+                  ),
+                  title: const Text(
+                    'Admin Dashboard',
+                    style: TextStyle(color: AppColors.textPrimary),
+                  ),
+                  subtitle: const Text(
+                    'Analytics, revenue data, server status',
+                    style: TextStyle(color: AppColors.textSecondary),
+                  ),
                   onTap: () {
                     Navigator.pop(context);
                     _startDemo('admin');
@@ -240,7 +273,9 @@ class _ServerConfigScreenState extends ConsumerState<ServerConfigScreen> {
                       hintText: 'e.g., https://lms.company.com',
                       prefixIcon: const Icon(Icons.link_rounded),
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                        borderRadius: BorderRadius.circular(
+                          AppSpacing.radiusMd,
+                        ),
                       ),
                     ),
                     validator: (value) {
@@ -275,4 +310,3 @@ class _ServerConfigScreenState extends ConsumerState<ServerConfigScreen> {
     );
   }
 }
-

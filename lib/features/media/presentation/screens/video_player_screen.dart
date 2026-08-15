@@ -11,11 +11,7 @@ class VideoPlayerScreen extends StatefulWidget {
   final String title;
   final String url;
 
-  const VideoPlayerScreen({
-    super.key,
-    required this.title,
-    required this.url,
-  });
+  const VideoPlayerScreen({super.key, required this.title, required this.url});
 
   @override
   State<VideoPlayerScreen> createState() => _VideoPlayerScreenState();
@@ -24,7 +20,7 @@ class VideoPlayerScreen extends StatefulWidget {
 class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
   // YouTube State
   YoutubePlayerController? _youtubeController;
-  
+
   // Chewie State
   vp.VideoPlayerController? _videoPlayerController;
   ChewieController? _chewieController;
@@ -59,9 +55,11 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
       } else {
         // Assume it's a direct mp4/m3u8 link (e.g. from MinIO)
         _isYoutube = false;
-        _videoPlayerController = vp.VideoPlayerController.networkUrl(Uri.parse(widget.url));
+        _videoPlayerController = vp.VideoPlayerController.networkUrl(
+          Uri.parse(widget.url),
+        );
         await _videoPlayerController!.initialize();
-        
+
         _chewieController = ChewieController(
           videoPlayerController: _videoPlayerController!,
           autoPlay: true,
@@ -106,15 +104,15 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
         iconTheme: const IconThemeData(color: Colors.white),
         elevation: 0,
       ),
-      body: SafeArea(
-        child: _buildBody(),
-      ),
+      body: SafeArea(child: _buildBody()),
     );
   }
 
   Widget _buildBody() {
     if (_isLoading) {
-      return const Center(child: CircularProgressIndicator(color: AppColors.primary));
+      return const Center(
+        child: CircularProgressIndicator(color: AppColors.primary),
+      );
     }
 
     if (_error != null) {
@@ -140,13 +138,14 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
         ),
       );
     } else if (!_isYoutube && _chewieController != null) {
-      return Center(
-        child: Chewie(
-          controller: _chewieController!,
-        ),
-      );
+      return Center(child: Chewie(controller: _chewieController!));
     }
 
-    return const Center(child: Text('Unknown Player State', style: TextStyle(color: Colors.white)));
+    return const Center(
+      child: Text(
+        'Unknown Player State',
+        style: TextStyle(color: Colors.white),
+      ),
+    );
   }
 }

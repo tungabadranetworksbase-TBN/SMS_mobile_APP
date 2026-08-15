@@ -34,11 +34,23 @@ class AdminAnalyticsScreen extends StatelessWidget {
                 children: [
                   _buildFunnelRow('Total Leads', '1,245', colorScheme.primary),
                   const Divider(),
-                  _buildFunnelRow('Contacted', '830', colorScheme.primary.withValues(alpha: 0.8)),
+                  _buildFunnelRow(
+                    'Contacted',
+                    '830',
+                    colorScheme.primary.withValues(alpha: 0.8),
+                  ),
                   const Divider(),
-                  _buildFunnelRow('Qualified', '450', colorScheme.primary.withValues(alpha: 0.6)),
+                  _buildFunnelRow(
+                    'Qualified',
+                    '450',
+                    colorScheme.primary.withValues(alpha: 0.6),
+                  ),
                   const Divider(),
-                  _buildFunnelRow('Enrolled', '120', const Color(0xFF10B981)), // Success green
+                  _buildFunnelRow(
+                    'Enrolled',
+                    '120',
+                    const Color(0xFF10B981),
+                  ), // Success green
                 ],
               ),
             ),
@@ -51,10 +63,20 @@ class AdminAnalyticsScreen extends StatelessWidget {
               itemCount: 4,
               itemBuilder: (context, index) {
                 return ListTile(
-                  leading: const CircleAvatar(child: Icon(Icons.person_rounded)),
-                  title: Text('Student ${index + 1}', style: AppTypography.titleMedium),
+                  leading: const CircleAvatar(
+                    child: Icon(Icons.person_rounded),
+                  ),
+                  title: Text(
+                    'Student ${index + 1}',
+                    style: AppTypography.titleMedium,
+                  ),
                   subtitle: const Text('Enrolled in Cisco CCNA'),
-                  trailing: Text('₹15,000', style: AppTypography.labelLarge.copyWith(color: const Color(0xFF10B981))),
+                  trailing: Text(
+                    '₹15,000',
+                    style: AppTypography.labelLarge.copyWith(
+                      color: const Color(0xFF10B981),
+                    ),
+                  ),
                 );
               },
             ),
@@ -81,7 +103,12 @@ class AdminAnalyticsScreen extends StatelessWidget {
               Text(label, style: AppTypography.bodyLarge),
             ],
           ),
-          Text(value, style: AppTypography.titleMedium.copyWith(fontWeight: FontWeight.bold)),
+          Text(
+            value,
+            style: AppTypography.titleMedium.copyWith(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
         ],
       ),
     );
@@ -89,11 +116,12 @@ class AdminAnalyticsScreen extends StatelessWidget {
 
   Future<void> _exportReport(BuildContext context) async {
     try {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Generating report...')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Generating report...')));
 
-      const csvData = 'Metric,Value\n'
+      const csvData =
+          'Metric,Value\n'
           'Total Leads,1245\n'
           'Contacted,830\n'
           'Qualified,450\n'
@@ -106,11 +134,10 @@ class AdminAnalyticsScreen extends StatelessWidget {
       }
     } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to export report: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Failed to export report: $e')));
       }
     }
   }
 }
-

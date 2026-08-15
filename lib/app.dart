@@ -22,12 +22,12 @@ class TbnApp extends ConsumerWidget {
         return MaterialApp.router(
           title: AppConstants.appName,
           debugShowCheckedModeBanner: false,
-          
+
           // Theming
           themeMode: themeManager.themeMode,
           theme: AppTheme.darkTheme, // We only use dark theme for now
           darkTheme: AppTheme.darkTheme,
-          
+
           // Routing
           routerConfig: router,
         );

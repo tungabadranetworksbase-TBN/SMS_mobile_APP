@@ -14,7 +14,8 @@ class AuthApiService {
     return _apiClient.post<LoginResponseDto>(
       ApiEndpoints.signIn,
       data: req.toJson(),
-      fromJson: (json) => LoginResponseDto.fromJson(json as Map<String, dynamic>),
+      fromJson: (json) =>
+          LoginResponseDto.fromJson(json as Map<String, dynamic>),
     );
   }
 
@@ -22,7 +23,8 @@ class AuthApiService {
     return _apiClient.post<LoginResponseDto>(
       ApiEndpoints.signUp,
       data: req.toJson(),
-      fromJson: (json) => LoginResponseDto.fromJson(json as Map<String, dynamic>),
+      fromJson: (json) =>
+          LoginResponseDto.fromJson(json as Map<String, dynamic>),
     );
   }
 
@@ -36,19 +38,19 @@ class AuthApiService {
 
   Future<ApiResponse<void>> forgotPassword(String email) async {
     return _apiClient.post<void>(
-      ApiEndpoints.forgotPassword,
-      data: {'email': email},
+      ApiEndpoints.sendVerificationOtp,
+      data: {'email': email, 'type': 'forget-password'},
     );
   }
 
-  Future<ApiResponse<void>> resetPassword(String email, String otp, String newPassword) async {
+  Future<ApiResponse<void>> resetPassword(
+    String email,
+    String otp,
+    String newPassword,
+  ) async {
     return _apiClient.post<void>(
-      ApiEndpoints.resetPassword,
-      data: {
-        'email': email,
-        'otp': otp,
-        'password': newPassword,
-      },
+      ApiEndpoints.resetPasswordOtp,
+      data: {'email': email, 'otp': otp, 'password': newPassword},
     );
   }
 }

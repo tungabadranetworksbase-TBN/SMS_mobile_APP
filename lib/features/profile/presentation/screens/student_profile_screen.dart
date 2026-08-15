@@ -46,7 +46,11 @@ class StudentProfileScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildProfile(BuildContext context, WidgetRef ref, ProfileDto profile) {
+  Widget _buildProfile(
+    BuildContext context,
+    WidgetRef ref,
+    ProfileDto profile,
+  ) {
     final dateFormat = DateFormat('MMMM yyyy');
 
     return RefreshIndicator(
@@ -63,11 +67,15 @@ class StudentProfileScreen extends ConsumerWidget {
                 CircleAvatar(
                   radius: 60,
                   backgroundColor: AppColors.surfaceVariant,
-                  backgroundImage: profile.avatarUrl != null ? NetworkImage(profile.avatarUrl!) : null,
+                  backgroundImage: profile.avatarUrl != null
+                      ? NetworkImage(profile.avatarUrl!)
+                      : null,
                   child: profile.avatarUrl == null
                       ? Text(
                           profile.name.substring(0, 1).toUpperCase(),
-                          style: AppTypography.headlineMedium.copyWith(color: AppColors.primary),
+                          style: AppTypography.headlineMedium.copyWith(
+                            color: AppColors.primary,
+                          ),
                         )
                       : null,
                 ),
@@ -84,26 +92,34 @@ class StudentProfileScreen extends ConsumerWidget {
                         color: AppColors.primary,
                         shape: BoxShape.circle,
                       ),
-                      child: const Icon(Icons.edit, color: Colors.white, size: 20),
+                      child: const Icon(
+                        Icons.edit,
+                        color: Colors.white,
+                        size: 20,
+                      ),
                     ),
                   ),
                 ),
               ],
             ),
             const SizedBox(height: AppSpacing.lg),
-            
+
             // Name & Email
             Text(
               profile.name,
-              style: AppTypography.headlineMedium.copyWith(color: AppColors.textPrimary),
+              style: AppTypography.headlineMedium.copyWith(
+                color: AppColors.textPrimary,
+              ),
             ),
             const SizedBox(height: AppSpacing.xs),
             Text(
               profile.email,
-              style: AppTypography.bodyLarge.copyWith(color: AppColors.textSecondary),
+              style: AppTypography.bodyLarge.copyWith(
+                color: AppColors.textSecondary,
+              ),
             ),
             const SizedBox(height: AppSpacing.md),
-            
+
             // Badges / Info
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
@@ -113,18 +129,32 @@ class StudentProfileScreen extends ConsumerWidget {
               ),
               child: Text(
                 profile.role.toUpperCase(),
-                style: AppTypography.labelMedium.copyWith(color: AppColors.primaryLight),
+                style: AppTypography.labelMedium.copyWith(
+                  color: AppColors.primaryLight,
+                ),
               ),
             ),
             const SizedBox(height: AppSpacing.xxxl),
 
             // Details section
-            _buildDetailRow(Icons.phone_outlined, 'Phone', profile.phone ?? 'Not provided'),
-            _buildDetailRow(Icons.location_on_outlined, 'Address', profile.address ?? 'Not provided'),
-            _buildDetailRow(Icons.calendar_today_outlined, 'Joined', dateFormat.format(profile.joinedAt)),
-            
+            _buildDetailRow(
+              Icons.phone_outlined,
+              'Phone',
+              profile.phone ?? 'Not provided',
+            ),
+            _buildDetailRow(
+              Icons.location_on_outlined,
+              'Address',
+              profile.address ?? 'Not provided',
+            ),
+            _buildDetailRow(
+              Icons.calendar_today_outlined,
+              'Joined',
+              dateFormat.format(profile.joinedAt),
+            ),
+
             const SizedBox(height: AppSpacing.xxxl),
-            
+
             // Edit Profile Button
             OutlinedButton.icon(
               onPressed: () {
@@ -136,9 +166,9 @@ class StudentProfileScreen extends ConsumerWidget {
                 minimumSize: const Size(double.infinity, 50),
               ),
             ),
-            
+
             const SizedBox(height: AppSpacing.lg),
-            
+
             // Logout Button
             GradientButton(
               text: 'Logout',
@@ -172,12 +202,16 @@ class StudentProfileScreen extends ConsumerWidget {
               children: [
                 Text(
                   label,
-                  style: AppTypography.labelSmall.copyWith(color: AppColors.textSecondary),
+                  style: AppTypography.labelSmall.copyWith(
+                    color: AppColors.textSecondary,
+                  ),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   value,
-                  style: AppTypography.bodyLarge.copyWith(color: AppColors.textPrimary),
+                  style: AppTypography.bodyLarge.copyWith(
+                    color: AppColors.textPrimary,
+                  ),
                 ),
               ],
             ),

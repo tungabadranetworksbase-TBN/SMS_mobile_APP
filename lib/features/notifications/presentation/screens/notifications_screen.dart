@@ -23,7 +23,9 @@ class NotificationsScreen extends ConsumerWidget {
         actions: [
           TextButton(
             onPressed: () {
-              ref.read(notificationsControllerProvider.notifier).markAllAsRead();
+              ref
+                  .read(notificationsControllerProvider.notifier)
+                  .markAllAsRead();
             },
             child: const Text('Mark All Read'),
           ),
@@ -36,11 +38,17 @@ class NotificationsScreen extends ConsumerWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(Icons.notifications_off_outlined, size: 64, color: AppColors.textSecondary),
+                  const Icon(
+                    Icons.notifications_off_outlined,
+                    size: 64,
+                    color: AppColors.textSecondary,
+                  ),
                   const SizedBox(height: AppSpacing.md),
                   Text(
                     'No notifications',
-                    style: AppTypography.titleLarge.copyWith(color: AppColors.textSecondary),
+                    style: AppTypography.titleLarge.copyWith(
+                      color: AppColors.textSecondary,
+                    ),
                   ),
                 ],
               ),
@@ -51,7 +59,8 @@ class NotificationsScreen extends ConsumerWidget {
             onRefresh: () => ref.refresh(notificationsProvider.future),
             child: ListView.separated(
               itemCount: notifications.length,
-              separatorBuilder: (_, __) => const Divider(height: 1, color: AppColors.border),
+              separatorBuilder: (_, __) =>
+                  const Divider(height: 1, color: AppColors.border),
               itemBuilder: (context, index) {
                 return _NotificationTile(notification: notifications[index]);
               },
@@ -108,8 +117,13 @@ class _NotificationTile extends ConsumerWidget {
     final dateFormat = DateFormat('MMM dd, hh:mm a');
 
     return ListTile(
-      contentPadding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: AppSpacing.sm),
-      tileColor: notification.isRead ? AppColors.background : AppColors.primary.withValues(alpha: 0.05),
+      contentPadding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.lg,
+        vertical: AppSpacing.sm,
+      ),
+      tileColor: notification.isRead
+          ? AppColors.background
+          : AppColors.primary.withValues(alpha: 0.05),
       leading: Container(
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
@@ -131,18 +145,24 @@ class _NotificationTile extends ConsumerWidget {
           const SizedBox(height: 4),
           Text(
             notification.message,
-            style: AppTypography.bodyMedium.copyWith(color: AppColors.textSecondary),
+            style: AppTypography.bodyMedium.copyWith(
+              color: AppColors.textSecondary,
+            ),
           ),
           const SizedBox(height: 8),
           Text(
             dateFormat.format(notification.createdAt),
-            style: AppTypography.labelSmall.copyWith(color: AppColors.textSecondary),
+            style: AppTypography.labelSmall.copyWith(
+              color: AppColors.textSecondary,
+            ),
           ),
         ],
       ),
       onTap: () {
         if (!notification.isRead) {
-          ref.read(notificationsControllerProvider.notifier).markAsRead(notification.id);
+          ref
+              .read(notificationsControllerProvider.notifier)
+              .markAsRead(notification.id);
         }
         if (notification.link != null) {
           // Parse link and navigate

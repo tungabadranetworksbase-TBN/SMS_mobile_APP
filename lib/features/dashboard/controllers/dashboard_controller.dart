@@ -10,9 +10,10 @@ final dashboardRepositoryProvider = Provider<DashboardRepository>((ref) {
   return locator<DashboardRepository>();
 });
 
-final studentDashboardProvider = AsyncNotifierProvider<StudentDashboardNotifier, StudentDashboardDto>(
-  StudentDashboardNotifier.new,
-);
+final studentDashboardProvider =
+    AsyncNotifierProvider<StudentDashboardNotifier, StudentDashboardDto>(
+      StudentDashboardNotifier.new,
+    );
 
 class StudentDashboardNotifier extends AsyncNotifier<StudentDashboardDto> {
   @override
@@ -27,9 +28,10 @@ class StudentDashboardNotifier extends AsyncNotifier<StudentDashboardDto> {
   }
 }
 
-final smrDashboardProvider = AsyncNotifierProvider<SmrDashboardNotifier, SmrDashboardDto>(
-  SmrDashboardNotifier.new,
-);
+final smrDashboardProvider =
+    AsyncNotifierProvider<SmrDashboardNotifier, SmrDashboardDto>(
+      SmrDashboardNotifier.new,
+    );
 
 class SmrDashboardNotifier extends AsyncNotifier<SmrDashboardDto> {
   @override
@@ -44,9 +46,10 @@ class SmrDashboardNotifier extends AsyncNotifier<SmrDashboardDto> {
   }
 }
 
-final adminDashboardProvider = AsyncNotifierProvider<AdminDashboardNotifier, AdminDashboardDto>(
-  AdminDashboardNotifier.new,
-);
+final adminDashboardProvider =
+    AsyncNotifierProvider<AdminDashboardNotifier, AdminDashboardDto>(
+      AdminDashboardNotifier.new,
+    );
 
 class AdminDashboardNotifier extends AsyncNotifier<AdminDashboardDto> {
   @override

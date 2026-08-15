@@ -17,9 +17,9 @@ class ProfileController extends StateNotifier<AsyncValue<void>> {
   final Ref _ref;
 
   ProfileController({required ProfileRepository repository, required Ref ref})
-      : _repository = repository,
-        _ref = ref,
-        super(const AsyncValue.data(null));
+    : _repository = repository,
+      _ref = ref,
+      super(const AsyncValue.data(null));
 
   Future<bool> updateProfile(Map<String, dynamic> data) async {
     state = const AsyncValue.loading();
@@ -32,7 +32,10 @@ class ProfileController extends StateNotifier<AsyncValue<void>> {
       state = AsyncValue.error(e, StackTrace.current);
       return false;
     } catch (e) {
-      state = AsyncValue.error(const ApiException.unknown(), StackTrace.current);
+      state = AsyncValue.error(
+        const ApiException.unknown(),
+        StackTrace.current,
+      );
       return false;
     }
   }
@@ -48,12 +51,19 @@ class ProfileController extends StateNotifier<AsyncValue<void>> {
       state = AsyncValue.error(e, StackTrace.current);
       return false;
     } catch (e) {
-      state = AsyncValue.error(const ApiException.unknown(), StackTrace.current);
+      state = AsyncValue.error(
+        const ApiException.unknown(),
+        StackTrace.current,
+      );
       return false;
     }
   }
 }
 
-final profileControllerProvider = StateNotifierProvider<ProfileController, AsyncValue<void>>((ref) {
-  return ProfileController(repository: ref.watch(profileRepositoryProvider), ref: ref);
-});
+final profileControllerProvider =
+    StateNotifierProvider<ProfileController, AsyncValue<void>>((ref) {
+      return ProfileController(
+        repository: ref.watch(profileRepositoryProvider),
+        ref: ref,
+      );
+    });

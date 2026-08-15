@@ -13,18 +13,22 @@ class DownloadManager {
 
   final Dio _dio = Dio();
   final Logger _logger = Logger();
-  
+
   // Map to track download progress by URL
   final Map<String, double> _downloadProgress = {};
 
   double getProgress(String url) => _downloadProgress[url] ?? 0.0;
 
   /// Download a file to local storage.
-  Future<File?> downloadFile(String url, String filename, {Function(double)? onProgress}) async {
+  Future<File?> downloadFile(
+    String url,
+    String filename, {
+    Function(double)? onProgress,
+  }) async {
     try {
       final dir = await getApplicationDocumentsDirectory();
       final savePath = '${dir.path}/$filename';
-      
+
       // If file exists, return it immediately (already downloaded)
       final file = File(savePath);
       if (await file.exists()) {
@@ -48,7 +52,6 @@ class DownloadManager {
       _downloadProgress.remove(url);
       _logger.i('Successfully downloaded: $filename');
       return File(savePath);
-      
     } catch (e) {
       _logger.e('Failed to download $filename: $e');
       _downloadProgress.remove(url);
@@ -62,7 +65,7 @@ class DownloadManager {
     final file = File('${dir.path}/$filename');
     return await file.exists();
   }
-  
+
   /// Get a downloaded file
   Future<File?> getLocalFile(String filename) async {
     final dir = await getApplicationDocumentsDirectory();

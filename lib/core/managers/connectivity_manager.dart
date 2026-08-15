@@ -24,16 +24,14 @@ class ConnectivityManager {
 
   /// Start monitoring connectivity changes.
   void init() {
-    _subscription = _connectivity.onConnectivityChanged.listen(
-      (results) {
-        final connected = !results.contains(ConnectivityResult.none);
-        if (connected != _isConnected) {
-          _isConnected = connected;
-          _connectivityController.add(connected);
-          _logger.i('Connectivity changed: ${connected ? "ONLINE" : "OFFLINE"}');
-        }
-      },
-    );
+    _subscription = _connectivity.onConnectivityChanged.listen((results) {
+      final connected = !results.contains(ConnectivityResult.none);
+      if (connected != _isConnected) {
+        _isConnected = connected;
+        _connectivityController.add(connected);
+        _logger.i('Connectivity changed: ${connected ? "ONLINE" : "OFFLINE"}');
+      }
+    });
   }
 
   /// Check current connectivity.

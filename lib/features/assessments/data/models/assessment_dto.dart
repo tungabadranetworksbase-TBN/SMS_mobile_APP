@@ -32,7 +32,8 @@ class QuestionDto {
   final String text;
   final String type; // 'MULTIPLE_CHOICE', 'TRUE_FALSE'
   final List<String> options;
-  final String? correctAnswer; // Nullable if not sending to client until submission
+  final String?
+  correctAnswer; // Nullable if not sending to client until submission
   final int marks;
 
   QuestionDto({

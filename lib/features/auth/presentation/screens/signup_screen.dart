@@ -37,7 +37,9 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
 
   void _handleSignup() {
     if (_formKey.currentState?.validate() ?? false) {
-      ref.read(authControllerProvider.notifier).signUp(
+      ref
+          .read(authControllerProvider.notifier)
+          .signUp(
             _nameController.text.trim(),
             _emailController.text.trim(),
             _passwordController.text,
@@ -48,21 +50,18 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
   @override
   Widget build(BuildContext context) {
     // Listen to auth state to show errors
-    ref.listen<AsyncValue<void>>(
-      authControllerProvider,
-      (_, state) {
-        state.whenOrNull(
-          error: (error, _) {
-            final message = error is ApiException
-                ? error.message
-                : 'An unexpected error occurred.';
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(message)),
-            );
-          },
-        );
-      },
-    );
+    ref.listen<AsyncValue<void>>(authControllerProvider, (_, state) {
+      state.whenOrNull(
+        error: (error, _) {
+          final message = error is ApiException
+              ? error.message
+              : 'An unexpected error occurred.';
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(message)));
+        },
+      );
+    });
 
     final authState = ref.watch(authControllerProvider);
     final isLoading = authState.isLoading;
@@ -106,7 +105,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: AppSpacing.xxxl),
-                  
+
                   // Name Field
                   TextFormField(
                     controller: _nameController,
@@ -146,7 +145,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                     },
                   ),
                   const SizedBox(height: AppSpacing.lg),
-                  
+
                   // Password Field
                   TextFormField(
                     controller: _passwordController,
@@ -215,7 +214,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                     },
                   ),
                   const SizedBox(height: AppSpacing.xxl),
-                  
+
                   // Sign Up Button
                   GradientButton(
                     text: 'Sign Up',

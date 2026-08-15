@@ -14,10 +14,10 @@ class AppMotion {
   // ── CURVES ──
   /// Use for most standard enter/exit transitions
   static const Curve standard = Curves.easeInOutCubic;
-  
+
   /// Use for elements entering the screen (deceleration)
   static const Curve enter = Curves.easeOutQuart;
-  
+
   /// Use for elements exiting the screen (acceleration)
   static const Curve exit = Curves.easeInQuart;
 }

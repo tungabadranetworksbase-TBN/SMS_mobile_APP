@@ -1,7 +1,6 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:logger/logger.dart';
 
-
 /// Tungabadra Networks LMS — Notification Manager
 ///
 /// Handles push notifications and local scheduling.
@@ -10,7 +9,8 @@ class NotificationManager {
   factory NotificationManager() => _instance;
   NotificationManager._internal();
 
-  final FlutterLocalNotificationsPlugin _plugin = FlutterLocalNotificationsPlugin();
+  final FlutterLocalNotificationsPlugin _plugin =
+      FlutterLocalNotificationsPlugin();
   final Logger _logger = Logger();
   bool _isInitialized = false;
 
@@ -19,14 +19,17 @@ class NotificationManager {
 
     // Android Initialization
     const AndroidInitializationSettings initSettingsAndroid =
-        AndroidInitializationSettings('@mipmap/ic_launcher'); // Standard Flutter icon name
+        AndroidInitializationSettings(
+          '@mipmap/ic_launcher',
+        ); // Standard Flutter icon name
 
     // iOS Initialization
-    const DarwinInitializationSettings initSettingsIOS = DarwinInitializationSettings(
-      requestAlertPermission: true,
-      requestBadgePermission: true,
-      requestSoundPermission: true,
-    );
+    const DarwinInitializationSettings initSettingsIOS =
+        DarwinInitializationSettings(
+          requestAlertPermission: true,
+          requestBadgePermission: true,
+          requestSoundPermission: true,
+        );
 
     const InitializationSettings initSettings = InitializationSettings(
       android: initSettingsAndroid,
@@ -60,13 +63,15 @@ class NotificationManager {
     required String body,
     String? payload,
   }) async {
-    const AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
-      'tbn_lms_channel',
-      'TBN LMS Notifications',
-      channelDescription: 'General notifications for Tungabadra Networks LMS',
-      importance: Importance.max,
-      priority: Priority.high,
-    );
+    const AndroidNotificationDetails androidDetails =
+        AndroidNotificationDetails(
+          'tbn_lms_channel',
+          'TBN LMS Notifications',
+          channelDescription:
+              'General notifications for Tungabadra Networks LMS',
+          importance: Importance.max,
+          priority: Priority.high,
+        );
 
     const DarwinNotificationDetails iosDetails = DarwinNotificationDetails();
 

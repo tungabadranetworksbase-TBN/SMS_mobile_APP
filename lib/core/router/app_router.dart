@@ -42,13 +42,19 @@ import '../storage/preference_manager.dart';
 import 'route_names.dart';
 
 // Placeholder widgets for other features
-class PlaceholderScreen extends StatelessWidget { final String title; const PlaceholderScreen({super.key, required this.title}); @override Widget build(BuildContext context) => Scaffold(body: Center(child: Text(title))); }
+class PlaceholderScreen extends StatelessWidget {
+  final String title;
+  const PlaceholderScreen({super.key, required this.title});
+  @override
+  Widget build(BuildContext context) =>
+      Scaffold(body: Center(child: Text(title)));
+}
 
 /// Provider for the GoRouter instance.
 /// Listens to auth state changes to trigger redirects.
 final routerProvider = Provider<GoRouter>((ref) {
   final sessionManager = locator<SessionManager>();
-  
+
   // Listen to auth stream to trigger router refresh
   final authStateListenable = _StreamListenable(sessionManager.authStateStream);
 
@@ -65,7 +71,8 @@ final routerProvider = Provider<GoRouter>((ref) {
         final atServerConfig = state.matchedLocation == RoutePaths.serverConfig;
 
         // Does the user have a server URL configured?
-        final hasServerUrl = locator<PreferenceManager>().getServerUrl() != null;
+        final hasServerUrl =
+            locator<PreferenceManager>().getServerUrl() != null;
         if (!hasServerUrl) {
           // No server configured -> force them to configure it first.
           // Returning the location we are already on would be a redirect loop.
@@ -73,7 +80,8 @@ final routerProvider = Provider<GoRouter>((ref) {
         }
 
         // Let them browse Auth routes freely
-        final isAuthRoute = state.matchedLocation == RoutePaths.login ||
+        final isAuthRoute =
+            state.matchedLocation == RoutePaths.login ||
             state.matchedLocation == RoutePaths.signup ||
             state.matchedLocation == RoutePaths.forgotPassword ||
             state.matchedLocation == RoutePaths.resetPassword ||
@@ -85,20 +93,22 @@ final routerProvider = Provider<GoRouter>((ref) {
       }
 
       // 2. User is logged in but trying to access auth pages
-      final isGoingToAuth = state.matchedLocation == RoutePaths.login ||
-                           state.matchedLocation == RoutePaths.signup ||
-                           state.matchedLocation == RoutePaths.forgotPassword ||
-                           state.matchedLocation == RoutePaths.resetPassword ||
-                           state.matchedLocation == RoutePaths.serverConfig;
+      final isGoingToAuth =
+          state.matchedLocation == RoutePaths.login ||
+          state.matchedLocation == RoutePaths.signup ||
+          state.matchedLocation == RoutePaths.forgotPassword ||
+          state.matchedLocation == RoutePaths.resetPassword ||
+          state.matchedLocation == RoutePaths.serverConfig;
 
       final isGoingToSplash = state.matchedLocation == RoutePaths.splash;
 
       // 3. If authenticated, prevent access to auth pages and redirect to role dashboard
-      if (sessionManager.isAuthenticated && (isGoingToAuth || isGoingToSplash)) {
+      if (sessionManager.isAuthenticated &&
+          (isGoingToAuth || isGoingToSplash)) {
         if (sessionManager.isStudent) return RoutePaths.studentDashboard;
         if (sessionManager.isSmr) return RoutePaths.smrDashboard;
         if (sessionManager.hasAdminAccess) return RoutePaths.adminDashboard;
-        
+
         // Fallback for unknown role
         return RoutePaths.studentDashboard;
       }
@@ -106,12 +116,13 @@ final routerProvider = Provider<GoRouter>((ref) {
       // 4. Role-based route protection
       if (sessionManager.isAuthenticated) {
         final loc = state.matchedLocation;
-        
+
         // Block students from SMR/Admin routes
-        if (sessionManager.isStudent && (loc.startsWith('/smr') || loc.startsWith('/admin'))) {
+        if (sessionManager.isStudent &&
+            (loc.startsWith('/smr') || loc.startsWith('/admin'))) {
           return RoutePaths.studentDashboard;
         }
-        
+
         // Block SMRs from Admin routes
         if (sessionManager.isSmr && loc.startsWith('/admin')) {
           return RoutePaths.smrDashboard;
@@ -214,7 +225,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           );
         },
       ),
-      
+
       // ── Student Routes (Wrapped in Shell) ──
       ShellRoute(
         builder: (context, state, child) => StudentShell(child: child),
@@ -285,7 +296,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           ),
         ],
       ),
-      
+
       // ── SMR Routes (Wrapped in Shell) ──
       ShellRoute(
         builder: (context, state, child) => SmrShell(child: child),
@@ -307,7 +318,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           ),
         ],
       ),
-      
+
       // ── Admin Routes (Wrapped in Shell) ──
       ShellRoute(
         builder: (context, state, child) => AdminShell(child: child),
@@ -329,7 +340,7 @@ final routerProvider = Provider<GoRouter>((ref) {
 
   // Register the router with NavigationManager
   locator<NavigationManager>().setRouter(router);
-  
+
   return router;
 });
 

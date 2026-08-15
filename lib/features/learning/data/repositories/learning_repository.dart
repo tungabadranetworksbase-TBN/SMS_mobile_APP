@@ -14,15 +14,15 @@ class LearningRepository {
   LearningRepository({
     required LearningApiService apiService,
     required CacheManager cacheManager,
-  })  : _apiService = apiService,
-        _cacheManager = cacheManager;
+  }) : _apiService = apiService,
+       _cacheManager = cacheManager;
 
   Future<List<CourseDto>> getStudentCourses() async {
     if (DemoMode().isActive) {
       return DemoData.studentCourses;
     }
     const cacheKey = 'student_courses';
-    
+
     // 1. Try to fetch from API
     try {
       final response = await _apiService.fetchStudentCourses();
@@ -42,7 +42,9 @@ class LearningRepository {
     if (cachedData != null) {
       try {
         final List<dynamic> decoded = jsonDecode(cachedData as String);
-        return decoded.map((e) => CourseDto.fromJson(e as Map<String, dynamic>)).toList();
+        return decoded
+            .map((e) => CourseDto.fromJson(e as Map<String, dynamic>))
+            .toList();
       } catch (e) {
         // Cache is corrupted
       }
@@ -66,4 +68,3 @@ class LearningRepository {
     }
   }
 }
-

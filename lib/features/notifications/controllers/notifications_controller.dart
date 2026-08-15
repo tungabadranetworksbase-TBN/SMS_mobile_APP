@@ -4,11 +4,15 @@ import '../../../../core/network/api_exception.dart';
 import '../data/models/notification_message_dto.dart';
 import '../data/repositories/notifications_repository.dart';
 
-final notificationsRepositoryProvider = Provider<NotificationsRepository>((ref) {
+final notificationsRepositoryProvider = Provider<NotificationsRepository>((
+  ref,
+) {
   return locator<NotificationsRepository>();
 });
 
-final notificationsProvider = FutureProvider<List<NotificationMessageDto>>((ref) {
+final notificationsProvider = FutureProvider<List<NotificationMessageDto>>((
+  ref,
+) {
   return ref.read(notificationsRepositoryProvider).getNotifications();
 });
 
@@ -16,10 +20,12 @@ class NotificationsController extends StateNotifier<AsyncValue<void>> {
   final NotificationsRepository _repository;
   final Ref _ref;
 
-  NotificationsController({required NotificationsRepository repository, required Ref ref})
-      : _repository = repository,
-        _ref = ref,
-        super(const AsyncValue.data(null));
+  NotificationsController({
+    required NotificationsRepository repository,
+    required Ref ref,
+  }) : _repository = repository,
+       _ref = ref,
+       super(const AsyncValue.data(null));
 
   Future<void> markAsRead(String id) async {
     try {
@@ -48,6 +54,10 @@ class NotificationsController extends StateNotifier<AsyncValue<void>> {
   }
 }
 
-final notificationsControllerProvider = StateNotifierProvider<NotificationsController, AsyncValue<void>>((ref) {
-  return NotificationsController(repository: ref.watch(notificationsRepositoryProvider), ref: ref);
-});
+final notificationsControllerProvider =
+    StateNotifierProvider<NotificationsController, AsyncValue<void>>((ref) {
+      return NotificationsController(
+        repository: ref.watch(notificationsRepositoryProvider),
+        ref: ref,
+      );
+    });

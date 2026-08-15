@@ -14,11 +14,7 @@ class PdfViewerScreen extends StatefulWidget {
   final String title;
   final String url;
 
-  const PdfViewerScreen({
-    super.key,
-    required this.title,
-    required this.url,
-  });
+  const PdfViewerScreen({super.key, required this.title, required this.url});
 
   @override
   State<PdfViewerScreen> createState() => _PdfViewerScreenState();
@@ -28,7 +24,7 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
   String? _localPath;
   bool _isLoading = true;
   String? _error;
-  
+
   int _totalPages = 0;
   int _currentPage = 0;
   PDFViewController? _pdfViewController;

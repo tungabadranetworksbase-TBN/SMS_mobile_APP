@@ -35,23 +35,37 @@ class AppButton extends StatelessWidget {
     switch (variant) {
       case AppButtonVariant.primary:
         gradient = onPressed == null ? null : AppColors.primaryGradient;
-        backgroundColor = onPressed == null ? colorScheme.surfaceContainerHighest : colorScheme.primary;
-        foregroundColor = onPressed == null ? colorScheme.onSurfaceVariant : colorScheme.onPrimary;
+        backgroundColor = onPressed == null
+            ? colorScheme.surfaceContainerHighest
+            : colorScheme.primary;
+        foregroundColor = onPressed == null
+            ? colorScheme.onSurfaceVariant
+            : colorScheme.onPrimary;
         break;
       case AppButtonVariant.secondary:
-        backgroundColor = onPressed == null ? colorScheme.surfaceContainerHighest : colorScheme.secondaryContainer;
-        foregroundColor = onPressed == null ? colorScheme.onSurfaceVariant : colorScheme.onSecondaryContainer;
+        backgroundColor = onPressed == null
+            ? colorScheme.surfaceContainerHighest
+            : colorScheme.secondaryContainer;
+        foregroundColor = onPressed == null
+            ? colorScheme.onSurfaceVariant
+            : colorScheme.onSecondaryContainer;
         break;
       case AppButtonVariant.outline:
         backgroundColor = Colors.transparent;
-        foregroundColor = onPressed == null ? colorScheme.onSurfaceVariant : colorScheme.primary;
+        foregroundColor = onPressed == null
+            ? colorScheme.onSurfaceVariant
+            : colorScheme.primary;
         borderSide = BorderSide(
-          color: onPressed == null ? colorScheme.outlineVariant : colorScheme.primary,
+          color: onPressed == null
+              ? colorScheme.outlineVariant
+              : colorScheme.primary,
         );
         break;
       case AppButtonVariant.text:
         backgroundColor = Colors.transparent;
-        foregroundColor = onPressed == null ? colorScheme.onSurfaceVariant : colorScheme.primary;
+        foregroundColor = onPressed == null
+            ? colorScheme.onSurfaceVariant
+            : colorScheme.primary;
         break;
     }
 
@@ -67,7 +81,7 @@ class AppButton extends StatelessWidget {
                   color: AppColors.primaryGlow,
                   blurRadius: 12,
                   offset: const Offset(0, 4),
-                )
+                ),
               ]
             : [],
       ),

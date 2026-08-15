@@ -26,36 +26,35 @@ class CheckoutScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // Listen for payment completion/error
-    ref.listen<AsyncValue<void>>(
-      checkoutControllerProvider,
-      (_, state) {
-        state.whenOrNull(
-          data: (_) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Payment Successful!'),
-                backgroundColor: AppColors.success,
-              ),
-            );
-            // On success, go back to dashboard or course details
-            if (context.canPop()) {
-              context.pop(true); // Return true to indicate success
-            }
-          },
-          error: (error, _) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(error.toString()),
-                backgroundColor: AppColors.error,
-              ),
-            );
-          },
-        );
-      },
-    );
+    ref.listen<AsyncValue<void>>(checkoutControllerProvider, (_, state) {
+      state.whenOrNull(
+        data: (_) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Payment Successful!'),
+              backgroundColor: AppColors.success,
+            ),
+          );
+          // On success, go back to dashboard or course details
+          if (context.canPop()) {
+            context.pop(true); // Return true to indicate success
+          }
+        },
+        error: (error, _) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(error.toString()),
+              backgroundColor: AppColors.error,
+            ),
+          );
+        },
+      );
+    });
 
     final checkoutState = ref.watch(checkoutControllerProvider);
-    final currencyFormat = NumberFormat.simpleCurrency(name: 'INR'); // Default to INR for Razorpay
+    final currencyFormat = NumberFormat.simpleCurrency(
+      name: 'INR',
+    ); // Default to INR for Razorpay
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -81,10 +80,12 @@ class CheckoutScreen extends ConsumerWidget {
                 children: [
                   Text(
                     'Order Summary',
-                    style: AppTypography.titleLarge.copyWith(color: AppColors.textPrimary),
+                    style: AppTypography.titleLarge.copyWith(
+                      color: AppColors.textPrimary,
+                    ),
                   ),
                   const SizedBox(height: AppSpacing.lg),
-                  
+
                   // Item
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -92,30 +93,38 @@ class CheckoutScreen extends ConsumerWidget {
                       Expanded(
                         child: Text(
                           courseTitle,
-                          style: AppTypography.bodyLarge.copyWith(color: AppColors.textSecondary),
+                          style: AppTypography.bodyLarge.copyWith(
+                            color: AppColors.textSecondary,
+                          ),
                         ),
                       ),
                       Text(
                         currencyFormat.format(price),
-                        style: AppTypography.titleMedium.copyWith(color: AppColors.textPrimary),
+                        style: AppTypography.titleMedium.copyWith(
+                          color: AppColors.textPrimary,
+                        ),
                       ),
                     ],
                   ),
                   const SizedBox(height: AppSpacing.xl),
                   const Divider(color: AppColors.border),
                   const SizedBox(height: AppSpacing.md),
-                  
+
                   // Total
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
                         'Total Payable',
-                        style: AppTypography.headlineSmall.copyWith(color: AppColors.textPrimary),
+                        style: AppTypography.headlineSmall.copyWith(
+                          color: AppColors.textPrimary,
+                        ),
                       ),
                       Text(
                         currencyFormat.format(price),
-                        style: AppTypography.headlineSmall.copyWith(color: AppColors.primaryLight),
+                        style: AppTypography.headlineSmall.copyWith(
+                          color: AppColors.primaryLight,
+                        ),
                       ),
                     ],
                   ),
@@ -123,7 +132,7 @@ class CheckoutScreen extends ConsumerWidget {
               ),
             ),
             const Spacer(),
-            
+
             // Security Badge
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -132,7 +141,9 @@ class CheckoutScreen extends ConsumerWidget {
                 const SizedBox(width: AppSpacing.sm),
                 Text(
                   'Secure Payment by Razorpay',
-                  style: AppTypography.labelMedium.copyWith(color: AppColors.textSecondary),
+                  style: AppTypography.labelMedium.copyWith(
+                    color: AppColors.textSecondary,
+                  ),
                 ),
               ],
             ),
@@ -144,12 +155,14 @@ class CheckoutScreen extends ConsumerWidget {
               isLoading: checkoutState.isLoading,
               onPressed: () {
                 final session = locator<SessionManager>();
-                ref.read(checkoutControllerProvider.notifier).startCheckout(
-                  courseId: courseId,
-                  price: price,
-                  courseName: courseTitle,
-                  userEmail: session.userEmail ?? 'user@example.com',
-                );
+                ref
+                    .read(checkoutControllerProvider.notifier)
+                    .startCheckout(
+                      courseId: courseId,
+                      price: price,
+                      courseName: courseTitle,
+                      userEmail: session.userEmail ?? 'user@example.com',
+                    );
               },
             ),
             const SizedBox(height: AppSpacing.xl),

@@ -10,7 +10,7 @@ class DashboardRepository {
   final DashboardApiService _apiService;
 
   DashboardRepository({required DashboardApiService apiService})
-      : _apiService = apiService;
+    : _apiService = apiService;
 
   Future<StudentDashboardDto> getStudentDashboard() async {
     if (DemoMode().isActive) {
@@ -58,4 +58,3 @@ class DashboardRepository {
     }
   }
 }
-

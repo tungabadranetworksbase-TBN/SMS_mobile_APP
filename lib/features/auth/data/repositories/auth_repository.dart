@@ -14,8 +14,8 @@ class AuthRepository {
   AuthRepository({
     required AuthApiService apiService,
     required SessionManager sessionManager,
-  })  : _apiService = apiService,
-        _sessionManager = sessionManager;
+  }) : _apiService = apiService,
+       _sessionManager = sessionManager;
 
   Future<void> login(String email, String password) async {
     try {
@@ -24,7 +24,7 @@ class AuthRepository {
 
       if (response.success && response.data != null) {
         final data = response.data!;
-        
+
         // Save to secure storage and preferences via SessionManager
         await _sessionManager.saveSession(
           token: data.token,
@@ -47,12 +47,16 @@ class AuthRepository {
 
   Future<void> signUp(String name, String email, String password) async {
     try {
-      final request = SignupRequestDto(name: name, email: email, password: password);
+      final request = SignupRequestDto(
+        name: name,
+        email: email,
+        password: password,
+      );
       final response = await _apiService.signUp(request);
 
       if (response.success && response.data != null) {
         final data = response.data!;
-        
+
         // Save to secure storage and preferences via SessionManager
         await _sessionManager.saveSession(
           token: data.token,
@@ -106,7 +110,11 @@ class AuthRepository {
     }
   }
 
-  Future<void> resetPassword(String email, String otp, String newPassword) async {
+  Future<void> resetPassword(
+    String email,
+    String otp,
+    String newPassword,
+  ) async {
     try {
       final response = await _apiService.resetPassword(email, otp, newPassword);
       if (!response.success) {

@@ -7,7 +7,7 @@ class OrdersRepository {
   final OrdersApiService _apiService;
 
   OrdersRepository({required OrdersApiService apiService})
-      : _apiService = apiService;
+    : _apiService = apiService;
 
   Future<List<OrderDto>> getOrders() async {
     if (DemoMode().isActive) {
@@ -33,10 +33,11 @@ class OrdersRepository {
       if (response.success && response.data != null) {
         return response.data!;
       }
-      throw ApiException(message: response.message ?? 'Failed to load order details');
+      throw ApiException(
+        message: response.message ?? 'Failed to load order details',
+      );
     } catch (e) {
       rethrow;
     }
   }
 }
-

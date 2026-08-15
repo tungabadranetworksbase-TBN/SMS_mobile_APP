@@ -93,13 +93,13 @@ class AppColors {
   static const Color secondaryContainer = Color(0xFFA277FE);
   static const Color outline = _neutral500;
   static const Color outlineVariant = _neutral700;
-  
+
   static const LinearGradient primaryGradient = LinearGradient(
     colors: [primaryDark, primary, primaryLight],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
-  
+
   static const LinearGradient ctaGradient = LinearGradient(
     colors: [primaryDark, primary],
     begin: Alignment.topLeft,

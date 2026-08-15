@@ -8,7 +8,7 @@ class ConnectivityInterceptor extends Interceptor {
   final NetworkInfo _networkInfo;
 
   ConnectivityInterceptor({required NetworkInfo networkInfo})
-      : _networkInfo = networkInfo;
+    : _networkInfo = networkInfo;
 
   @override
   void onRequest(

@@ -49,9 +49,5 @@ void main() async {
   locator<ConnectivityManager>().init();
   await locator<OfflineSyncManager>().init(locator<ConnectivityManager>());
 
-  runApp(
-    const ProviderScope(
-      child: TbnApp(),
-    ),
-  );
+  runApp(const ProviderScope(child: TbnApp()));
 }

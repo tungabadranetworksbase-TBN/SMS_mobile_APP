@@ -14,12 +14,10 @@ class AppConfig {
       dotenv.env['API_BASE_URL'] ?? 'http://localhost:3000/api';
 
   // ── Razorpay ──
-  String get razorpayKeyId =>
-      dotenv.env['RAZORPAY_KEY_ID'] ?? '';
+  String get razorpayKeyId => dotenv.env['RAZORPAY_KEY_ID'] ?? '';
 
   // ── MinIO ──
-  String get minioEndpoint =>
-      dotenv.env['MINIO_ENDPOINT'] ?? '';
+  String get minioEndpoint => dotenv.env['MINIO_ENDPOINT'] ?? '';
 
   // ── Timeouts ──
   Duration get connectTimeout => const Duration(seconds: 15);

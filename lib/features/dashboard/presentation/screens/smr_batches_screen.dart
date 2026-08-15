@@ -34,15 +34,23 @@ class SmrBatchesScreen extends ConsumerWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('Batch 2024-${String.fromCharCode(65 + index)}', style: AppTypography.titleLarge),
+                    Text(
+                      'Batch 2024-${String.fromCharCode(65 + index)}',
+                      style: AppTypography.titleLarge,
+                    ),
                     AppBadge(
                       text: index == 0 ? 'Completed' : 'In Progress',
-                      variant: index == 0 ? AppBadgeVariant.success : AppBadgeVariant.primary,
+                      variant: index == 0
+                          ? AppBadgeVariant.success
+                          : AppBadgeVariant.primary,
                     ),
                   ],
                 ),
                 const SizedBox(height: AppSpacing.s8),
-                Text('Advanced Networking & Security', style: AppTypography.bodyMedium),
+                Text(
+                  'Advanced Networking & Security',
+                  style: AppTypography.bodyMedium,
+                ),
                 const SizedBox(height: AppSpacing.s16),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -51,7 +59,10 @@ class SmrBatchesScreen extends ConsumerWidget {
                       children: [
                         const Icon(Icons.groups_rounded, size: AppSpacing.s20),
                         const SizedBox(width: AppSpacing.s8),
-                        Text('${(index + 1) * 15} Students', style: AppTypography.labelMedium),
+                        Text(
+                          '${(index + 1) * 15} Students',
+                          style: AppTypography.labelMedium,
+                        ),
                       ],
                     ),
                     TextButton(
@@ -74,7 +85,9 @@ class SmrBatchesScreen extends ConsumerWidget {
       isScrollControlled: true,
       backgroundColor: Theme.of(context).colorScheme.surface,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(AppSpacing.s24)),
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(AppSpacing.s24),
+        ),
       ),
       builder: (context) {
         return Padding(
@@ -112,7 +125,10 @@ class SmrBatchesScreen extends ConsumerWidget {
                 ),
                 items: const [
                   DropdownMenuItem(value: '1', child: Text('Cisco CCNA')),
-                  DropdownMenuItem(value: '2', child: Text('AWS Solutions Architect')),
+                  DropdownMenuItem(
+                    value: '2',
+                    child: Text('AWS Solutions Architect'),
+                  ),
                 ],
                 onChanged: (value) {},
               ),
@@ -129,7 +145,9 @@ class SmrBatchesScreen extends ConsumerWidget {
                 onPressed: () {
                   Navigator.pop(context);
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Batch successfully created!')),
+                    const SnackBar(
+                      content: Text('Batch successfully created!'),
+                    ),
                   );
                 },
               ),

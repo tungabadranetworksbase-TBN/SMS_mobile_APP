@@ -34,7 +34,7 @@ class GradientButton extends StatelessWidget {
                   color: AppColors.primaryGlow,
                   blurRadius: 12,
                   offset: const Offset(0, 4),
-                )
+                ),
               ],
       ),
       child: Material(
@@ -67,7 +67,9 @@ class GradientButton extends StatelessWidget {
                   Text(
                     text,
                     style: AppTypography.labelLarge.copyWith(
-                      color: onPressed == null ? AppColors.textMuted : Colors.white,
+                      color: onPressed == null
+                          ? AppColors.textMuted
+                          : Colors.white,
                       fontWeight: FontWeight.w600,
                     ),
                   ),

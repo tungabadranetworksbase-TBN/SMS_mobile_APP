@@ -55,7 +55,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   Future<void> _saveProfile() async {
     if (_formKey.currentState?.validate() ?? false) {
       final controller = ref.read(profileControllerProvider.notifier);
-      
+
       // Upload avatar if selected
       if (_selectedAvatarPath != null) {
         await controller.uploadAvatar(_selectedAvatarPath!);
@@ -69,18 +69,26 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
       };
 
       final success = await controller.updateProfile(data);
-      
+
       if (!mounted) return;
 
       if (success) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Profile updated successfully'), backgroundColor: AppColors.success),
+          const SnackBar(
+            content: Text('Profile updated successfully'),
+            backgroundColor: AppColors.success,
+          ),
         );
         context.pop();
       } else {
         final state = ref.read(profileControllerProvider);
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(state.error?.toString() ?? 'Failed to update profile'), backgroundColor: AppColors.error),
+          SnackBar(
+            content: Text(
+              state.error?.toString() ?? 'Failed to update profile',
+            ),
+            backgroundColor: AppColors.error,
+          ),
         );
       }
     }
@@ -113,12 +121,21 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                       backgroundColor: AppColors.surfaceVariant,
                       backgroundImage: _selectedAvatarPath != null
                           ? null // We would use FileImage in a real app if dart:io is available, keeping simple for demo
-                          : (widget.profile.avatarUrl != null ? NetworkImage(widget.profile.avatarUrl!) : null),
+                          : (widget.profile.avatarUrl != null
+                                ? NetworkImage(widget.profile.avatarUrl!)
+                                : null),
                       child: _selectedAvatarPath != null
-                          ? const Icon(Icons.check, color: AppColors.primaryLight, size: 40)
+                          ? const Icon(
+                              Icons.check,
+                              color: AppColors.primaryLight,
+                              size: 40,
+                            )
                           : (widget.profile.avatarUrl == null
-                              ? Text(widget.profile.name[0].toUpperCase(), style: AppTypography.headlineMedium)
-                              : null),
+                                ? Text(
+                                    widget.profile.name[0].toUpperCase(),
+                                    style: AppTypography.headlineMedium,
+                                  )
+                                : null),
                     ),
                     Positioned(
                       bottom: 0,
@@ -131,7 +148,11 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                             color: AppColors.primary,
                             shape: BoxShape.circle,
                           ),
-                          child: const Icon(Icons.camera_alt, color: Colors.white, size: 18),
+                          child: const Icon(
+                            Icons.camera_alt,
+                            color: Colors.white,
+                            size: 18,
+                          ),
                         ),
                       ),
                     ),
@@ -149,7 +170,9 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                   labelText: 'Full Name',
                   prefixIcon: Icon(Icons.person_outline),
                 ),
-                validator: (value) => value == null || value.isEmpty ? 'Please enter your name' : null,
+                validator: (value) => value == null || value.isEmpty
+                    ? 'Please enter your name'
+                    : null,
               ),
               const SizedBox(height: AppSpacing.lg),
 

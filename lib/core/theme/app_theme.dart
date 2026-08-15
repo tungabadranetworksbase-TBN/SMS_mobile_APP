@@ -31,7 +31,9 @@ class AppTheme {
         elevation: AppElevation.level0,
         scrolledUnderElevation: AppElevation.level0,
         centerTitle: true,
-        titleTextStyle: AppTypography.titleLarge.copyWith(color: colorScheme.onSurface),
+        titleTextStyle: AppTypography.titleLarge.copyWith(
+          color: colorScheme.onSurface,
+        ),
         iconTheme: IconThemeData(color: colorScheme.onSurface),
         systemOverlayStyle: SystemUiOverlayStyle.dark,
       ),
@@ -46,9 +48,14 @@ class AppTheme {
           backgroundColor: colorScheme.primary,
           foregroundColor: colorScheme.onPrimary,
           elevation: AppElevation.level0,
-          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.s24, vertical: AppSpacing.s12),
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.s24,
+            vertical: AppSpacing.s12,
+          ),
           shape: RoundedRectangleBorder(borderRadius: AppRadius.roundedPill),
-          textStyle: AppTypography.labelLarge.copyWith(fontWeight: FontWeight.w600),
+          textStyle: AppTypography.labelLarge.copyWith(
+            fontWeight: FontWeight.w600,
+          ),
         ),
       ),
       inputDecorationTheme: _inputDecorationTheme(colorScheme),
@@ -77,7 +84,9 @@ class AppTheme {
         elevation: AppElevation.level0,
         scrolledUnderElevation: AppElevation.level0,
         centerTitle: true,
-        titleTextStyle: AppTypography.titleLarge.copyWith(color: colorScheme.onSurface),
+        titleTextStyle: AppTypography.titleLarge.copyWith(
+          color: colorScheme.onSurface,
+        ),
         iconTheme: IconThemeData(color: colorScheme.onSurface),
         systemOverlayStyle: SystemUiOverlayStyle.light,
       ),
@@ -92,9 +101,14 @@ class AppTheme {
           backgroundColor: colorScheme.primary,
           foregroundColor: colorScheme.onPrimary,
           elevation: AppElevation.level0,
-          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.s24, vertical: AppSpacing.s12),
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.s24,
+            vertical: AppSpacing.s12,
+          ),
           shape: RoundedRectangleBorder(borderRadius: AppRadius.roundedPill),
-          textStyle: AppTypography.labelLarge.copyWith(fontWeight: FontWeight.w600),
+          textStyle: AppTypography.labelLarge.copyWith(
+            fontWeight: FontWeight.w600,
+          ),
         ),
       ),
       inputDecorationTheme: _inputDecorationTheme(colorScheme),
@@ -136,8 +150,12 @@ class AppTheme {
         borderRadius: AppRadius.roundedMd,
         borderSide: BorderSide(color: colorScheme.error, width: 1),
       ),
-      hintStyle: AppTypography.bodyMedium.copyWith(color: colorScheme.onSurfaceVariant.withValues(alpha: 0.7)),
-      labelStyle: AppTypography.labelMedium.copyWith(color: colorScheme.onSurfaceVariant),
+      hintStyle: AppTypography.bodyMedium.copyWith(
+        color: colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
+      ),
+      labelStyle: AppTypography.labelMedium.copyWith(
+        color: colorScheme.onSurfaceVariant,
+      ),
     );
   }
 }

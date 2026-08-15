@@ -26,7 +26,9 @@ class OrderDetailsScreen extends ConsumerWidget {
       body: asyncOrder.when(
         data: (order) {
           final dateFormat = DateFormat('MMMM dd, yyyy - hh:mm a');
-          final currencyFormat = NumberFormat.simpleCurrency(name: order.currency);
+          final currencyFormat = NumberFormat.simpleCurrency(
+            name: order.currency,
+          );
 
           return SingleChildScrollView(
             padding: const EdgeInsets.all(AppSpacing.md),
@@ -45,18 +47,24 @@ class OrderDetailsScreen extends ConsumerWidget {
                     children: [
                       Text(
                         order.displayId,
-                        style: AppTypography.headlineSmall.copyWith(color: AppColors.textPrimary),
+                        style: AppTypography.headlineSmall.copyWith(
+                          color: AppColors.textPrimary,
+                        ),
                       ),
                       const SizedBox(height: AppSpacing.xs),
                       Text(
                         dateFormat.format(order.createdAt),
-                        style: AppTypography.bodyMedium.copyWith(color: AppColors.textSecondary),
+                        style: AppTypography.bodyMedium.copyWith(
+                          color: AppColors.textSecondary,
+                        ),
                       ),
                       const SizedBox(height: AppSpacing.md),
                       Text(
                         order.status.toUpperCase(),
                         style: AppTypography.titleMedium.copyWith(
-                          color: order.status == 'PAID' ? AppColors.success : AppColors.warning,
+                          color: order.status == 'PAID'
+                              ? AppColors.success
+                              : AppColors.warning,
                         ),
                       ),
                     ],
@@ -67,10 +75,14 @@ class OrderDetailsScreen extends ConsumerWidget {
                 // Items List
                 Text(
                   'Items',
-                  style: AppTypography.titleLarge.copyWith(color: AppColors.textPrimary),
+                  style: AppTypography.titleLarge.copyWith(
+                    color: AppColors.textPrimary,
+                  ),
                 ),
                 const SizedBox(height: AppSpacing.sm),
-                ...order.items.map((item) => _OrderItemRow(item: item, currency: order.currency)),
+                ...order.items.map(
+                  (item) => _OrderItemRow(item: item, currency: order.currency),
+                ),
                 const SizedBox(height: AppSpacing.xl),
 
                 // Total
@@ -81,11 +93,15 @@ class OrderDetailsScreen extends ConsumerWidget {
                   children: [
                     Text(
                       'Total',
-                      style: AppTypography.headlineSmall.copyWith(color: AppColors.textPrimary),
+                      style: AppTypography.headlineSmall.copyWith(
+                        color: AppColors.textPrimary,
+                      ),
                     ),
                     Text(
                       currencyFormat.format(order.totalAmount),
-                      style: AppTypography.headlineSmall.copyWith(color: AppColors.primaryLight),
+                      style: AppTypography.headlineSmall.copyWith(
+                        color: AppColors.primaryLight,
+                      ),
                     ),
                   ],
                 ),
@@ -142,19 +158,25 @@ class _OrderItemRow extends StatelessWidget {
               children: [
                 Text(
                   item.title,
-                  style: AppTypography.titleMedium.copyWith(color: AppColors.textPrimary),
+                  style: AppTypography.titleMedium.copyWith(
+                    color: AppColors.textPrimary,
+                  ),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   item.type,
-                  style: AppTypography.labelSmall.copyWith(color: AppColors.textSecondary),
+                  style: AppTypography.labelSmall.copyWith(
+                    color: AppColors.textSecondary,
+                  ),
                 ),
               ],
             ),
           ),
           Text(
             currencyFormat.format(item.price),
-            style: AppTypography.titleMedium.copyWith(color: AppColors.textPrimary),
+            style: AppTypography.titleMedium.copyWith(
+              color: AppColors.textPrimary,
+            ),
           ),
         ],
       ),

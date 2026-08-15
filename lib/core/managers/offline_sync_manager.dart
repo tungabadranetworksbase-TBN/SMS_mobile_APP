@@ -14,7 +14,7 @@ class OfflineSyncManager {
 
   final Logger _logger = Logger();
   static const String _syncQueueKey = 'offline_sync_queue';
-  
+
   late SharedPreferences _prefs;
   ConnectivityManager? _connectivityManager;
 
@@ -37,17 +37,17 @@ class OfflineSyncManager {
     required Map<String, dynamic> payload,
   }) async {
     final currentQueueStr = _prefs.getStringList(_syncQueueKey) ?? [];
-    
+
     final action = {
       'endpoint': endpoint,
       'method': method,
       'payload': payload,
       'timestamp': DateTime.now().toIso8601String(),
     };
-    
+
     currentQueueStr.add(jsonEncode(action));
     await _prefs.setStringList(_syncQueueKey, currentQueueStr);
-    
+
     _logger.i('Action queued for offline sync: $endpoint');
   }
 
@@ -65,10 +65,10 @@ class OfflineSyncManager {
     for (final actionStr in queuedActions) {
       try {
         final action = jsonDecode(actionStr);
-        // Note: In a full implementation, you would inject ApiClient here 
+        // Note: In a full implementation, you would inject ApiClient here
         // and execute the stored HTTP requests.
         // e.g. await apiClient.request(action['endpoint'], data: action['payload'], method: action['method']);
-        
+
         _logger.i('Successfully synced: ${action['endpoint']}');
       } catch (e) {
         _logger.e('Failed to sync action: $e');
@@ -78,6 +78,8 @@ class OfflineSyncManager {
 
     // Update queue with only the failed actions
     await _prefs.setStringList(_syncQueueKey, failedActions);
-    _logger.i('Offline sync completed. ${failedActions.length} items remaining.');
+    _logger.i(
+      'Offline sync completed. ${failedActions.length} items remaining.',
+    );
   }
 }

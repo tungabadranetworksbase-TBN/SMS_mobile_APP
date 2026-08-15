@@ -39,7 +39,11 @@ class SmrDashboardScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildContent(BuildContext context, SessionManager user, SmrDashboardDto data) {
+  Widget _buildContent(
+    BuildContext context,
+    SessionManager user,
+    SmrDashboardDto data,
+  ) {
     return SingleChildScrollView(
       physics: const AlwaysScrollableScrollPhysics(),
       padding: const EdgeInsets.all(AppSpacing.md),
@@ -87,7 +91,9 @@ class SmrDashboardScreen extends ConsumerWidget {
         CircleAvatar(
           radius: 24,
           backgroundColor: AppColors.surfaceContainer,
-          backgroundImage: user.userAvatar != null ? NetworkImage(user.userAvatar!) : null,
+          backgroundImage: user.userAvatar != null
+              ? NetworkImage(user.userAvatar!)
+              : null,
           child: user.userAvatar == null
               ? const Icon(Icons.person_rounded, color: AppColors.textMuted)
               : null,
@@ -136,9 +142,7 @@ class SmrDashboardScreen extends ConsumerWidget {
   Widget _buildSectionTitle(String title) {
     return Text(
       title,
-      style: AppTypography.titleLarge.copyWith(
-        color: AppColors.textPrimary,
-      ),
+      style: AppTypography.titleLarge.copyWith(color: AppColors.textPrimary),
     );
   }
 
@@ -146,7 +150,7 @@ class SmrDashboardScreen extends ConsumerWidget {
     if (batches.isEmpty) {
       return const _EmptyCard(message: 'No active batches assigned.');
     }
-    
+
     return ListView.separated(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
@@ -173,10 +177,15 @@ class SmrDashboardScreen extends ConsumerWidget {
                     ),
                   ),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
                     decoration: BoxDecoration(
                       color: AppColors.primary.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
+                      borderRadius: BorderRadius.circular(
+                        AppSpacing.radiusFull,
+                      ),
                     ),
                     child: Text(
                       '${batch.studentCount} Students',
@@ -202,7 +211,9 @@ class SmrDashboardScreen extends ConsumerWidget {
                       value: batch.progress,
                       backgroundColor: AppColors.surfaceContainer,
                       color: AppColors.primary,
-                      borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
+                      borderRadius: BorderRadius.circular(
+                        AppSpacing.radiusFull,
+                      ),
                       minHeight: 6,
                     ),
                   ),
@@ -231,14 +242,15 @@ class SmrDashboardScreen extends ConsumerWidget {
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       itemCount: activities.length,
-      separatorBuilder: (_, __) => Divider(color: AppColors.outlineVariant.withValues(alpha: 0.1)),
+      separatorBuilder: (_, __) =>
+          Divider(color: AppColors.outlineVariant.withValues(alpha: 0.1)),
       itemBuilder: (context, index) {
         final activity = activities[index];
-        
+
         IconData icon;
         Color color;
-        
-        switch(activity.type) {
+
+        switch (activity.type) {
           case 'ticket':
             icon = Icons.support_agent_rounded;
             color = AppColors.warning;
@@ -323,7 +335,14 @@ class SmrDashboardScreen extends ConsumerWidget {
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           childAspectRatio: 1.5,
-          children: List.generate(4, (_) => const ShimmerBox(width: double.infinity, height: double.infinity, borderRadius: AppSpacing.radiusLg)),
+          children: List.generate(
+            4,
+            (_) => const ShimmerBox(
+              width: double.infinity,
+              height: double.infinity,
+              borderRadius: AppSpacing.radiusLg,
+            ),
+          ),
         ),
         const SizedBox(height: AppSpacing.xl),
         const ShimmerBox(width: 120, height: 24),
@@ -407,7 +426,9 @@ class _EmptyCard extends StatelessWidget {
       child: Center(
         child: Text(
           message,
-          style: AppTypography.bodyMedium.copyWith(color: AppColors.textSecondary),
+          style: AppTypography.bodyMedium.copyWith(
+            color: AppColors.textSecondary,
+          ),
         ),
       ),
     );

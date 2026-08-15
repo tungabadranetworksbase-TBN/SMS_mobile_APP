@@ -13,9 +13,24 @@ class AdminShell extends ConsumerWidget {
   const AdminShell({super.key, required this.child});
 
   static const _tabs = [
-    _TabItem(icon: Icons.dashboard_outlined, activeIcon: Icons.dashboard_rounded, label: 'Dashboard', route: RoutePaths.adminDashboard),
-    _TabItem(icon: Icons.analytics_outlined, activeIcon: Icons.analytics_rounded, label: 'Analytics', route: RoutePaths.adminAnalytics),
-    _TabItem(icon: Icons.settings_outlined, activeIcon: Icons.settings_rounded, label: 'Settings', route: RoutePaths.studentProfile),
+    _TabItem(
+      icon: Icons.dashboard_outlined,
+      activeIcon: Icons.dashboard_rounded,
+      label: 'Dashboard',
+      route: RoutePaths.adminDashboard,
+    ),
+    _TabItem(
+      icon: Icons.analytics_outlined,
+      activeIcon: Icons.analytics_rounded,
+      label: 'Analytics',
+      route: RoutePaths.adminAnalytics,
+    ),
+    _TabItem(
+      icon: Icons.settings_outlined,
+      activeIcon: Icons.settings_rounded,
+      label: 'Settings',
+      route: RoutePaths.studentProfile,
+    ),
   ];
 
   /// Derive the active tab from the current location so that deep links,

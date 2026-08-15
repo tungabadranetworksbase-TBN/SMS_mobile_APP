@@ -21,9 +21,7 @@ class CertificatesScreen extends ConsumerWidget {
     final certificatesState = ref.watch(certificatesProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('My Certificates'),
-      ),
+      appBar: AppBar(title: const Text('My Certificates')),
       body: RefreshIndicator(
         onRefresh: () => ref.read(certificatesProvider.notifier).refresh(),
         child: certificatesState.when(
@@ -38,11 +36,12 @@ class CertificatesScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildContent(BuildContext context, List<CertificateDto> certificates) {
+  Widget _buildContent(
+    BuildContext context,
+    List<CertificateDto> certificates,
+  ) {
     if (certificates.isEmpty) {
-      return const Center(
-        child: Text('No certificates earned yet.'),
-      );
+      return const Center(child: Text('No certificates earned yet.'));
     }
 
     return ListView.builder(
@@ -99,22 +98,32 @@ class CertificatesScreen extends ConsumerWidget {
                   variant: AppButtonVariant.outline,
                   onPressed: () async {
                     final manager = locator<DownloadManager>();
-                    final filename = '${cert.courseTitle.replaceAll(' ', '_')}_Certificate.pdf';
-                    
+                    final filename =
+                        '${cert.courseTitle.replaceAll(' ', '_')}_Certificate.pdf';
+
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text('Starting download...')),
                     );
-                    
-                    final file = await manager.downloadFile(cert.downloadUrl, filename);
-                    
+
+                    final file = await manager.downloadFile(
+                      cert.downloadUrl,
+                      filename,
+                    );
+
                     if (context.mounted) {
                       if (file != null) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Certificate downloaded to ${file.path}')),
+                          SnackBar(
+                            content: Text(
+                              'Certificate downloaded to ${file.path}',
+                            ),
+                          ),
                         );
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Failed to download certificate.')),
+                          const SnackBar(
+                            content: Text('Failed to download certificate.'),
+                          ),
                         );
                       }
                     }

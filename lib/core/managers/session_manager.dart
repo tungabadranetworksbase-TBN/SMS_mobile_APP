@@ -30,7 +30,8 @@ class SessionManager {
   bool _isAuthenticated = false;
 
   // ── Stream for auth state changes ──
-  StreamController<bool> _authStateController = StreamController<bool>.broadcast();
+  StreamController<bool> _authStateController =
+      StreamController<bool>.broadcast();
   Stream<bool> get authStateStream => _authStateController.stream;
 
   bool get isAuthenticated => _isAuthenticated;
@@ -39,10 +40,12 @@ class SessionManager {
   String? get userEmail => _userEmail;
   String? get userRole => _userRole;
   String? get userAvatar => _userAvatar;
-  
+
   // Expose these for repositories that need them directly
-  Future<String?> get token => _secureStorage.read(AppConstants.keySessionToken);
-  Future<String?> get refreshToken => _secureStorage.read(AppConstants.keyRefreshToken);
+  Future<String?> get token =>
+      _secureStorage.read(AppConstants.keySessionToken);
+  Future<String?> get refreshToken =>
+      _secureStorage.read(AppConstants.keyRefreshToken);
 
   bool get isStudent => _userRole == AppConstants.roleStudent;
   bool get isSmr => _userRole == AppConstants.roleSmr;
@@ -55,8 +58,7 @@ class SessionManager {
   /// Called at app startup.
   Future<void> init() async {
     try {
-      final token =
-          await _secureStorage.read(AppConstants.keySessionToken);
+      final token = await _secureStorage.read(AppConstants.keySessionToken);
 
       if (token != null && token.isNotEmpty) {
         _userId = _preferenceManager.getString(AppConstants.keyUserId);
@@ -95,7 +97,10 @@ class SessionManager {
     await _preferenceManager.setString(AppConstants.keyUserEmail, userEmail);
     await _preferenceManager.setString(AppConstants.keyUserRole, userRole);
     if (userAvatar != null) {
-      await _preferenceManager.setString(AppConstants.keyUserAvatar, userAvatar);
+      await _preferenceManager.setString(
+        AppConstants.keyUserAvatar,
+        userAvatar,
+      );
     }
 
     _userId = userId;

@@ -21,9 +21,9 @@ class CheckoutController extends StateNotifier<AsyncValue<void>> {
   CheckoutController({
     required PaymentGatewayService paymentService,
     required AppConfig appConfig,
-  })  : _paymentService = paymentService,
-        _appConfig = appConfig,
-        super(const AsyncValue.data(null)) {
+  }) : _paymentService = paymentService,
+       _appConfig = appConfig,
+       super(const AsyncValue.data(null)) {
     _successSub = _paymentService.onPaymentSuccess.listen(_onSuccess);
     _errorSub = _paymentService.onPaymentError.listen(_onError);
   }
@@ -46,8 +46,9 @@ class CheckoutController extends StateNotifier<AsyncValue<void>> {
     try {
       // 1. Call Backend to generate Razorpay Order ID (Mocked for now)
       // final response = await _apiService.createOrder(courseId);
-      final backendOrderId = 'order_mock_${DateTime.now().millisecondsSinceEpoch}';
-      
+      final backendOrderId =
+          'order_mock_${DateTime.now().millisecondsSinceEpoch}';
+
       // 2. Open Razorpay Checkout Sheet
       _paymentService.openCheckout(
         keyId: _appConfig.razorpayKeyId, // Loaded from .env
@@ -56,11 +57,14 @@ class CheckoutController extends StateNotifier<AsyncValue<void>> {
         description: courseName,
         orderId: backendOrderId,
         prefillEmail: userEmail,
-        prefillContact: '', 
+        prefillContact: '',
       );
       // State remains loading until payment succeeds or fails
     } catch (e) {
-      state = AsyncValue.error(ApiException(message: e.toString()), StackTrace.current);
+      state = AsyncValue.error(
+        ApiException(message: e.toString()),
+        StackTrace.current,
+      );
     }
   }
 
@@ -78,9 +82,10 @@ class CheckoutController extends StateNotifier<AsyncValue<void>> {
   }
 }
 
-final checkoutControllerProvider = StateNotifierProvider<CheckoutController, AsyncValue<void>>((ref) {
-  return CheckoutController(
-    paymentService: ref.watch(paymentGatewayProvider),
-    appConfig: locator<AppConfig>(),
-  );
-});
+final checkoutControllerProvider =
+    StateNotifierProvider<CheckoutController, AsyncValue<void>>((ref) {
+      return CheckoutController(
+        paymentService: ref.watch(paymentGatewayProvider),
+        appConfig: locator<AppConfig>(),
+      );
+    });

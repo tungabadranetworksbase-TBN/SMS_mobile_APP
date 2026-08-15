@@ -7,7 +7,7 @@ class NotificationsRepository {
   final NotificationsApiService _apiService;
 
   NotificationsRepository({required NotificationsApiService apiService})
-      : _apiService = apiService;
+    : _apiService = apiService;
 
   Future<List<NotificationMessageDto>> getNotifications() async {
     if (DemoMode().isActive) {
@@ -18,7 +18,9 @@ class NotificationsRepository {
       if (response.success && response.data != null) {
         return response.data!;
       }
-      throw ApiException(message: response.message ?? 'Failed to load notifications');
+      throw ApiException(
+        message: response.message ?? 'Failed to load notifications',
+      );
     } catch (e) {
       rethrow;
     }
@@ -31,7 +33,9 @@ class NotificationsRepository {
     try {
       final response = await _apiService.markAsRead(id);
       if (!response.success) {
-        throw ApiException(message: response.message ?? 'Failed to mark notification as read');
+        throw ApiException(
+          message: response.message ?? 'Failed to mark notification as read',
+        );
       }
     } catch (e) {
       rethrow;
@@ -45,11 +49,12 @@ class NotificationsRepository {
     try {
       final response = await _apiService.markAllAsRead();
       if (!response.success) {
-        throw ApiException(message: response.message ?? 'Failed to mark all as read');
+        throw ApiException(
+          message: response.message ?? 'Failed to mark all as read',
+        );
       }
     } catch (e) {
       rethrow;
     }
   }
 }
-

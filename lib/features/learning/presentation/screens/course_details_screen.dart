@@ -43,7 +43,9 @@ class CourseDetailsScreen extends ConsumerWidget {
       return Center(
         child: Text(
           'No content available for this course yet.',
-          style: AppTypography.bodyLarge.copyWith(color: AppColors.textSecondary),
+          style: AppTypography.bodyLarge.copyWith(
+            color: AppColors.textSecondary,
+          ),
         ),
       );
     }
@@ -63,7 +65,8 @@ class CourseDetailsScreen extends ConsumerWidget {
       padding: const EdgeInsets.all(AppSpacing.md),
       itemCount: 5,
       separatorBuilder: (_, __) => const SizedBox(height: AppSpacing.sm),
-      itemBuilder: (_, __) => const ShimmerBox(width: double.infinity, height: 60),
+      itemBuilder: (_, __) =>
+          const ShimmerBox(width: double.infinity, height: 60),
     );
   }
 }
@@ -78,20 +81,28 @@ class _ModuleExpansionTile extends StatelessWidget {
     return Card(
       color: AppColors.cardSurface,
       margin: const EdgeInsets.only(bottom: AppSpacing.md),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSpacing.radiusMd)),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+      ),
       clipBehavior: Clip.antiAlias,
       child: ExpansionTile(
         title: Text(
           module.title,
-          style: AppTypography.titleMedium.copyWith(color: AppColors.textPrimary),
+          style: AppTypography.titleMedium.copyWith(
+            color: AppColors.textPrimary,
+          ),
         ),
         subtitle: Text(
           '${module.lessons.length} Lessons',
-          style: AppTypography.labelSmall.copyWith(color: AppColors.textSecondary),
+          style: AppTypography.labelSmall.copyWith(
+            color: AppColors.textSecondary,
+          ),
         ),
         collapsedIconColor: AppColors.textMuted,
         iconColor: AppColors.primary,
-        children: module.lessons.map((lesson) => _LessonListTile(lesson: lesson)).toList(),
+        children: module.lessons
+            .map((lesson) => _LessonListTile(lesson: lesson))
+            .toList(),
       ),
     );
   }
@@ -114,11 +125,16 @@ class _LessonListTile extends StatelessWidget {
     }
 
     return ListTile(
-      contentPadding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: AppSpacing.xs),
+      contentPadding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.lg,
+        vertical: AppSpacing.xs,
+      ),
       leading: Container(
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
-          color: lesson.isCompleted ? AppColors.success.withValues(alpha: 0.1) : AppColors.surfaceContainer,
+          color: lesson.isCompleted
+              ? AppColors.success.withValues(alpha: 0.1)
+              : AppColors.surfaceContainer,
           shape: BoxShape.circle,
         ),
         child: Icon(
@@ -133,15 +149,22 @@ class _LessonListTile extends StatelessWidget {
       ),
       subtitle: Text(
         '${lesson.durationMinutes} mins',
-        style: AppTypography.labelSmall.copyWith(color: AppColors.textSecondary),
+        style: AppTypography.labelSmall.copyWith(
+          color: AppColors.textSecondary,
+        ),
       ),
-      trailing: const Icon(Icons.chevron_right_rounded, color: AppColors.textMuted),
+      trailing: const Icon(
+        Icons.chevron_right_rounded,
+        color: AppColors.textMuted,
+      ),
       onTap: () {
         // Quizzes are addressed by id, so only media lessons need a URL.
         final needsUrl = lesson.type == 'video' || lesson.type == 'pdf';
         if (needsUrl && lesson.url == null) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('No media URL provided for this lesson.')),
+            const SnackBar(
+              content: Text('No media URL provided for this lesson.'),
+            ),
           );
           return;
         }

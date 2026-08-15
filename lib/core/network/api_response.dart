@@ -17,7 +17,12 @@ class ApiResponse<T> {
     this.pagination,
   });
 
-  factory ApiResponse.success(T data, {String? message, int? statusCode, PaginationMeta? pagination}) {
+  factory ApiResponse.success(
+    T data, {
+    String? message,
+    int? statusCode,
+    PaginationMeta? pagination,
+  }) {
     return ApiResponse(
       success: true,
       data: data,

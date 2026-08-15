@@ -31,7 +31,8 @@ class AdminDashboardScreen extends ConsumerWidget {
             loading: () => _buildLoading(),
             error: (error, _) => ErrorStateView(
               message: error.toString(),
-              onRetry: () => ref.read(adminDashboardProvider.notifier).refresh(),
+              onRetry: () =>
+                  ref.read(adminDashboardProvider.notifier).refresh(),
             ),
           ),
         ),
@@ -39,7 +40,11 @@ class AdminDashboardScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildContent(BuildContext context, SessionManager user, AdminDashboardDto data) {
+  Widget _buildContent(
+    BuildContext context,
+    SessionManager user,
+    AdminDashboardDto data,
+  ) {
     return SingleChildScrollView(
       physics: const AlwaysScrollableScrollPhysics(),
       padding: const EdgeInsets.all(AppSpacing.md),
@@ -87,7 +92,9 @@ class AdminDashboardScreen extends ConsumerWidget {
         CircleAvatar(
           radius: 24,
           backgroundColor: AppColors.surfaceContainer,
-          backgroundImage: user.userAvatar != null ? NetworkImage(user.userAvatar!) : null,
+          backgroundImage: user.userAvatar != null
+              ? NetworkImage(user.userAvatar!)
+              : null,
           child: user.userAvatar == null
               ? const Icon(Icons.shield_rounded, color: AppColors.textMuted)
               : null,
@@ -97,7 +104,10 @@ class AdminDashboardScreen extends ConsumerWidget {
   }
 
   Widget _buildHeroStats(AdminStatsDto stats) {
-    final currencyFormatter = NumberFormat.currency(symbol: '₹', decimalDigits: 0);
+    final currencyFormatter = NumberFormat.currency(
+      symbol: '₹',
+      decimalDigits: 0,
+    );
     return GridView.count(
       crossAxisCount: 2,
       crossAxisSpacing: AppSpacing.md,
@@ -128,7 +138,9 @@ class AdminDashboardScreen extends ConsumerWidget {
           title: 'Server Uptime',
           value: '${stats.serverUptime.toStringAsFixed(1)}%',
           icon: Icons.dns_rounded,
-          color: stats.serverUptime > 99 ? AppColors.success : AppColors.warning,
+          color: stats.serverUptime > 99
+              ? AppColors.success
+              : AppColors.warning,
         ),
       ],
     );
@@ -137,9 +149,7 @@ class AdminDashboardScreen extends ConsumerWidget {
   Widget _buildSectionTitle(String title) {
     return Text(
       title,
-      style: AppTypography.titleLarge.copyWith(
-        color: AppColors.textPrimary,
-      ),
+      style: AppTypography.titleLarge.copyWith(color: AppColors.textPrimary),
     );
   }
 
@@ -157,7 +167,7 @@ class AdminDashboardScreen extends ConsumerWidget {
         final alert = alerts[index];
         Color color;
         IconData icon;
-        
+
         switch (alert.severity.toLowerCase()) {
           case 'critical':
             color = AppColors.error;
@@ -213,11 +223,13 @@ class AdminDashboardScreen extends ConsumerWidget {
   }
 
   Widget _buildRevenueChart(List<RevenueDataDto> data) {
-    if (data.isEmpty) return const _EmptyCard(message: 'No revenue data available.');
-    
+    if (data.isEmpty) {
+      return const _EmptyCard(message: 'No revenue data available.');
+    }
+
     // In a real app, use fl_chart or similar. Here we use a simple bar representation.
     final maxAmount = data.map((e) => e.amount).reduce((a, b) => a > b ? a : b);
-    
+
     return Container(
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
@@ -289,7 +301,14 @@ class AdminDashboardScreen extends ConsumerWidget {
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           childAspectRatio: 1.5,
-          children: List.generate(4, (_) => const ShimmerBox(width: double.infinity, height: double.infinity, borderRadius: AppSpacing.radiusLg)),
+          children: List.generate(
+            4,
+            (_) => const ShimmerBox(
+              width: double.infinity,
+              height: double.infinity,
+              borderRadius: AppSpacing.radiusLg,
+            ),
+          ),
         ),
         const SizedBox(height: AppSpacing.xl),
         const ShimmerBox(width: 120, height: 24),
@@ -371,7 +390,9 @@ class _EmptyCard extends StatelessWidget {
       child: Center(
         child: Text(
           message,
-          style: AppTypography.bodyMedium.copyWith(color: AppColors.textSecondary),
+          style: AppTypography.bodyMedium.copyWith(
+            color: AppColors.textSecondary,
+          ),
         ),
       ),
     );

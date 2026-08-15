@@ -29,12 +29,12 @@ class RouteNames {
   static const String orderHistory = 'order-history';
   static const String orderDetails = 'order-details';
   static const String checkout = 'checkout';
-  
+
   // ── SMR (Student Management Rep) ──
   static const String smrDashboard = 'smr-dashboard';
   static const String smrStudents = 'smr-students';
   static const String smrBatches = 'smr-batches';
-  
+
   // ── Admin ──
   static const String adminDashboard = 'admin-dashboard';
   static const String adminAnalytics = 'admin-analytics';
@@ -58,7 +58,8 @@ class RoutePaths {
   static const String videoPlayer = '/student/media/video';
   static const String pdfViewer = '/student/media/pdf';
   static const String quizPlayer = '/student/assessments/quiz/:id';
-  static const String submitAssignment = '/student/assessments/assignment/:id/submit';
+  static const String submitAssignment =
+      '/student/assessments/assignment/:id/submit';
   static const String studentAttendance = '/student/attendance';
   static const String studentSupport = '/student/support';
   static const String studentProfile = '/student/profile';
@@ -68,12 +69,12 @@ class RoutePaths {
   static const String orderHistory = '/student/orders';
   static const String orderDetails = '/student/orders/:id';
   static const String checkout = '/checkout';
-  
+
   // ── SMR (Student Management Rep) ──
   static const String smrDashboard = '/smr/dashboard';
   static const String smrStudents = '/smr/students';
   static const String smrBatches = '/smr/batches';
-  
+
   // ── Admin ──
   static const String adminDashboard = '/admin/dashboard';
   static const String adminAnalytics = '/admin/analytics';

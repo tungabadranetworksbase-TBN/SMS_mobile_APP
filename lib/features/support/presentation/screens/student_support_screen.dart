@@ -53,7 +53,10 @@ class StudentSupportScreen extends ConsumerWidget {
         onPressed: () => _showCreateTicketModal(context),
         backgroundColor: AppColors.primary,
         icon: const Icon(Icons.add_comment_rounded, color: Colors.white),
-        label: const Text('New Ticket', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        label: const Text(
+          'New Ticket',
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(AppSpacing.md),
@@ -79,14 +82,16 @@ class StudentSupportScreen extends ConsumerWidget {
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 itemCount: tickets.length,
-                separatorBuilder: (_, __) => const SizedBox(height: AppSpacing.sm),
+                separatorBuilder: (_, __) =>
+                    const SizedBox(height: AppSpacing.sm),
                 itemBuilder: (context, index) {
                   final ticket = tickets[index];
                   final status = ticket['status'] as String;
-                  
+
                   AppBadgeVariant badgeVariant;
                   if (status == 'open') {
-                    badgeVariant = AppBadgeVariant.error; // Red for open action needed
+                    badgeVariant =
+                        AppBadgeVariant.error; // Red for open action needed
                   } else if (status == 'resolved') {
                     badgeVariant = AppBadgeVariant.success;
                   } else {
@@ -131,7 +136,9 @@ class StudentSupportScreen extends ConsumerWidget {
                             ),
                             const SizedBox(width: AppSpacing.xs),
                             Text(
-                              DateFormat('MMM d, yyyy • h:mm a').format(ticket['date'] as DateTime),
+                              DateFormat(
+                                'MMM d, yyyy • h:mm a',
+                              ).format(ticket['date'] as DateTime),
                               style: AppTypography.labelSmall.copyWith(
                                 color: AppColors.textSecondary,
                               ),
@@ -156,7 +163,9 @@ class StudentSupportScreen extends ConsumerWidget {
       isScrollControlled: true,
       backgroundColor: Theme.of(context).colorScheme.surface,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(AppSpacing.s24)),
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(AppSpacing.s24),
+        ),
       ),
       builder: (context) {
         return Padding(
@@ -187,9 +196,18 @@ class StudentSupportScreen extends ConsumerWidget {
                   prefixIcon: Icon(Icons.category_outlined),
                 ),
                 items: const [
-                  DropdownMenuItem(value: 'technical', child: Text('Technical Issue')),
-                  DropdownMenuItem(value: 'billing', child: Text('Billing / Payment')),
-                  DropdownMenuItem(value: 'course', child: Text('Course Content')),
+                  DropdownMenuItem(
+                    value: 'technical',
+                    child: Text('Technical Issue'),
+                  ),
+                  DropdownMenuItem(
+                    value: 'billing',
+                    child: Text('Billing / Payment'),
+                  ),
+                  DropdownMenuItem(
+                    value: 'course',
+                    child: Text('Course Content'),
+                  ),
                   DropdownMenuItem(value: 'other', child: Text('Other')),
                 ],
                 onChanged: (value) {},

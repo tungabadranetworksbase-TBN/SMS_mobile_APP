@@ -7,13 +7,15 @@ class OrdersApiService {
   final ApiClient _apiClient;
 
   OrdersApiService({required ApiClient apiClient}) : _apiClient = apiClient;
-  
+
   Future<ApiResponse<List<OrderDto>>> getOrders() async {
     return _apiClient.get<List<OrderDto>>(
-      ApiEndpoints.orders,
+      ApiEndpoints.commerceOrders,
       fromJson: (json) {
         if (json is List) {
-          return json.map((e) => OrderDto.fromJson(e as Map<String, dynamic>)).toList();
+          return json
+              .map((e) => OrderDto.fromJson(e as Map<String, dynamic>))
+              .toList();
         }
         return [];
       },
@@ -21,7 +23,9 @@ class OrdersApiService {
   }
 
   Future<ApiResponse<OrderDto>> getOrderDetails(String id) async {
-    final path = ApiEndpoints.withParams(ApiEndpoints.orderDetail, {'id': id});
+    final path = ApiEndpoints.withParams(ApiEndpoints.commerceOrderDetail, {
+      'id': id,
+    });
     return _apiClient.get<OrderDto>(
       path,
       fromJson: (json) => OrderDto.fromJson(json as Map<String, dynamic>),

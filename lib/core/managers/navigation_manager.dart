@@ -25,13 +25,33 @@ class NavigationManager {
   BuildContext? get currentContext => navigatorKey.currentContext;
 
   /// Navigate to a named route.
-  void goNamed(String name, {Map<String, String> pathParameters = const {}, Map<String, dynamic> queryParameters = const {}, Object? extra}) {
-    router.goNamed(name, pathParameters: pathParameters, queryParameters: queryParameters, extra: extra);
+  void goNamed(
+    String name, {
+    Map<String, String> pathParameters = const {},
+    Map<String, dynamic> queryParameters = const {},
+    Object? extra,
+  }) {
+    router.goNamed(
+      name,
+      pathParameters: pathParameters,
+      queryParameters: queryParameters,
+      extra: extra,
+    );
   }
 
   /// Push a named route onto the stack.
-  void pushNamed(String name, {Map<String, String> pathParameters = const {}, Map<String, dynamic> queryParameters = const {}, Object? extra}) {
-    router.pushNamed(name, pathParameters: pathParameters, queryParameters: queryParameters, extra: extra);
+  void pushNamed(
+    String name, {
+    Map<String, String> pathParameters = const {},
+    Map<String, dynamic> queryParameters = const {},
+    Object? extra,
+  }) {
+    router.pushNamed(
+      name,
+      pathParameters: pathParameters,
+      queryParameters: queryParameters,
+      extra: extra,
+    );
   }
 
   /// Go back.

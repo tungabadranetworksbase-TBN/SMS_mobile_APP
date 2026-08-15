@@ -14,8 +14,8 @@ class AssessmentsRepository {
   AssessmentsRepository({
     required AssessmentsApiService apiService,
     required OfflineSyncManager offlineSyncManager,
-  })  : _apiService = apiService,
-        _offlineSyncManager = offlineSyncManager;
+  }) : _apiService = apiService,
+       _offlineSyncManager = offlineSyncManager;
 
   Future<AssessmentDto> getAssessment(String id) async {
     if (DemoMode().isActive) {
@@ -26,13 +26,18 @@ class AssessmentsRepository {
       if (response.success && response.data != null) {
         return response.data!;
       }
-      throw ApiException(message: response.message ?? 'Failed to load assessment');
+      throw ApiException(
+        message: response.message ?? 'Failed to load assessment',
+      );
     } catch (e) {
       rethrow;
     }
   }
 
-  Future<SubmissionDto?> submitAssessment(String id, Map<String, String> answers) async {
+  Future<SubmissionDto?> submitAssessment(
+    String id,
+    Map<String, String> answers,
+  ) async {
     if (DemoMode().isActive) {
       return DemoData.getSubmission(id, 'ASSESSMENT');
     }
@@ -65,7 +70,9 @@ class AssessmentsRepository {
       if (response.success && response.data != null) {
         return response.data!;
       }
-      throw ApiException(message: response.message ?? 'Failed to load assignment');
+      throw ApiException(
+        message: response.message ?? 'Failed to load assignment',
+      );
     } catch (e) {
       rethrow;
     }
@@ -80,10 +87,11 @@ class AssessmentsRepository {
       if (response.success && response.data != null) {
         return response.data!;
       }
-      throw ApiException(message: response.message ?? 'Failed to submit assignment');
+      throw ApiException(
+        message: response.message ?? 'Failed to submit assignment',
+      );
     } catch (e) {
       rethrow;
     }
   }
 }
-

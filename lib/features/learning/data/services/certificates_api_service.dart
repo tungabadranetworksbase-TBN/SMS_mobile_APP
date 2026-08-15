@@ -1,20 +1,17 @@
-import '../../../../core/config/api_endpoints.dart';
 import '../../../../core/network/api_client.dart';
 import '../../../../core/network/api_response.dart';
+import '../../../../core/network/unsupported_endpoint.dart';
 import '../models/certificate_dto.dart';
 
 class CertificatesApiService {
-  final ApiClient _apiClient;
+  /// Deliberately unstored: there is no certificates route to call yet. The
+  /// parameter stays so the DI registration and constructor shape match every
+  /// other API service, and so restoring the real call is a one-line change.
+  CertificatesApiService({required ApiClient apiClient});
 
-  CertificatesApiService({required ApiClient apiClient}) : _apiClient = apiClient;
-
+  /// The backend has no certificates module. The screen renders from demo
+  /// fixtures until one exists.
   Future<ApiResponse<List<CertificateDto>>> getCertificates() async {
-    return _apiClient.get<List<CertificateDto>>(
-      ApiEndpoints.certificates,
-      fromJson: (json) {
-        final list = json as List;
-        return list.map((e) => CertificateDto.fromJson(e as Map<String, dynamic>)).toList();
-      },
-    );
+    throw unsupportedEndpoint('Certificates');
   }
 }

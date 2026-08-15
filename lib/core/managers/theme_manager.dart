@@ -21,7 +21,9 @@ class ThemeManager extends ChangeNotifier {
 
   /// Load saved theme mode from preferences on startup.
   Future<void> init() async {
-    final savedThemeStr = _preferenceManager.getString(AppConstants.keyThemeMode);
+    final savedThemeStr = _preferenceManager.getString(
+      AppConstants.keyThemeMode,
+    );
     if (savedThemeStr != null) {
       _themeMode = ThemeMode.values.firstWhere(
         (e) => e.toString() == savedThemeStr,
@@ -39,13 +41,18 @@ class ThemeManager extends ChangeNotifier {
     if (_themeMode == mode) return;
 
     _themeMode = mode;
-    await _preferenceManager.setString(AppConstants.keyThemeMode, mode.toString());
+    await _preferenceManager.setString(
+      AppConstants.keyThemeMode,
+      mode.toString(),
+    );
     notifyListeners();
   }
 
   /// Toggle between light and dark mode.
   Future<void> toggleTheme() async {
-    final newMode = _themeMode == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
+    final newMode = _themeMode == ThemeMode.light
+        ? ThemeMode.dark
+        : ThemeMode.light;
     await setThemeMode(newMode);
   }
 }

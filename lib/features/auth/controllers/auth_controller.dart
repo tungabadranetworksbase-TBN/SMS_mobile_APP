@@ -10,9 +10,10 @@ final authRepositoryProvider = Provider<AuthRepository>((ref) {
 });
 
 /// Provider for the AuthController
-final authControllerProvider = StateNotifierProvider<AuthController, AsyncValue<void>>((ref) {
-  return AuthController(repository: ref.watch(authRepositoryProvider));
-});
+final authControllerProvider =
+    StateNotifierProvider<AuthController, AsyncValue<void>>((ref) {
+      return AuthController(repository: ref.watch(authRepositoryProvider));
+    });
 
 /// Tungabadra Networks LMS — Auth Controller
 ///
@@ -21,8 +22,8 @@ class AuthController extends StateNotifier<AsyncValue<void>> {
   final AuthRepository _repository;
 
   AuthController({required AuthRepository repository})
-      : _repository = repository,
-        super(const AsyncValue.data(null));
+    : _repository = repository,
+      super(const AsyncValue.data(null));
 
   Future<void> login(String email, String password) async {
     state = const AsyncValue.loading();
@@ -32,7 +33,10 @@ class AuthController extends StateNotifier<AsyncValue<void>> {
     } on ApiException catch (e) {
       state = AsyncValue.error(e, StackTrace.current);
     } catch (e) {
-      state = AsyncValue.error(const ApiException.unknown(), StackTrace.current);
+      state = AsyncValue.error(
+        const ApiException.unknown(),
+        StackTrace.current,
+      );
     }
   }
 
@@ -44,7 +48,10 @@ class AuthController extends StateNotifier<AsyncValue<void>> {
     } on ApiException catch (e) {
       state = AsyncValue.error(e, StackTrace.current);
     } catch (e) {
-      state = AsyncValue.error(const ApiException.unknown(), StackTrace.current);
+      state = AsyncValue.error(
+        const ApiException.unknown(),
+        StackTrace.current,
+      );
     }
   }
 
@@ -72,12 +79,19 @@ class AuthController extends StateNotifier<AsyncValue<void>> {
       state = AsyncValue.error(e, StackTrace.current);
       rethrow;
     } catch (e) {
-      state = AsyncValue.error(const ApiException.unknown(), StackTrace.current);
+      state = AsyncValue.error(
+        const ApiException.unknown(),
+        StackTrace.current,
+      );
       rethrow;
     }
   }
 
-  Future<void> resetPassword(String email, String otp, String newPassword) async {
+  Future<void> resetPassword(
+    String email,
+    String otp,
+    String newPassword,
+  ) async {
     state = const AsyncValue.loading();
     try {
       await _repository.resetPassword(email, otp, newPassword);
@@ -86,7 +100,10 @@ class AuthController extends StateNotifier<AsyncValue<void>> {
       state = AsyncValue.error(e, StackTrace.current);
       rethrow;
     } catch (e) {
-      state = AsyncValue.error(const ApiException.unknown(), StackTrace.current);
+      state = AsyncValue.error(
+        const ApiException.unknown(),
+        StackTrace.current,
+      );
       rethrow;
     }
   }

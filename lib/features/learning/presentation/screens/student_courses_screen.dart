@@ -36,12 +36,18 @@ class StudentCoursesScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildContent(BuildContext context, WidgetRef ref, List<CourseDto> courses) {
+  Widget _buildContent(
+    BuildContext context,
+    WidgetRef ref,
+    List<CourseDto> courses,
+  ) {
     if (courses.isEmpty) {
       return Center(
         child: Text(
           'You are not enrolled in any courses.',
-          style: AppTypography.bodyLarge.copyWith(color: AppColors.textSecondary),
+          style: AppTypography.bodyLarge.copyWith(
+            color: AppColors.textSecondary,
+          ),
         ),
       );
     }
@@ -58,7 +64,10 @@ class StudentCoursesScreen extends ConsumerWidget {
             course: course,
             onTap: () {
               // Navigate to course details
-              context.pushNamed(RouteNames.courseDetails, pathParameters: {'id': course.id});
+              context.pushNamed(
+                RouteNames.courseDetails,
+                pathParameters: {'id': course.id},
+              );
             },
           );
         },
@@ -90,7 +99,9 @@ class _CourseCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: AppColors.cardSurface,
           borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-          border: Border.all(color: AppColors.outlineVariant.withValues(alpha: 0.1)),
+          border: Border.all(
+            color: AppColors.outlineVariant.withValues(alpha: 0.1),
+          ),
         ),
         clipBehavior: Clip.antiAlias,
         child: Column(
@@ -104,7 +115,11 @@ class _CourseCard extends StatelessWidget {
               child: course.thumbnailUrl != null
                   ? Image.network(course.thumbnailUrl!, fit: BoxFit.cover)
                   : const Center(
-                      child: Icon(Icons.school_rounded, size: 48, color: AppColors.textMuted),
+                      child: Icon(
+                        Icons.school_rounded,
+                        size: 48,
+                        color: AppColors.textMuted,
+                      ),
                     ),
             ),
             Padding(

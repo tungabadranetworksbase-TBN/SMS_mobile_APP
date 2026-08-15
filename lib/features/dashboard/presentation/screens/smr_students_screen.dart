@@ -54,10 +54,14 @@ class _SmrStudentsScreenState extends ConsumerState<SmrStudentsScreen> {
                     child: Row(
                       children: [
                         CircleAvatar(
-                          backgroundColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
+                          backgroundColor: Theme.of(
+                            context,
+                          ).colorScheme.primary.withValues(alpha: 0.1),
                           child: Text(
                             'S${index + 1}',
-                            style: AppTypography.labelLarge.copyWith(color: Theme.of(context).colorScheme.primary),
+                            style: AppTypography.labelLarge.copyWith(
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
                           ),
                         ),
                         const SizedBox(width: AppSpacing.s16),
@@ -65,14 +69,22 @@ class _SmrStudentsScreenState extends ConsumerState<SmrStudentsScreen> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('Student ${index + 1}', style: AppTypography.titleMedium),
-                              Text('student${index + 1}@example.com', style: AppTypography.bodySmall),
+                              Text(
+                                'Student ${index + 1}',
+                                style: AppTypography.titleMedium,
+                              ),
+                              Text(
+                                'student${index + 1}@example.com',
+                                style: AppTypography.bodySmall,
+                              ),
                             ],
                           ),
                         ),
                         AppBadge(
                           text: index % 2 == 0 ? 'Active' : 'Pending',
-                          variant: index % 2 == 0 ? AppBadgeVariant.success : AppBadgeVariant.warning,
+                          variant: index % 2 == 0
+                              ? AppBadgeVariant.success
+                              : AppBadgeVariant.warning,
                         ),
                       ],
                     ),
@@ -92,7 +104,9 @@ class _SmrStudentsScreenState extends ConsumerState<SmrStudentsScreen> {
       isScrollControlled: true,
       backgroundColor: Theme.of(context).colorScheme.surface,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(AppSpacing.s24)),
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(AppSpacing.s24),
+        ),
       ),
       builder: (context) {
         return Padding(
@@ -137,7 +151,10 @@ class _SmrStudentsScreenState extends ConsumerState<SmrStudentsScreen> {
                 ),
                 items: const [
                   DropdownMenuItem(value: '1', child: Text('Cisco CCNA')),
-                  DropdownMenuItem(value: '2', child: Text('AWS Solutions Architect')),
+                  DropdownMenuItem(
+                    value: '2',
+                    child: Text('AWS Solutions Architect'),
+                  ),
                 ],
                 onChanged: (value) {},
               ),
@@ -147,7 +164,9 @@ class _SmrStudentsScreenState extends ConsumerState<SmrStudentsScreen> {
                 onPressed: () {
                   Navigator.pop(context);
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Student successfully created!')),
+                    const SnackBar(
+                      content: Text('Student successfully created!'),
+                    ),
                   );
                 },
               ),

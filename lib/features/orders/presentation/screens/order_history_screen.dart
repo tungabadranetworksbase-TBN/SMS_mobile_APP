@@ -30,11 +30,17 @@ class OrderHistoryScreen extends ConsumerWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(Icons.receipt_long_outlined, size: 64, color: AppColors.textSecondary),
+                  const Icon(
+                    Icons.receipt_long_outlined,
+                    size: 64,
+                    color: AppColors.textSecondary,
+                  ),
                   const SizedBox(height: AppSpacing.md),
                   Text(
                     'No orders found',
-                    style: AppTypography.titleLarge.copyWith(color: AppColors.textSecondary),
+                    style: AppTypography.titleLarge.copyWith(
+                      color: AppColors.textSecondary,
+                    ),
                   ),
                 ],
               ),
@@ -46,7 +52,8 @@ class OrderHistoryScreen extends ConsumerWidget {
             child: ListView.separated(
               padding: const EdgeInsets.all(AppSpacing.md),
               itemCount: orders.length,
-              separatorBuilder: (_, __) => const SizedBox(height: AppSpacing.sm),
+              separatorBuilder: (_, __) =>
+                  const SizedBox(height: AppSpacing.sm),
               itemBuilder: (context, index) {
                 final order = orders[index];
                 return _OrderCard(order: order);
@@ -90,7 +97,10 @@ class _OrderCard extends StatelessWidget {
     final currencyFormat = NumberFormat.simpleCurrency(name: order.currency);
 
     return InkWell(
-      onTap: () => context.pushNamed(RouteNames.orderDetails, pathParameters: {'id': order.id}),
+      onTap: () => context.pushNamed(
+        RouteNames.orderDetails,
+        pathParameters: {'id': order.id},
+      ),
       borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
       child: Container(
         padding: const EdgeInsets.all(AppSpacing.md),
@@ -107,10 +117,15 @@ class _OrderCard extends StatelessWidget {
               children: [
                 Text(
                   order.displayId,
-                  style: AppTypography.titleMedium.copyWith(color: AppColors.textPrimary),
+                  style: AppTypography.titleMedium.copyWith(
+                    color: AppColors.textPrimary,
+                  ),
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
                     color: _getStatusColor().withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(4),
@@ -131,11 +146,15 @@ class _OrderCard extends StatelessWidget {
               children: [
                 Text(
                   dateFormat.format(order.createdAt),
-                  style: AppTypography.bodyMedium.copyWith(color: AppColors.textSecondary),
+                  style: AppTypography.bodyMedium.copyWith(
+                    color: AppColors.textSecondary,
+                  ),
                 ),
                 Text(
                   currencyFormat.format(order.totalAmount),
-                  style: AppTypography.titleMedium.copyWith(color: AppColors.primaryLight),
+                  style: AppTypography.titleMedium.copyWith(
+                    color: AppColors.primaryLight,
+                  ),
                 ),
               ],
             ),

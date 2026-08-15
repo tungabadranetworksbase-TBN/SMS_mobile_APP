@@ -77,15 +77,11 @@ class FeedbackScreen extends StatelessWidget {
                 color: color.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
-              child: Icon(
-                _getIcon(),
-                size: AppSpacing.s80,
-                color: color,
-              ),
+              child: Icon(_getIcon(), size: AppSpacing.s80, color: color),
             ),
           ),
           const SizedBox(height: AppSpacing.s40),
-          
+
           // Title
           Text(
             title,
@@ -96,7 +92,7 @@ class FeedbackScreen extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: AppSpacing.s16),
-          
+
           // Message
           Text(
             message,
@@ -106,16 +102,20 @@ class FeedbackScreen extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
           const Spacer(),
-          
+
           // Actions
           AppButton(
             text: primaryButtonText,
-            variant: type == FeedbackType.error ? AppButtonVariant.primary : AppButtonVariant.primary, 
-            onPressed: onPrimaryPressed ?? () {
-              if (context.canPop()) {
-                context.pop();
-              }
-            },
+            variant: type == FeedbackType.error
+                ? AppButtonVariant.primary
+                : AppButtonVariant.primary,
+            onPressed:
+                onPrimaryPressed ??
+                () {
+                  if (context.canPop()) {
+                    context.pop();
+                  }
+                },
           ),
           if (secondaryButtonText != null) ...[
             const SizedBox(height: AppSpacing.s16),
@@ -138,7 +138,8 @@ class FeedbackScreen extends StatelessWidget {
       backgroundColor: colorScheme.surface,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
-        automaticallyImplyLeading: false, // Force users to use the action buttons
+        automaticallyImplyLeading:
+            false, // Force users to use the action buttons
       ),
       body: SafeArea(child: content),
     );

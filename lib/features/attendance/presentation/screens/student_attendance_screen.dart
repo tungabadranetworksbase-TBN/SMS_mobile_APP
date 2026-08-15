@@ -19,12 +19,30 @@ class StudentAttendanceScreen extends ConsumerWidget {
 
     final recentRecords = [
       {'date': DateTime.now(), 'status': 'present'},
-      {'date': DateTime.now().subtract(const Duration(days: 1)), 'status': 'present'},
-      {'date': DateTime.now().subtract(const Duration(days: 2)), 'status': 'absent'},
-      {'date': DateTime.now().subtract(const Duration(days: 3)), 'status': 'present'},
-      {'date': DateTime.now().subtract(const Duration(days: 4)), 'status': 'present'},
-      {'date': DateTime.now().subtract(const Duration(days: 7)), 'status': 'present'},
-      {'date': DateTime.now().subtract(const Duration(days: 8)), 'status': 'absent'},
+      {
+        'date': DateTime.now().subtract(const Duration(days: 1)),
+        'status': 'present',
+      },
+      {
+        'date': DateTime.now().subtract(const Duration(days: 2)),
+        'status': 'absent',
+      },
+      {
+        'date': DateTime.now().subtract(const Duration(days: 3)),
+        'status': 'present',
+      },
+      {
+        'date': DateTime.now().subtract(const Duration(days: 4)),
+        'status': 'present',
+      },
+      {
+        'date': DateTime.now().subtract(const Duration(days: 7)),
+        'status': 'present',
+      },
+      {
+        'date': DateTime.now().subtract(const Duration(days: 8)),
+        'status': 'absent',
+      },
     ];
 
     return Scaffold(

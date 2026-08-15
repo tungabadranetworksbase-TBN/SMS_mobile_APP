@@ -67,16 +67,25 @@ class _QuizPlayerScreenState extends ConsumerState<QuizPlayerScreen> {
         barrierDismissible: false,
         builder: (_) => AlertDialog(
           backgroundColor: AppColors.surface,
-          title: const Text('Submitted', style: TextStyle(color: AppColors.textPrimary)),
-          content: const Text('Your assessment has been submitted successfully.', style: TextStyle(color: AppColors.textSecondary)),
+          title: const Text(
+            'Submitted',
+            style: TextStyle(color: AppColors.textPrimary),
+          ),
+          content: const Text(
+            'Your assessment has been submitted successfully.',
+            style: TextStyle(color: AppColors.textSecondary),
+          ),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
                 Navigator.of(context).pop(); // Go back to course
               },
-              child: const Text('OK', style: TextStyle(color: AppColors.primaryLight)),
-            )
+              child: const Text(
+                'OK',
+                style: TextStyle(color: AppColors.primaryLight),
+              ),
+            ),
           ],
         ),
       );
@@ -94,16 +103,25 @@ class _QuizPlayerScreenState extends ConsumerState<QuizPlayerScreen> {
           barrierDismissible: false,
           builder: (_) => AlertDialog(
             backgroundColor: AppColors.surface,
-            title: const Text('Offline Mode', style: TextStyle(color: AppColors.textPrimary)),
-            content: const Text('You are offline. Your assessment has been saved and will sync automatically when you reconnect.', style: TextStyle(color: AppColors.textSecondary)),
+            title: const Text(
+              'Offline Mode',
+              style: TextStyle(color: AppColors.textPrimary),
+            ),
+            content: const Text(
+              'You are offline. Your assessment has been saved and will sync automatically when you reconnect.',
+              style: TextStyle(color: AppColors.textSecondary),
+            ),
             actions: [
               TextButton(
                 onPressed: () {
                   Navigator.of(context).pop();
                   Navigator.of(context).pop(); // Go back
                 },
-                child: const Text('OK', style: TextStyle(color: AppColors.primaryLight)),
-              )
+                child: const Text(
+                  'OK',
+                  style: TextStyle(color: AppColors.primaryLight),
+                ),
+              ),
             ],
           ),
         );
@@ -128,11 +146,17 @@ class _QuizPlayerScreenState extends ConsumerState<QuizPlayerScreen> {
               child: Center(
                 child: Row(
                   children: [
-                    const Icon(Icons.timer_outlined, color: AppColors.primaryLight, size: 20),
+                    const Icon(
+                      Icons.timer_outlined,
+                      color: AppColors.primaryLight,
+                      size: 20,
+                    ),
                     const SizedBox(width: 4),
                     Text(
                       _formatTime(_secondsRemaining),
-                      style: AppTypography.labelLarge.copyWith(color: AppColors.primaryLight),
+                      style: AppTypography.labelLarge.copyWith(
+                        color: AppColors.primaryLight,
+                      ),
                     ),
                   ],
                 ),
@@ -143,7 +167,12 @@ class _QuizPlayerScreenState extends ConsumerState<QuizPlayerScreen> {
       body: asyncAssessment.when(
         data: (assessment) {
           if (assessment.questions.isEmpty) {
-            return const Center(child: Text('No questions available.', style: TextStyle(color: AppColors.textSecondary)));
+            return const Center(
+              child: Text(
+                'No questions available.',
+                style: TextStyle(color: AppColors.textSecondary),
+              ),
+            );
           }
 
           // Start timer if not started
@@ -161,19 +190,25 @@ class _QuizPlayerScreenState extends ConsumerState<QuizPlayerScreen> {
                 LinearProgressIndicator(
                   value: (_currentIndex + 1) / assessment.questions.length,
                   backgroundColor: AppColors.surfaceVariant,
-                  valueColor: const AlwaysStoppedAnimation<Color>(AppColors.primary),
+                  valueColor: const AlwaysStoppedAnimation<Color>(
+                    AppColors.primary,
+                  ),
                 ),
                 const SizedBox(height: AppSpacing.lg),
 
                 // Question Text
                 Text(
                   'Question ${_currentIndex + 1} of ${assessment.questions.length}',
-                  style: AppTypography.labelLarge.copyWith(color: AppColors.textSecondary),
+                  style: AppTypography.labelLarge.copyWith(
+                    color: AppColors.textSecondary,
+                  ),
                 ),
                 const SizedBox(height: AppSpacing.md),
                 Text(
                   question.text,
-                  style: AppTypography.titleLarge.copyWith(color: AppColors.textPrimary),
+                  style: AppTypography.titleLarge.copyWith(
+                    color: AppColors.textPrimary,
+                  ),
                 ),
                 const SizedBox(height: AppSpacing.xl),
 
@@ -181,7 +216,8 @@ class _QuizPlayerScreenState extends ConsumerState<QuizPlayerScreen> {
                 Expanded(
                   child: ListView.separated(
                     itemCount: question.options.length,
-                    separatorBuilder: (_, __) => const SizedBox(height: AppSpacing.sm),
+                    separatorBuilder: (_, __) =>
+                        const SizedBox(height: AppSpacing.sm),
                     itemBuilder: (context, index) {
                       final option = question.options[index];
                       final isSelected = _answers[question.id] == option;
@@ -192,29 +228,43 @@ class _QuizPlayerScreenState extends ConsumerState<QuizPlayerScreen> {
                             _answers[question.id] = option;
                           });
                         },
-                        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                        borderRadius: BorderRadius.circular(
+                          AppSpacing.radiusMd,
+                        ),
                         child: Container(
                           padding: const EdgeInsets.all(AppSpacing.md),
                           decoration: BoxDecoration(
-                            color: isSelected ? AppColors.primary.withValues(alpha: 0.1) : AppColors.surface,
+                            color: isSelected
+                                ? AppColors.primary.withValues(alpha: 0.1)
+                                : AppColors.surface,
                             border: Border.all(
-                              color: isSelected ? AppColors.primary : AppColors.border,
+                              color: isSelected
+                                  ? AppColors.primary
+                                  : AppColors.border,
                               width: 1,
                             ),
-                            borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                            borderRadius: BorderRadius.circular(
+                              AppSpacing.radiusMd,
+                            ),
                           ),
                           child: Row(
                             children: [
                               Icon(
-                                isSelected ? Icons.radio_button_checked : Icons.radio_button_unchecked,
-                                color: isSelected ? AppColors.primary : AppColors.textSecondary,
+                                isSelected
+                                    ? Icons.radio_button_checked
+                                    : Icons.radio_button_unchecked,
+                                color: isSelected
+                                    ? AppColors.primary
+                                    : AppColors.textSecondary,
                               ),
                               const SizedBox(width: AppSpacing.md),
                               Expanded(
                                 child: Text(
                                   option,
                                   style: AppTypography.bodyLarge.copyWith(
-                                    color: isSelected ? AppColors.primaryLight : AppColors.textPrimary,
+                                    color: isSelected
+                                        ? AppColors.primaryLight
+                                        : AppColors.textPrimary,
                                   ),
                                 ),
                               ),

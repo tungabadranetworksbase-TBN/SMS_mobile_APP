@@ -50,12 +50,12 @@ class AdminStatsDto {
   Map<String, dynamic> toJson() => _$AdminStatsDtoToJson(this);
 
   factory AdminStatsDto.empty() => AdminStatsDto(
-        totalUsers: 0,
-        totalRevenue: 0,
-        activeCourses: 0,
-        pendingApprovals: 0,
-        serverUptime: 0.0,
-      );
+    totalUsers: 0,
+    totalRevenue: 0,
+    activeCourses: 0,
+    pendingApprovals: 0,
+    serverUptime: 0.0,
+  );
 }
 
 @JsonSerializable()
@@ -63,10 +63,7 @@ class RevenueDataDto {
   final String month;
   final int amount;
 
-  RevenueDataDto({
-    required this.month,
-    required this.amount,
-  });
+  RevenueDataDto({required this.month, required this.amount});
 
   factory RevenueDataDto.fromJson(Map<String, dynamic> json) =>
       _$RevenueDataDtoFromJson(json);

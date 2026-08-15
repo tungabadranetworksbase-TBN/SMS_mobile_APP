@@ -23,14 +23,16 @@ class StudentDashboardScreen extends ConsumerWidget {
       backgroundColor: AppColors.background,
       body: SafeArea(
         child: RefreshIndicator(
-          onRefresh: () => ref.read(studentDashboardProvider.notifier).refresh(),
+          onRefresh: () =>
+              ref.read(studentDashboardProvider.notifier).refresh(),
           color: AppColors.primary,
           child: dashboardState.when(
             data: (data) => _buildContent(context, user, data),
             loading: () => _buildLoading(),
             error: (error, _) => ErrorStateView(
               message: error.toString(),
-              onRetry: () => ref.read(studentDashboardProvider.notifier).refresh(),
+              onRetry: () =>
+                  ref.read(studentDashboardProvider.notifier).refresh(),
             ),
           ),
         ),
@@ -38,7 +40,11 @@ class StudentDashboardScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildContent(BuildContext context, SessionManager user, StudentDashboardDto data) {
+  Widget _buildContent(
+    BuildContext context,
+    SessionManager user,
+    StudentDashboardDto data,
+  ) {
     return SingleChildScrollView(
       physics: const AlwaysScrollableScrollPhysics(),
       padding: const EdgeInsets.all(AppSpacing.md),
@@ -86,7 +92,9 @@ class StudentDashboardScreen extends ConsumerWidget {
         CircleAvatar(
           radius: 24,
           backgroundColor: AppColors.surfaceContainer,
-          backgroundImage: user.userAvatar != null ? NetworkImage(user.userAvatar!) : null,
+          backgroundImage: user.userAvatar != null
+              ? NetworkImage(user.userAvatar!)
+              : null,
           child: user.userAvatar == null
               ? const Icon(Icons.person_rounded, color: AppColors.textMuted)
               : null,
@@ -122,9 +130,7 @@ class StudentDashboardScreen extends ConsumerWidget {
   Widget _buildSectionTitle(String title) {
     return Text(
       title,
-      style: AppTypography.titleLarge.copyWith(
-        color: AppColors.textPrimary,
-      ),
+      style: AppTypography.titleLarge.copyWith(color: AppColors.textPrimary),
     );
   }
 
@@ -132,7 +138,7 @@ class StudentDashboardScreen extends ConsumerWidget {
     if (batches.isEmpty) {
       return const _EmptyCard(message: 'No active courses at the moment.');
     }
-    
+
     return ListView.separated(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
@@ -203,7 +209,11 @@ class StudentDashboardScreen extends ConsumerWidget {
                   color: AppColors.surfaceContainer,
                   borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
                 ),
-                child: const Icon(Icons.assignment_outlined, color: AppColors.primary, size: 24),
+                child: const Icon(
+                  Icons.assignment_outlined,
+                  color: AppColors.primary,
+                  size: 24,
+                ),
               ),
               const SizedBox(width: AppSpacing.md),
               Expanded(
@@ -226,7 +236,10 @@ class StudentDashboardScreen extends ConsumerWidget {
                   ],
                 ),
               ),
-              const Icon(Icons.chevron_right_rounded, color: AppColors.textMuted),
+              const Icon(
+                Icons.chevron_right_rounded,
+                color: AppColors.textMuted,
+              ),
             ],
           ),
         );
@@ -255,9 +268,21 @@ class StudentDashboardScreen extends ConsumerWidget {
         SizedBox(height: AppSpacing.xl),
         Row(
           children: [
-            Expanded(child: ShimmerBox(width: double.infinity, height: 100, borderRadius: AppSpacing.radiusLg)),
+            Expanded(
+              child: ShimmerBox(
+                width: double.infinity,
+                height: 100,
+                borderRadius: AppSpacing.radiusLg,
+              ),
+            ),
             SizedBox(width: AppSpacing.md),
-            Expanded(child: ShimmerBox(width: double.infinity, height: 100, borderRadius: AppSpacing.radiusLg)),
+            Expanded(
+              child: ShimmerBox(
+                width: double.infinity,
+                height: 100,
+                borderRadius: AppSpacing.radiusLg,
+              ),
+            ),
           ],
         ),
         SizedBox(height: AppSpacing.xl),
@@ -337,7 +362,9 @@ class _EmptyCard extends StatelessWidget {
       child: Center(
         child: Text(
           message,
-          style: AppTypography.bodyMedium.copyWith(color: AppColors.textSecondary),
+          style: AppTypography.bodyMedium.copyWith(
+            color: AppColors.textSecondary,
+          ),
         ),
       ),
     );

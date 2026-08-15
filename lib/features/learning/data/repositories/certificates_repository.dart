@@ -6,7 +6,7 @@ class CertificatesRepository {
   final CertificatesApiService _apiService;
 
   CertificatesRepository({required CertificatesApiService apiService})
-      : _apiService = apiService;
+    : _apiService = apiService;
 
   Future<List<CertificateDto>> getCertificates() async {
     if (DemoMode().isActive) {
@@ -23,4 +23,3 @@ class CertificatesRepository {
     }
   }
 }
-

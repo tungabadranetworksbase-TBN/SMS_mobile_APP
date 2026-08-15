@@ -70,11 +70,7 @@ class FeedbackDialog extends StatelessWidget {
                   color: color.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
-                child: Icon(
-                  _getIcon(),
-                  size: AppSpacing.s48,
-                  color: color,
-                ),
+                child: Icon(_getIcon(), size: AppSpacing.s48, color: color),
               ),
             ),
             const SizedBox(height: AppSpacing.s24),

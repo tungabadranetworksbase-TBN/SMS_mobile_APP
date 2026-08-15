@@ -13,10 +13,30 @@ class SmrShell extends ConsumerWidget {
   const SmrShell({super.key, required this.child});
 
   static const _tabs = [
-    _TabItem(icon: Icons.dashboard_outlined, activeIcon: Icons.dashboard_rounded, label: 'Dashboard', route: RoutePaths.smrDashboard),
-    _TabItem(icon: Icons.people_outline_rounded, activeIcon: Icons.people_rounded, label: 'Students', route: RoutePaths.smrStudents),
-    _TabItem(icon: Icons.class_outlined, activeIcon: Icons.class_rounded, label: 'Batches', route: RoutePaths.smrBatches),
-    _TabItem(icon: Icons.person_outline_rounded, activeIcon: Icons.person_rounded, label: 'Profile', route: RoutePaths.studentProfile),
+    _TabItem(
+      icon: Icons.dashboard_outlined,
+      activeIcon: Icons.dashboard_rounded,
+      label: 'Dashboard',
+      route: RoutePaths.smrDashboard,
+    ),
+    _TabItem(
+      icon: Icons.people_outline_rounded,
+      activeIcon: Icons.people_rounded,
+      label: 'Students',
+      route: RoutePaths.smrStudents,
+    ),
+    _TabItem(
+      icon: Icons.class_outlined,
+      activeIcon: Icons.class_rounded,
+      label: 'Batches',
+      route: RoutePaths.smrBatches,
+    ),
+    _TabItem(
+      icon: Icons.person_outline_rounded,
+      activeIcon: Icons.person_rounded,
+      label: 'Profile',
+      route: RoutePaths.studentProfile,
+    ),
   ];
 
   /// Derive the active tab from the current location so that deep links,

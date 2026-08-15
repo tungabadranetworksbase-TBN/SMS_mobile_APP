@@ -8,16 +8,23 @@ final certificatesRepositoryProvider = Provider<CertificatesRepository>((ref) {
   return locator<CertificatesRepository>();
 });
 
-final certificatesProvider = StateNotifierProvider<CertificatesController, AsyncValue<List<CertificateDto>>>((ref) {
-  return CertificatesController(repository: ref.watch(certificatesRepositoryProvider));
-});
+final certificatesProvider =
+    StateNotifierProvider<
+      CertificatesController,
+      AsyncValue<List<CertificateDto>>
+    >((ref) {
+      return CertificatesController(
+        repository: ref.watch(certificatesRepositoryProvider),
+      );
+    });
 
-class CertificatesController extends StateNotifier<AsyncValue<List<CertificateDto>>> {
+class CertificatesController
+    extends StateNotifier<AsyncValue<List<CertificateDto>>> {
   final CertificatesRepository _repository;
 
   CertificatesController({required CertificatesRepository repository})
-      : _repository = repository,
-        super(const AsyncValue.loading()) {
+    : _repository = repository,
+      super(const AsyncValue.loading()) {
     fetchCertificates();
   }
 

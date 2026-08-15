@@ -35,11 +35,7 @@ class EmptyStateView extends StatelessWidget {
               color: AppColors.surfaceContainer,
               shape: BoxShape.circle,
             ),
-            child: Icon(
-              icon,
-              size: 48,
-              color: AppColors.textMuted,
-            ),
+            child: Icon(icon, size: 48, color: AppColors.textMuted),
           ),
           const SizedBox(height: AppSpacing.xl),
           Text(
@@ -59,10 +55,7 @@ class EmptyStateView extends StatelessWidget {
           ),
           if (buttonText != null && onAction != null) ...[
             const SizedBox(height: AppSpacing.xxl),
-            GradientButton(
-              text: buttonText!,
-              onPressed: onAction,
-            ),
+            GradientButton(text: buttonText!, onPressed: onAction),
           ],
         ],
       ),
