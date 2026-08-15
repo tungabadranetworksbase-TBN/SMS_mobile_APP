@@ -3,11 +3,12 @@ import 'package:flutter/foundation.dart';
 
 import '../config/app_config.dart';
 import '../storage/secure_storage.dart';
+import 'api_envelope.dart';
 import 'api_exception.dart';
 import 'api_response.dart';
 import 'network_info.dart';
 import 'interceptors/auth_interceptor.dart';
-import 'interceptors/refresh_interceptor.dart';
+import 'interceptors/token_capture_interceptor.dart';
 import 'interceptors/retry_interceptor.dart';
 import 'interceptors/logging_interceptor.dart';
 import 'interceptors/connectivity_interceptor.dart';
@@ -19,7 +20,7 @@ import 'interceptors/connectivity_interceptor.dart';
 /// with proper error handling and typed responses.
 ///
 /// Interceptor order:
-///   Connectivity → Auth → Logging → [Request] → Retry → Refresh
+///   Connectivity → Auth → TokenCapture → Logging → [Request] → Retry
 class ApiClient {
   late final Dio _dio;
   final AppConfig _config;
@@ -44,18 +45,20 @@ class ApiClient {
     );
 
     // ── Interceptor Chain ──
+    // Connectivity → Auth → TokenCapture → Logging → [Request] → Retry
+    //
+    // RefreshInterceptor is deliberately absent: Better Auth exposes no
+    // refresh endpoint. It rolls the session via `updateAge` inside
+    // `expiresIn`, so a 401 means "sign in again", not "refresh".
     _dio.interceptors.addAll([
       ConnectivityInterceptor(networkInfo: networkInfo),
       AuthInterceptor(secureStorage: secureStorage),
+      TokenCaptureInterceptor(secureStorage: secureStorage),
       if (kDebugMode) LoggingInterceptor(),
       RetryInterceptor(
         dio: _dio,
         maxRetries: _config.maxRetries,
         baseDelay: _config.retryDelay,
-      ),
-      RefreshInterceptor(
-        dio: _dio,
-        secureStorage: secureStorage,
       ),
     ]);
   }
@@ -103,10 +106,7 @@ class ApiClient {
     dynamic data,
     T Function(dynamic)? fromJson,
   }) async {
-    return _request(
-      () => _dio.put(path, data: data),
-      fromJson: fromJson,
-    );
+    return _request(() => _dio.put(path, data: data), fromJson: fromJson);
   }
 
   /// PATCH request.
@@ -115,10 +115,7 @@ class ApiClient {
     dynamic data,
     T Function(dynamic)? fromJson,
   }) async {
-    return _request(
-      () => _dio.patch(path, data: data),
-      fromJson: fromJson,
-    );
+    return _request(() => _dio.patch(path, data: data), fromJson: fromJson);
   }
 
   /// DELETE request.
@@ -127,10 +124,7 @@ class ApiClient {
     dynamic data,
     T Function(dynamic)? fromJson,
   }) async {
-    return _request(
-      () => _dio.delete(path, data: data),
-      fromJson: fromJson,
-    );
+    return _request(() => _dio.delete(path, data: data), fromJson: fromJson);
   }
 
   /// Multipart file upload.
@@ -157,11 +151,7 @@ class ApiClient {
     String savePath, {
     void Function(int, int)? onReceiveProgress,
   }) async {
-    await _dio.download(
-      url,
-      savePath,
-      onReceiveProgress: onReceiveProgress,
-    );
+    await _dio.download(url, savePath, onReceiveProgress: onReceiveProgress);
   }
 
   // ══════════════════════════════════════════════
@@ -174,21 +164,28 @@ class ApiClient {
   }) async {
     try {
       final response = await request();
-      final responseData = response.data;
+      final body = response.data;
+      final payload = ApiEnvelope.unwrap(body);
 
       T? data;
-      if (fromJson != null && responseData != null) {
-        data = fromJson(responseData);
-      } else if (responseData is T) {
-        data = responseData;
+      if (fromJson != null && payload != null) {
+        data = fromJson(payload);
+      } else if (payload is T) {
+        data = payload;
       }
 
-      // Check for pagination metadata
+      // NOTE: the backend's `ok(res, data)` emits only `{success, data}` — it
+      // never adds an envelope-level `pagination` key. Paged endpoints return
+      // their own shape INSIDE `data`, and that shape is not uniform across
+      // modules. Resolving it per endpoint is Stage D (spec §6.4); this read
+      // stays as a no-op so the ApiResponse contract does not change under
+      // callers mid-stage.
       PaginationMeta? pagination;
-      if (responseData is Map<String, dynamic> &&
-          responseData.containsKey('pagination')) {
-        pagination =
-            PaginationMeta.fromJson(responseData['pagination'] as Map<String, dynamic>);
+      if (body is Map<String, dynamic> &&
+          body['pagination'] is Map<String, dynamic>) {
+        pagination = PaginationMeta.fromJson(
+          body['pagination'] as Map<String, dynamic>,
+        );
       }
 
       return ApiResponse.success(
@@ -198,13 +195,15 @@ class ApiClient {
       );
     } on DioException catch (e) {
       throw _mapDioException(e);
+    } on ApiException {
+      rethrow;
     } catch (e) {
       throw const ApiException.unknown();
     }
   }
 
   ApiException _mapDioException(DioException e) {
-    // If the error is already an ApiException (from connectivity interceptor)
+    // Already typed by the connectivity interceptor.
     if (e.error is ApiException) return e.error as ApiException;
 
     switch (e.type) {
@@ -215,11 +214,10 @@ class ApiClient {
       case DioExceptionType.connectionError:
         return const ApiException.network();
       case DioExceptionType.badResponse:
-        final statusCode = e.response?.statusCode ?? 0;
-        final body = e.response?.data is Map
-            ? (e.response!.data as Map)['message']?.toString()
-            : e.response?.data?.toString();
-        return ApiException.fromStatusCode(statusCode, body: body);
+        return ApiEnvelope.toException(
+          e.response?.statusCode ?? 0,
+          e.response?.data,
+        );
       default:
         return const ApiException.unknown();
     }
