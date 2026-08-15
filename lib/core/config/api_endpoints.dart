@@ -1,7 +1,11 @@
 /// Tungabadra Networks LMS — Centralized API Endpoint Constants
 ///
-/// All Express/TypeScript backend endpoint paths in one place.
-/// Pattern: No magic strings scattered across the codebase.
+/// Every path is verified against the backend route inventory
+/// (`lms-full-stack/server/src/app.ts` and each module's `*.routes.ts`).
+/// Paths are relative to a base URL that already ends in `/api`, so none of
+/// them carry that prefix.
+///
+/// Pattern: no magic strings scattered across the codebase.
 class ApiEndpoints {
   ApiEndpoints._();
 
@@ -11,128 +15,187 @@ class ApiEndpoints {
   static const String serverHealth = '/health';
 
   // ══════════════════════════════════════════════
-  // AUTH (Better Auth)
+  // AUTH (Better Auth — no {success,data} envelope)
   // ══════════════════════════════════════════════
   static const String signIn = '/auth/sign-in/email';
   static const String signUp = '/auth/sign-up/email';
   static const String signOut = '/auth/sign-out';
   static const String session = '/auth/get-session';
-  static const String forgotPassword = '/auth/forgot-password';
-  static const String resetPassword = '/auth/reset-password';
-  static const String refreshSession = '/auth/session/refresh';
+  static const String changePassword = '/auth/change-password';
+
+  /// Email-OTP plugin. Verification is required before a first sign-in.
+  static const String sendVerificationOtp =
+      '/auth/email-otp/send-verification-otp';
+  static const String verifyEmailOtp = '/auth/email-otp/verify-email';
+  static const String resetPasswordOtp = '/auth/email-otp/reset-password';
 
   // ══════════════════════════════════════════════
-  // USER & PROFILE
+  // IDENTITY & CAPABILITIES
   // ══════════════════════════════════════════════
-  static const String profile = '/users/profile';
-  static const String updateProfile = '/users/profile/update';
-  static const String uploadAvatar = '/users/profile/avatar';
-  static const String changePassword = '/users/change-password';
+
+  /// `{ user, permissions[], modules{} }` — the single source of navigation.
+  static const String me = '/users/me';
+
+  /// Module + permission-key catalogue. Behind `requireStaff`.
+  static const String staffRegistry = '/staff/registry';
 
   // ══════════════════════════════════════════════
-  // DASHBOARD
+  // STUDENT PORTAL
   // ══════════════════════════════════════════════
-  static const String studentDashboard = '/dashboard/student';
-  static const String smrDashboard = '/dashboard/smr';
-  static const String adminDashboard = '/dashboard/admin';
+  static const String studentProfile = '/student/profile';
+  static const String studentDashboardV1 = '/student/dashboard';
+  static const String studentOverview = '/student/overview';
+  static const String enrolledCourses = '/student/enrolled-courses';
+  static const String studentCourseProgress = '/student/courses/{id}/progress';
+  static const String purchases = '/student/purchases';
+  static const String registrationStatus = '/student/registration/status';
+  static const String registrationReceipt = '/student/registration/receipt';
 
   // ══════════════════════════════════════════════
-  // COURSES & LEARNING
+  // LEARNING
   // ══════════════════════════════════════════════
-  static const String courses = '/courses';
-  static const String courseDetail = '/courses/{id}';
-  static const String courseLessons = '/courses/{id}/lessons';
-  static const String lessonDetail = '/lessons/{id}';
-  static const String courseProgress = '/courses/{id}/progress';
-  static const String updateProgress = '/courses/{id}/progress/update';
+  static const String courseContent = '/learning/courses/{id}/content';
+  static const String fileDownload = '/learning/files/{id}/download';
+  static const String assessments = '/learning/assessments';
+  static const String startAssessment = '/learning/assessments/{id}/start';
+  static const String assessmentResult = '/learning/assessments/{id}/result';
+  static const String quizzes = '/learning/quizzes';
+  static const String quizDetail = '/learning/quizzes/{id}';
+  static const String quizResults = '/learning/quizzes/{id}/results';
 
   // ══════════════════════════════════════════════
-  // BATCHES & ENROLLMENTS
+  // BATCHES
   // ══════════════════════════════════════════════
+  static const String myBatches = '/batches/mine';
+  static const String myClasses = '/batches/my-classes';
+  static const String availableBatches = '/batches/available';
   static const String batches = '/batches';
   static const String batchDetail = '/batches/{id}';
-  static const String enrollments = '/enrollments';
-  static const String myEnrollments = '/enrollments/mine';
-
-  // ══════════════════════════════════════════════
-  // ASSIGNMENTS & ASSESSMENTS
-  // ══════════════════════════════════════════════
-  static const String assignments = '/assignments';
-  static const String assignmentDetail = '/assignments/{id}';
-  static const String submitAssignment = '/assignments/{id}/submit';
-  static const String assessments = '/assessments';
-  static const String assessmentDetail = '/assessments/{id}';
-  static const String submitAssessment = '/assessments/{id}/submit';
-
-  // ══════════════════════════════════════════════
-  // ATTENDANCE
-  // ══════════════════════════════════════════════
-  static const String attendance = '/attendance';
-  static const String myAttendance = '/attendance/mine';
-  static const String markAttendance = '/attendance/mark';
-
-  // ══════════════════════════════════════════════
-  // ORDERS & PAYMENTS
-  // ══════════════════════════════════════════════
-  static const String orders = '/orders';
-  static const String orderDetail = '/orders/{id}';
-  static const String createOrder = '/orders/create';
-  static const String verifyPayment = '/orders/verify-payment';
-  static const String paymentHistory = '/payments/history';
-
-  // ══════════════════════════════════════════════
-  // CERTIFICATES
-  // ══════════════════════════════════════════════
-  static const String certificates = '/certificates';
-  static const String certificateDetail = '/certificates/{id}';
-  static const String downloadCertificate = '/certificates/{id}/download';
+  static const String batchStats = '/batches/{id}/stats';
+  static const String joinBatch = '/batches/{id}/join';
 
   // ══════════════════════════════════════════════
   // NOTIFICATIONS
   // ══════════════════════════════════════════════
   static const String notifications = '/notifications';
-  static const String unreadNotifications = '/notifications/unread';
+  static const String unreadCount = '/notifications/unread-count';
   static const String markNotificationRead = '/notifications/{id}/read';
-  static const String markAllRead = '/notifications/mark-all-read';
-  static const String notificationCount = '/notifications/count';
+  static const String markAllNotificationsRead = '/notifications/read-all';
 
   // ══════════════════════════════════════════════
-  // SUPPORT & TICKETS
+  // COMMERCE
   // ══════════════════════════════════════════════
-  static const String tickets = '/support/tickets';
-  static const String ticketDetail = '/support/tickets/{id}';
-  static const String createTicket = '/support/tickets/create';
-  static const String ticketMessages = '/support/tickets/{id}/messages';
-  static const String sendMessage = '/support/tickets/{id}/messages/send';
+  static const String cart = '/commerce/cart';
+  static const String cartItems = '/commerce/cart/items';
+  static const String quote = '/commerce/quote';
+  static const String checkout = '/commerce/checkout';
+  static const String checkoutStatus = '/commerce/checkout/status';
+  static const String paymentOptions = '/commerce/payment-options';
+  static const String commerceOrders = '/commerce/orders';
+  static const String commerceOrderDetail = '/commerce/orders/{id}';
 
   // ══════════════════════════════════════════════
-  // STUDENT MANAGEMENT (SMR/Admin)
+  // STAFF — STUDENTS
   // ══════════════════════════════════════════════
   static const String students = '/students';
   static const String studentDetail = '/students/{id}';
-  static const String studentSearch = '/students/search';
+  static const String studentMaster = '/students/master';
+  static const String studentRoster = '/students/roster';
 
   // ══════════════════════════════════════════════
-  // CRM (Admin)
+  // STAFF — INSIGHTS
+  // ══════════════════════════════════════════════
+  static const String insightsDashboard = '/insights/dashboard';
+  static const String analyticsCourses = '/insights/analytics/courses';
+  static const String analyticsPayments = '/insights/analytics/payments';
+  static const String analyticsCrm = '/insights/analytics/crm';
+  static const String analyticsStudentCohorts =
+      '/insights/analytics/batch-performance';
+
+  // ══════════════════════════════════════════════
+  // STAFF — CRM (v1.1)
   // ══════════════════════════════════════════════
   static const String leads = '/crm/leads';
   static const String leadDetail = '/crm/leads/{id}';
-  static const String followUps = '/crm/follow-ups';
+  static const String crmAnalytics = '/crm/analytics';
 
   // ══════════════════════════════════════════════
-  // ANALYTICS (Admin)
+  // STAFF — FINANCE (v1.1)
   // ══════════════════════════════════════════════
-  static const String analyticsOverview = '/analytics/overview';
-  static const String analyticsRevenue = '/analytics/revenue';
-  static const String analyticsStudents = '/analytics/students';
+  static const String financeOrders = '/finance/orders';
+  static const String financeOrderDetail = '/finance/orders/{id}';
+  static const String revenueReport = '/finance/reports/revenue';
+  static const String invoicePdf = '/finance/invoices/{id}/pdf';
 
-  // ══════════════════════════════════════════════
-  // FILE STORAGE (MinIO Presigned URLs)
-  // ══════════════════════════════════════════════
-  static const String uploadUrl = '/files/upload-url';
-  static const String downloadUrl = '/files/download-url';
+  /// Every declared endpoint, for hygiene tests.
+  static const List<String> all = [
+    serverHealth,
+    signIn,
+    signUp,
+    signOut,
+    session,
+    changePassword,
+    sendVerificationOtp,
+    verifyEmailOtp,
+    resetPasswordOtp,
+    me,
+    staffRegistry,
+    studentProfile,
+    studentDashboardV1,
+    studentOverview,
+    enrolledCourses,
+    studentCourseProgress,
+    purchases,
+    registrationStatus,
+    registrationReceipt,
+    courseContent,
+    fileDownload,
+    assessments,
+    startAssessment,
+    assessmentResult,
+    quizzes,
+    quizDetail,
+    quizResults,
+    myBatches,
+    myClasses,
+    availableBatches,
+    batches,
+    batchDetail,
+    batchStats,
+    joinBatch,
+    notifications,
+    unreadCount,
+    markNotificationRead,
+    markAllNotificationsRead,
+    cart,
+    cartItems,
+    quote,
+    checkout,
+    checkoutStatus,
+    paymentOptions,
+    commerceOrders,
+    commerceOrderDetail,
+    students,
+    studentDetail,
+    studentMaster,
+    studentRoster,
+    insightsDashboard,
+    analyticsCourses,
+    analyticsPayments,
+    analyticsCrm,
+    analyticsStudentCohorts,
+    leads,
+    leadDetail,
+    crmAnalytics,
+    financeOrders,
+    financeOrderDetail,
+    revenueReport,
+    invoicePdf,
+  ];
 
-  /// Helper: replace path parameters like {id} with actual values.
+  /// Replaces `{name}` placeholders. An unsupplied placeholder is left intact
+  /// so the failure is loud at the HTTP layer rather than a silently
+  /// malformed URL.
   static String withParams(String endpoint, Map<String, String> params) {
     var result = endpoint;
     for (final entry in params.entries) {
