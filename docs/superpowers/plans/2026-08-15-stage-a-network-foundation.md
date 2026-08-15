@@ -1610,23 +1610,41 @@ git commit -m "feat(auth): add UsersApiService.fetchMe as the capability entry p
 
 ### Expected breakage — read before starting
 
+Baseline before Stage A: `flutter test` is green, 9 tests.
+
 From Task 6 onward the project **does not fully compile**, by design. Removing
-endpoint constants for routes that never existed breaks the feature API
-services that referenced them, and `test/widget_test.dart` (which builds the
-whole app) breaks with them.
+endpoint constants for routes that never existed breaks every caller. Verified
+list — these seven services reference removed constants:
+
+```
+lib/features/auth/data/services/auth_api_service.dart
+lib/features/dashboard/data/services/dashboard_api_service.dart
+lib/features/notifications/data/services/notifications_api_service.dart
+lib/features/orders/data/services/orders_api_service.dart
+lib/features/profile/data/services/profile_api_service.dart
+lib/features/assessments/data/services/assessments_api_service.dart
+lib/features/learning/data/services/certificates_api_service.dart
+```
+
+`lib/core/di/service_locator.dart` imports all of them, so it breaks
+transitively — and so does `test/core/managers/session_manager_test.dart`,
+which imports `service_locator.dart`. That test is expected to fail
+compilation from Task 6 until Stage D.
+
+**Unaffected, and must stay passing:**
+- `test/widget_test.dart` — four real colour/theme tests importing only
+  `app_colors.dart`. It is **not** a scaffold counter test. Do not delete it.
+- `test/core/storage/cache_manager_test.dart`
+- every test added by Stage A
 
 This is why the Stage A test command names three directories rather than running
-`flutter test` bare: those suites import only the network, config and auth-model
-code, all of which compiles throughout.
+`flutter test` bare: those suites import only network, config and auth-model
+code, none of which touches `service_locator.dart`.
 
 Do not "fix" the broken services by inventing replacement endpoints — that is
-precisely the failure this stage exists to undo. The analyzer error list from
-Task 6 Step 4 is the Stage D worklist; each module is repaired against recorded
-responses when its slice is wired.
-
-If a green whole-suite run is needed before Stage D, the only acceptable interim
-is deleting `test/widget_test.dart` (a default Flutter scaffold test that asserts
-a counter that this app does not have). Leave the feature services broken.
+precisely the failure this stage exists to undo. Do not delete tests to make the
+suite green. The analyzer error list from Task 6 Step 4 is the Stage D worklist;
+each module is repaired against recorded responses when its slice is wired.
 
 ## Handover to Stage B
 

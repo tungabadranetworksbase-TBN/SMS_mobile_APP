@@ -52,3 +52,6 @@ app.*.map.json
 # cover the Android module's own build dir, which leaks Gradle reports.
 /android/build/
 /android/.gradle/
+
+# Subagent-driven-development scratch: ledgers, task briefs, review packages.
+/.superpowers/
