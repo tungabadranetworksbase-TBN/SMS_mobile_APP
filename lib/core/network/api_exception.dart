@@ -1,5 +1,7 @@
 import 'package:equatable/equatable.dart';
 
+import 'api_error_code.dart';
+
 /// Tungabadra Networks LMS — Typed API Exceptions
 ///
 /// Every network error is mapped to a typed exception.
@@ -10,56 +12,68 @@ class ApiException extends Equatable implements Exception {
   final int? statusCode;
   final dynamic data;
 
+  /// The backend's `error.code`. Drives routing decisions in Stage B —
+  /// two 403s can mean very different things.
+  final ApiErrorCode code;
+
   const ApiException({
     required this.message,
     this.technicalMessage,
     this.statusCode,
     this.data,
+    this.code = ApiErrorCode.unknown,
   });
 
   // ── Named Constructors ──
 
   const ApiException.network()
-      : message = 'No internet connection. Please check your network.',
-        technicalMessage = 'NetworkException',
-        statusCode = null,
-        data = null;
+    : message = 'No internet connection. Please check your network.',
+      technicalMessage = 'NetworkException',
+      statusCode = null,
+      data = null,
+      code = ApiErrorCode.unknown;
 
   const ApiException.timeout()
-      : message = 'Request timed out. Please try again.',
-        technicalMessage = 'TimeoutException',
-        statusCode = null,
-        data = null;
+    : message = 'Request timed out. Please try again.',
+      technicalMessage = 'TimeoutException',
+      statusCode = null,
+      data = null,
+      code = ApiErrorCode.unknown;
 
   const ApiException.unauthorized()
-      : message = 'Session expired. Please log in again.',
-        technicalMessage = 'UnauthorizedException',
-        statusCode = 401,
-        data = null;
+    : message = 'Session expired. Please log in again.',
+      technicalMessage = 'UnauthorizedException',
+      statusCode = 401,
+      data = null,
+      code = ApiErrorCode.unauthorized;
 
   const ApiException.forbidden()
-      : message = 'You don\'t have permission for this action.',
-        technicalMessage = 'ForbiddenException',
-        statusCode = 403,
-        data = null;
+    : message = 'You don\'t have permission for this action.',
+      technicalMessage = 'ForbiddenException',
+      statusCode = 403,
+      data = null,
+      code = ApiErrorCode.forbidden;
 
   const ApiException.notFound()
-      : message = 'The requested resource was not found.',
-        technicalMessage = 'NotFoundException',
-        statusCode = 404,
-        data = null;
+    : message = 'The requested resource was not found.',
+      technicalMessage = 'NotFoundException',
+      statusCode = 404,
+      data = null,
+      code = ApiErrorCode.notFound;
 
   const ApiException.server()
-      : message = 'Server error. Please try again later.',
-        technicalMessage = 'InternalServerError',
-        statusCode = 500,
-        data = null;
+    : message = 'Server error. Please try again later.',
+      technicalMessage = 'InternalServerError',
+      statusCode = 500,
+      data = null,
+      code = ApiErrorCode.internal;
 
   const ApiException.unknown()
-      : message = 'Something went wrong. Please try again.',
-        technicalMessage = 'UnknownException',
-        statusCode = null,
-        data = null;
+    : message = 'Something went wrong. Please try again.',
+      technicalMessage = 'UnknownException',
+      statusCode = null,
+      data = null,
+      code = ApiErrorCode.unknown;
 
   factory ApiException.fromStatusCode(int statusCode, {String? body}) {
     switch (statusCode) {
@@ -93,9 +107,14 @@ class ApiException extends Equatable implements Exception {
   bool get isUnauthorized => statusCode == 401;
   bool get isNetwork => technicalMessage == 'NetworkException';
 
-  @override
-  List<Object?> get props => [message, statusCode];
+  bool get isRegFeeRequired => code == ApiErrorCode.regFeeRequired;
+  bool get isPasswordChangeRequired =>
+      code == ApiErrorCode.passwordChangeRequired;
+  bool get isAccountNotActive => code == ApiErrorCode.accountNotActive;
 
   @override
-  String toString() => 'ApiException($statusCode: $message)';
+  List<Object?> get props => [message, statusCode, code];
+
+  @override
+  String toString() => 'ApiException(${code.wire} $statusCode: $message)';
 }
