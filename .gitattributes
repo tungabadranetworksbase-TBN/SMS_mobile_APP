@@ -1,0 +1,19 @@
+# Normalise line endings so a Windows checkout does not show generated files as
+# permanently modified. Flutter regenerates windows/flutter/generated_plugin*
+# with LF; without this they churn against a CRLF working tree on every build.
+* text=auto eol=lf
+
+# Binary assets — never touch.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.ttf binary
+*.otf binary
+*.woff binary
+*.woff2 binary
+*.pdf binary
+*.zip binary
+*.jar binary
+*.keystore binary
