@@ -1,8 +1,9 @@
 /// The backend's `error.code` vocabulary.
 ///
 /// Values are verbatim from `server/src/lib/response.ts` (the `ApiError`
-/// factories) plus the custom codes raised in `middlewares/authenticate.ts`,
-/// `middlewares/region.ts`, `app.ts` and `lib/auth.ts`.
+/// factories) plus custom codes from `middlewares/authenticate.ts`,
+/// `middlewares/errorHandler.ts`, `middlewares/region.ts`, `app.ts`,
+/// `lib/auth.ts`, `staff.service.ts`, `quiz.service.ts`, and `monitoringKey.ts`.
 ///
 /// [unknown] is deliberate: the backend gains codes without a client release,
 /// and an unrecognised code must degrade rather than crash.
@@ -34,6 +35,11 @@ enum ApiErrorCode {
 
   /// Not in the envelope — Better Auth raises this on a weak password.
   weakPassword('WEAK_PASSWORD'),
+
+  /// Signup matched an existing account — the user should activate it
+  /// rather than create a second one. Raised by Better Auth in
+  /// `lib/auth.ts`, not through the `{success,error}` envelope.
+  activationRequired('ACTIVATION_REQUIRED'),
 
   unknown('UNKNOWN');
 
