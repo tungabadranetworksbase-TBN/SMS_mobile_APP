@@ -6,7 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
-import '../../../../shared/widgets/buttons/gradient_button.dart';
+import '../../../../shared/components/gradient_button.dart';
 import '../../controllers/profile_controller.dart';
 import '../../data/models/profile_dto.dart';
 

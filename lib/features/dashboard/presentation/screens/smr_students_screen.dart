@@ -8,7 +8,7 @@ import '../../../../core/theme/app_typography.dart';
 import '../../../../shared/components/app_badge.dart';
 import '../../../../shared/components/app_card.dart';
 import '../../../../shared/components/app_text_field.dart';
-import '../../../../shared/widgets/error_states/error_state_view.dart';
+import '../../../../shared/components/error_state_view.dart';
 import '../../controllers/dashboard_controller.dart';
 import '../../data/services/dashboard_api_service.dart';
 

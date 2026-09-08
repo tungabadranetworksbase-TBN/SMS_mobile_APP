@@ -7,7 +7,7 @@ import '../../../../core/theme/app_typography.dart';
 import '../../../../shared/components/app_badge.dart';
 import '../../../../shared/components/app_button.dart';
 import '../../../../shared/components/app_card.dart';
-import '../../../../shared/widgets/error_states/error_state_view.dart';
+import '../../../../shared/components/error_state_view.dart';
 import '../../controllers/batches_controller.dart';
 import '../../data/models/batch_dto.dart';
 

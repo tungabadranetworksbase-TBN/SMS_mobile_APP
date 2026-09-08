@@ -6,7 +6,7 @@ import '../../../../core/managers/download_manager.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
-import '../../../../shared/widgets/error_states/error_state_view.dart';
+import '../../../../shared/components/error_state_view.dart';
 
 class PdfViewerScreen extends StatefulWidget {
   final String title;

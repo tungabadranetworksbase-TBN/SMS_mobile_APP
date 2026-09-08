@@ -5,7 +5,7 @@ import 'package:video_player/video_player.dart' as vp;
 import 'package:chewie/chewie.dart';
 
 import '../../../../core/theme/app_colors.dart';
-import '../../../../shared/widgets/error_states/error_state_view.dart';
+import '../../../../shared/components/error_state_view.dart';
 
 class VideoPlayerScreen extends StatefulWidget {
   final String title;

@@ -6,8 +6,8 @@ import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../core/managers/session_manager.dart';
 import '../../../../core/di/service_locator.dart';
-import '../../../../shared/widgets/loading/shimmer_loading.dart';
-import '../../../../shared/widgets/error_states/error_state_view.dart';
+import '../../../../shared/components/shimmer_loading.dart';
+import '../../../../shared/components/error_state_view.dart';
 import '../../controllers/dashboard_controller.dart';
 import '../../data/models/student_dashboard_dto.dart';
 

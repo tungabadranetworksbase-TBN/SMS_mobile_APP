@@ -6,8 +6,8 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/router/route_names.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
-import '../../../../shared/widgets/loading/shimmer_loading.dart';
-import '../../../../shared/widgets/error_states/error_state_view.dart';
+import '../../../../shared/components/shimmer_loading.dart';
+import '../../../../shared/components/error_state_view.dart';
 import '../../controllers/learning_controller.dart';
 import '../../data/models/lesson_dto.dart';
 
