@@ -116,7 +116,7 @@ void main() {
       expect(
         Capabilities.fromMe(
           const MeDto(
-            user: const MeUserDto(
+            user: MeUserDto(
               id: '1',
               name: 'A',
               email: 'a@x.com',
@@ -126,8 +126,8 @@ void main() {
               status: 'ACTIVE',
               mustChangePassword: false,
             ),
-            permissions: const [],
-            modules: const {},
+            permissions: [],
+            modules: {},
           ),
         ).tier,
         UserTier.student,
@@ -135,7 +135,7 @@ void main() {
       expect(
         Capabilities.fromMe(
           const MeDto(
-            user: const MeUserDto(
+            user: MeUserDto(
               id: '1',
               name: 'A',
               email: 'a@x.com',
@@ -145,8 +145,8 @@ void main() {
               status: 'ACTIVE',
               mustChangePassword: false,
             ),
-            permissions: const [],
-            modules: const {},
+            permissions: [],
+            modules: {},
           ),
         ).tier,
         UserTier.staff,
@@ -154,7 +154,7 @@ void main() {
       expect(
         Capabilities.fromMe(
           const MeDto(
-            user: const MeUserDto(
+            user: MeUserDto(
               id: '1',
               name: 'A',
               email: 'a@x.com',
@@ -164,8 +164,8 @@ void main() {
               status: 'ACTIVE',
               mustChangePassword: false,
             ),
-            permissions: const [],
-            modules: const {},
+            permissions: [],
+            modules: {},
           ),
         ).tier,
         UserTier.superAdmin,

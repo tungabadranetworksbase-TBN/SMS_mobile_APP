@@ -288,7 +288,7 @@ class DemoData {
       durationMinutes: 10,
       totalMarks: 20,
       questions: [
-        QuestionDto(
+        const QuestionDto(
           id: 'q1',
           text:
               'Which HTML5 element represents self-contained content that could be distributed independently?',
@@ -296,7 +296,7 @@ class DemoData {
           options: ['<section>', '<article>', '<aside>', '<div>'],
           marks: 10,
         ),
-        QuestionDto(
+        const QuestionDto(
           id: 'q2',
           text:
               'The <main> tag should be used multiple times on a single webpage.',
