@@ -7,6 +7,7 @@ import '../../../../shared/components/app_badge.dart';
 import '../../../../shared/components/app_card.dart';
 import '../../../../shared/widgets/error_states/error_state_view.dart';
 import '../../controllers/dashboard_controller.dart';
+import '../../data/services/dashboard_api_service.dart';
 
 class SmrBatchesScreen extends ConsumerWidget {
   const SmrBatchesScreen({super.key});
@@ -27,12 +28,21 @@ class SmrBatchesScreen extends ConsumerWidget {
           if (rows.isEmpty) {
             return const Center(child: Text('No batches found.'));
           }
+          // A full page almost certainly means there are more behind it.
+          final capped = rows.length >= kStaffPageSize;
           return RefreshIndicator(
             onRefresh: () async => ref.invalidate(staffBatchesProvider),
             child: ListView.builder(
               padding: const EdgeInsets.all(AppSpacing.s16),
-              itemCount: rows.length,
+              itemCount: rows.length + (capped ? 1 : 0),
               itemBuilder: (context, index) {
+                if (index == rows.length) {
+                  return Text(
+                    'Showing the first ${rows.length} batches.',
+                    textAlign: TextAlign.center,
+                    style: AppTypography.bodySmall,
+                  );
+                }
                 final batch = rows[index];
                 return AppCard(
                   margin: const EdgeInsets.only(bottom: AppSpacing.s16),

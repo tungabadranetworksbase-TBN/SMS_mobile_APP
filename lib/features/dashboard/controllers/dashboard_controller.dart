@@ -66,9 +66,16 @@ class AdminDashboardNotifier extends AsyncNotifier<AdminDashboardDto> {
   }
 }
 
+/// Current roster search text. Held here so the query reaches the API rather
+/// than filtering whatever happened to land in the first page.
+final staffStudentQueryProvider = StateProvider<String>((ref) => '');
+
 final staffStudentsProvider =
     FutureProvider.autoDispose<List<StaffRosterRowDto>>((ref) {
-      return ref.watch(dashboardRepositoryProvider).getStaffStudents();
+      final search = ref.watch(staffStudentQueryProvider);
+      return ref
+          .watch(dashboardRepositoryProvider)
+          .getStaffStudents(search: search);
     });
 
 final staffBatchesProvider =

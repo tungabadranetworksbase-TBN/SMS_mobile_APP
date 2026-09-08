@@ -9,6 +9,13 @@ import '../models/smr_dashboard_dto.dart';
 import '../models/staff_lists_dto.dart';
 import '../models/student_dashboard_dto.dart';
 
+/// Rows fetched per staff list request.
+///
+/// ponytail: single page, no infinite scroll. The screens say so when a
+/// result fills it; wire page/cursor through if a roster outgrows one page
+/// often enough that searching is not enough.
+const int kStaffPageSize = 50;
+
 class DashboardApiService {
   final ApiClient _apiClient;
 
@@ -40,7 +47,7 @@ class DashboardApiService {
       ApiEndpoints.students,
       queryParameters: {
         'page': 1,
-        'pageSize': 50,
+        'pageSize': kStaffPageSize,
         if (search != null && search.isNotEmpty) 'search': search,
       },
       fromJson: (json) => jsonList(jsonMap(json)['students'])
@@ -52,7 +59,7 @@ class DashboardApiService {
   Future<ApiResponse<List<StaffBatchRowDto>>> fetchStaffBatches() async {
     return _apiClient.get<List<StaffBatchRowDto>>(
       ApiEndpoints.batches,
-      queryParameters: {'page': 1, 'pageSize': 50},
+      queryParameters: {'page': 1, 'pageSize': kStaffPageSize},
       fromJson: (json) => jsonList(jsonMap(json)['batches'])
           .map((e) => StaffBatchRowDto.fromJson(jsonMap(e)))
           .toList(),
