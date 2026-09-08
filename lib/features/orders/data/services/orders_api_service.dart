@@ -1,6 +1,7 @@
 import '../../../../core/network/api_client.dart';
 import '../../../../core/network/api_response.dart';
 import '../../../../core/config/api_endpoints.dart';
+import '../../../../core/network/json_value.dart';
 import '../models/order_dto.dart';
 
 class OrdersApiService {
@@ -10,14 +11,12 @@ class OrdersApiService {
 
   Future<ApiResponse<List<OrderDto>>> getOrders() async {
     return _apiClient.get<List<OrderDto>>(
-      ApiEndpoints.commerceOrders,
+      ApiEndpoints.purchases,
       fromJson: (json) {
-        if (json is List) {
-          return json
-              .map((e) => OrderDto.fromJson(e as Map<String, dynamic>))
-              .toList();
-        }
-        return [];
+        final raw = json is List
+            ? json
+            : jsonList(jsonMap(json)['purchases']);
+        return raw.map((e) => OrderDto.fromJson(jsonMap(e))).toList();
       },
     );
   }

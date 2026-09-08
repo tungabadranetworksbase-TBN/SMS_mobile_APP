@@ -11,6 +11,9 @@ class RouteNames {
   static const String forgotPassword = 'forgot-password';
   static const String resetPassword = 'reset-password';
   static const String signup = 'signup';
+  static const String verifyEmail = 'verify-email';
+  static const String forcedPasswordChange = 'forced-password-change';
+  static const String registration = 'registration';
 
   // ── Student ──
   static const String studentDashboard = 'student-dashboard';
@@ -30,14 +33,12 @@ class RouteNames {
   static const String orderDetails = 'order-details';
   static const String checkout = 'checkout';
 
-  // ── SMR (Student Management Rep) ──
-  static const String smrDashboard = 'smr-dashboard';
-  static const String smrStudents = 'smr-students';
-  static const String smrBatches = 'smr-batches';
-
-  // ── Admin ──
-  static const String adminDashboard = 'admin-dashboard';
-  static const String adminAnalytics = 'admin-analytics';
+  // ── Staff ──
+  static const String staffStudents = 'staff-students';
+  static const String staffBatches = 'staff-batches';
+  static const String staffInsights = 'staff-insights';
+  static const String staffAnalytics = 'staff-analytics';
+  static const String staffUnavailable = 'staff-unavailable';
 }
 
 class RoutePaths {
@@ -50,6 +51,9 @@ class RoutePaths {
   static const String forgotPassword = '/forgot-password';
   static const String resetPassword = '/reset-password';
   static const String signup = '/signup';
+  static const String verifyEmail = '/verify-email';
+  static const String forcedPasswordChange = '/change-password';
+  static const String registration = '/student/registration';
 
   // ── Student ──
   static const String studentDashboard = '/student/dashboard';
@@ -70,12 +74,10 @@ class RoutePaths {
   static const String orderDetails = '/student/orders/:id';
   static const String checkout = '/checkout';
 
-  // ── SMR (Student Management Rep) ──
-  static const String smrDashboard = '/smr/dashboard';
-  static const String smrStudents = '/smr/students';
-  static const String smrBatches = '/smr/batches';
-
-  // ── Admin ──
-  static const String adminDashboard = '/admin/dashboard';
-  static const String adminAnalytics = '/admin/analytics';
+  // ── Staff ──
+  static const String staffStudents = '/staff/students';
+  static const String staffBatches = '/staff/batches';
+  static const String staffInsights = '/staff/insights';
+  static const String staffAnalytics = '/staff/insights/analytics';
+  static const String staffUnavailable = '/staff/unavailable';
 }

@@ -7,20 +7,21 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../features/auth/presentation/screens/forgot_password_screen.dart';
 import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/auth/presentation/screens/reset_password_screen.dart';
+import '../../features/auth/presentation/screens/forced_password_change_screen.dart';
+import '../../features/auth/presentation/screens/otp_verification_screen.dart';
+import '../../features/auth/presentation/screens/registration_screen.dart';
 import '../../features/auth/presentation/screens/server_config_screen.dart';
 import '../../features/auth/presentation/screens/signup_screen.dart';
 import '../../features/auth/presentation/screens/splash_screen.dart';
 import '../../features/dashboard/presentation/screens/admin_dashboard_screen.dart';
 import '../../features/dashboard/presentation/screens/admin_analytics_screen.dart';
-import '../../features/dashboard/presentation/screens/smr_dashboard_screen.dart';
 import '../../features/dashboard/presentation/screens/smr_students_screen.dart';
 import '../../features/dashboard/presentation/screens/smr_batches_screen.dart';
+import '../../features/dashboard/presentation/screens/staff_unavailable_screen.dart';
 import '../../features/dashboard/presentation/screens/student_dashboard_screen.dart';
 import '../../features/learning/presentation/screens/course_details_screen.dart';
 import '../../features/learning/presentation/screens/student_courses_screen.dart';
-import '../../features/learning/presentation/screens/certificates_screen.dart';
 import '../../features/assessments/presentation/screens/quiz_player_screen.dart';
-import '../../features/assessments/presentation/screens/assignment_submission_screen.dart';
 import '../../features/orders/presentation/screens/order_history_screen.dart';
 import '../../features/orders/presentation/screens/order_details_screen.dart';
 import '../../features/payments/presentation/screens/checkout_screen.dart';
@@ -30,11 +31,13 @@ import '../../features/profile/data/models/profile_dto.dart';
 import '../../features/profile/presentation/screens/edit_profile_screen.dart';
 import '../../features/profile/presentation/screens/student_profile_screen.dart';
 import '../../features/notifications/presentation/screens/notifications_screen.dart';
-import '../../features/attendance/presentation/screens/student_attendance_screen.dart';
-import '../../features/support/presentation/screens/student_support_screen.dart';
-import '../../features/dashboard/presentation/widgets/admin_shell.dart';
-import '../../features/dashboard/presentation/widgets/smr_shell.dart';
+import '../../features/dashboard/presentation/widgets/staff_shell.dart';
 import '../../features/dashboard/presentation/widgets/student_shell.dart';
+import '../auth/capabilities.dart';
+import '../auth/capabilities_store.dart';
+import '../auth/gate_store.dart';
+import '../auth/session_gates.dart';
+import '../auth/destinations.dart';
 import '../di/service_locator.dart';
 import '../managers/navigation_manager.dart';
 import '../managers/session_manager.dart';
@@ -54,82 +57,106 @@ class PlaceholderScreen extends StatelessWidget {
 /// Listens to auth state changes to trigger redirects.
 final routerProvider = Provider<GoRouter>((ref) {
   final sessionManager = locator<SessionManager>();
+  final capsStore = locator<CapabilitiesStore>();
+  final gateStore = locator<GateStore>();
 
-  // Listen to auth stream to trigger router refresh
   final authStateListenable = _StreamListenable(sessionManager.authStateStream);
+  final capsListenable = _StreamListenable(capsStore.changes);
+  final gateListenable = _StreamListenable(gateStore.changes);
+  final refresh = Listenable.merge([
+    authStateListenable,
+    capsListenable,
+    gateListenable,
+  ]);
 
   final router = GoRouter(
     navigatorKey: locator<NavigationManager>().navigatorKey,
     initialLocation: RoutePaths.splash,
-    refreshListenable: authStateListenable,
+    refreshListenable: refresh,
     debugLogDiagnostics: true,
     redirect: (context, state) {
       final isLoggedIn = sessionManager.isAuthenticated;
 
-      // 1. User is not logged in
       if (!isLoggedIn) {
         final atServerConfig = state.matchedLocation == RoutePaths.serverConfig;
 
-        // Does the user have a server URL configured?
         final hasServerUrl =
             locator<PreferenceManager>().getServerUrl() != null;
         if (!hasServerUrl) {
-          // No server configured -> force them to configure it first.
-          // Returning the location we are already on would be a redirect loop.
           return atServerConfig ? null : RoutePaths.serverConfig;
         }
 
-        // Let them browse Auth routes freely
         final isAuthRoute =
             state.matchedLocation == RoutePaths.login ||
             state.matchedLocation == RoutePaths.signup ||
             state.matchedLocation == RoutePaths.forgotPassword ||
             state.matchedLocation == RoutePaths.resetPassword ||
+            state.matchedLocation == RoutePaths.verifyEmail ||
             atServerConfig;
 
-        if (isAuthRoute) return null; // allow
-        // Anything else (including splash) goes to login.
+        if (isAuthRoute) return null;
         return RoutePaths.login;
       }
 
-      // 2. User is logged in but trying to access auth pages
+      final caps = capsStore.current;
+      if (caps == null) {
+        // Authenticated but caps missing — never stay on splash forever.
+        // Boot hydration should have filled or cleared the session; if not,
+        // bounce to login so the user is not stuck behind the spinner.
+        if (state.matchedLocation == RoutePaths.splash ||
+            state.matchedLocation == RoutePaths.login) {
+          return RoutePaths.login;
+        }
+        return RoutePaths.login;
+      }
+
+      final loc = state.matchedLocation;
+      final dest = SessionGates.destination(
+        caps: caps,
+        regFeeRequired: gateStore.regFeeRequired,
+      );
+
+      if (loc == RoutePaths.forcedPasswordChange ||
+          loc == RoutePaths.registration) {
+        return loc == dest ? null : dest;
+      }
+
       final isGoingToAuth =
-          state.matchedLocation == RoutePaths.login ||
-          state.matchedLocation == RoutePaths.signup ||
-          state.matchedLocation == RoutePaths.forgotPassword ||
-          state.matchedLocation == RoutePaths.resetPassword ||
-          state.matchedLocation == RoutePaths.serverConfig;
+          loc == RoutePaths.login ||
+          loc == RoutePaths.signup ||
+          loc == RoutePaths.forgotPassword ||
+          loc == RoutePaths.resetPassword ||
+          loc == RoutePaths.verifyEmail ||
+          loc == RoutePaths.serverConfig;
 
-      final isGoingToSplash = state.matchedLocation == RoutePaths.splash;
+      final isGoingToSplash = loc == RoutePaths.splash;
 
-      // 3. If authenticated, prevent access to auth pages and redirect to role dashboard
-      if (sessionManager.isAuthenticated &&
-          (isGoingToAuth || isGoingToSplash)) {
-        if (sessionManager.isStudent) return RoutePaths.studentDashboard;
-        if (sessionManager.isSmr) return RoutePaths.smrDashboard;
-        if (sessionManager.hasAdminAccess) return RoutePaths.adminDashboard;
+      if (isGoingToAuth || isGoingToSplash) {
+        return dest;
+      }
 
-        // Fallback for unknown role
+      if (dest == RoutePaths.forcedPasswordChange ||
+          dest == RoutePaths.registration) {
+        return dest;
+      }
+
+      if (caps.tier == UserTier.student && loc.startsWith('/staff')) {
         return RoutePaths.studentDashboard;
       }
 
-      // 4. Role-based route protection
-      if (sessionManager.isAuthenticated) {
-        final loc = state.matchedLocation;
-
-        // Block students from SMR/Admin routes
-        if (sessionManager.isStudent &&
-            (loc.startsWith('/smr') || loc.startsWith('/admin'))) {
-          return RoutePaths.studentDashboard;
+      if (caps.tier != UserTier.student && loc.startsWith('/staff')) {
+        if (loc == RoutePaths.staffUnavailable) {
+          return visibleStaffDestinations(caps).isEmpty
+              ? null
+              : dest;
         }
-
-        // Block SMRs from Admin routes
-        if (sessionManager.isSmr && loc.startsWith('/admin')) {
-          return RoutePaths.smrDashboard;
-        }
+        final allowed = visibleStaffDestinations(caps).any(
+          (d) => loc == d.route || loc.startsWith('${d.route}/'),
+        );
+        if (!allowed) return dest;
       }
 
-      return null; // No redirect needed
+      return null;
     },
     routes: [
       GoRoute(
@@ -164,6 +191,27 @@ final routerProvider = Provider<GoRouter>((ref) {
           final extra = state.extra as Map<String, dynamic>? ?? {};
           return ResetPasswordScreen(email: extra['email'] ?? '');
         },
+      ),
+      GoRoute(
+        path: RoutePaths.verifyEmail,
+        name: RouteNames.verifyEmail,
+        builder: (context, state) {
+          final extra = state.extra as Map<String, dynamic>? ?? {};
+          return OtpVerificationScreen(
+            email: extra['email'] ?? '',
+            password: extra['password'] as String?,
+          );
+        },
+      ),
+      GoRoute(
+        path: RoutePaths.forcedPasswordChange,
+        name: RouteNames.forcedPasswordChange,
+        builder: (context, state) => const ForcedPasswordChangeScreen(),
+      ),
+      GoRoute(
+        path: RoutePaths.registration,
+        name: RouteNames.registration,
+        builder: (context, state) => const RegistrationScreen(),
       ),
 
       // ── Media & Learning Full Screen Routes ──
@@ -204,14 +252,9 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: RoutePaths.submitAssignment,
         name: RouteNames.submitAssignment,
-        builder: (context, state) {
-          final id = state.pathParameters['id']!;
-          final extra = state.extra as Map<String, dynamic>? ?? {};
-          return AssignmentSubmissionScreen(
-            assignmentId: id,
-            title: extra['title'] ?? 'Submit Assignment',
-          );
-        },
+        builder: (context, state) => const FeatureUnavailableScreen(
+          message: 'Assignments are not available in this app version.',
+        ),
       ),
       GoRoute(
         path: RoutePaths.checkout,
@@ -251,17 +294,26 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: RoutePaths.studentAttendance,
             name: RouteNames.studentAttendance,
-            builder: (context, state) => const StudentAttendanceScreen(),
+            builder: (context, state) => const FeatureUnavailableScreen(
+              message:
+                  'Attendance is not available in this app version.',
+            ),
           ),
           GoRoute(
             path: RoutePaths.studentSupport,
             name: RouteNames.studentSupport,
-            builder: (context, state) => const StudentSupportScreen(),
+            builder: (context, state) => const FeatureUnavailableScreen(
+              message:
+                  'Support tickets are not available in this app version.',
+            ),
           ),
           GoRoute(
             path: RoutePaths.studentCertificates,
             name: RouteNames.studentCertificates,
-            builder: (context, state) => const CertificatesScreen(),
+            builder: (context, state) => const FeatureUnavailableScreen(
+              message:
+                  'Certificates are not available in this app version.',
+            ),
           ),
           GoRoute(
             path: RoutePaths.studentProfile,
@@ -297,43 +349,35 @@ final routerProvider = Provider<GoRouter>((ref) {
         ],
       ),
 
-      // ── SMR Routes (Wrapped in Shell) ──
       ShellRoute(
-        builder: (context, state, child) => SmrShell(child: child),
+        builder: (context, state, child) => StaffShell(child: child),
         routes: [
           GoRoute(
-            path: RoutePaths.smrDashboard,
-            name: RouteNames.smrDashboard,
-            builder: (context, state) => const SmrDashboardScreen(),
-          ),
-          GoRoute(
-            path: RoutePaths.smrStudents,
-            name: RouteNames.smrStudents,
+            path: RoutePaths.staffStudents,
+            name: RouteNames.staffStudents,
             builder: (context, state) => const SmrStudentsScreen(),
           ),
           GoRoute(
-            path: RoutePaths.smrBatches,
-            name: RouteNames.smrBatches,
+            path: RoutePaths.staffBatches,
+            name: RouteNames.staffBatches,
             builder: (context, state) => const SmrBatchesScreen(),
           ),
-        ],
-      ),
-
-      // ── Admin Routes (Wrapped in Shell) ──
-      ShellRoute(
-        builder: (context, state, child) => AdminShell(child: child),
-        routes: [
           GoRoute(
-            path: RoutePaths.adminDashboard,
-            name: RouteNames.adminDashboard,
+            path: RoutePaths.staffInsights,
+            name: RouteNames.staffInsights,
             builder: (context, state) => const AdminDashboardScreen(),
           ),
           GoRoute(
-            path: RoutePaths.adminAnalytics,
-            name: RouteNames.adminAnalytics,
+            path: RoutePaths.staffAnalytics,
+            name: RouteNames.staffAnalytics,
             builder: (context, state) => const AdminAnalyticsScreen(),
           ),
         ],
+      ),
+      GoRoute(
+        path: RoutePaths.staffUnavailable,
+        name: RouteNames.staffUnavailable,
+        builder: (context, state) => const StaffUnavailableScreen(),
       ),
     ],
   );

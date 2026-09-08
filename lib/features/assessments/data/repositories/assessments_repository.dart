@@ -21,22 +21,18 @@ class AssessmentsRepository {
     if (DemoMode().isActive) {
       return DemoData.getAssessment(id);
     }
-    try {
-      final response = await _apiService.getAssessment(id);
-      if (response.success && response.data != null) {
-        return response.data!;
-      }
-      throw ApiException(
-        message: response.message ?? 'Failed to load assessment',
-      );
-    } catch (e) {
-      rethrow;
+    final response = await _apiService.getAssessment(id);
+    if (response.success && response.data != null) {
+      return response.data!;
     }
+    throw ApiException(
+      message: response.message ?? 'Failed to load assessment',
+    );
   }
 
   Future<SubmissionDto?> submitAssessment(
     String id,
-    Map<String, String> answers,
+    Map<String, List<int>> answers,
   ) async {
     if (DemoMode().isActive) {
       return DemoData.getSubmission(id, 'ASSESSMENT');
@@ -49,13 +45,12 @@ class AssessmentsRepository {
       throw ApiException(message: response.message ?? 'Submission failed');
     } on ApiException catch (e) {
       if (e.isNetwork || e.technicalMessage == 'TimeoutException') {
-        // Queue for offline sync
         await _offlineSyncManager.queueAction(
-          endpoint: '/assessments/$id/submit',
+          endpoint: '/learning/assessments/$id/submit',
           method: 'POST',
           payload: {'id': id, 'answers': answers},
         );
-        return null; // Indicates it was queued
+        return null;
       }
       rethrow;
     }
@@ -71,7 +66,7 @@ class AssessmentsRepository {
         return response.data!;
       }
       throw ApiException(
-        message: response.message ?? 'Failed to load assignment',
+        message: response.message ?? 'Failed to load assessment',
       );
     } catch (e) {
       rethrow;

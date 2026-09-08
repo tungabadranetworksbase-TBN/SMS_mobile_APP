@@ -1,8 +1,5 @@
-import 'package:json_annotation/json_annotation.dart';
+import '../../../../core/network/json_value.dart';
 
-part 'profile_dto.g.dart';
-
-@JsonSerializable()
 class ProfileDto {
   final String id;
   final String name;
@@ -24,8 +21,21 @@ class ProfileDto {
     required this.joinedAt,
   });
 
-  factory ProfileDto.fromJson(Map<String, dynamic> json) =>
-      _$ProfileDtoFromJson(json);
-
-  Map<String, dynamic> toJson() => _$ProfileDtoToJson(this);
+  factory ProfileDto.fromJson(Map<String, dynamic> json) {
+    final user = json['user'] is Map ? jsonMap(json['user']) : json;
+    final profile = json['profile'] is Map ? jsonMap(json['profile']) : json;
+    return ProfileDto(
+      id: jsonStr(user['id'] ?? json['id']),
+      name: jsonStr(user['name'] ?? json['name']),
+      email: jsonStr(user['email'] ?? json['email']),
+      avatarUrl: user['image']?.toString() ??
+          profile['photoUrl']?.toString() ??
+          json['avatarUrl']?.toString(),
+      phone: profile['phone']?.toString() ?? json['phone']?.toString(),
+      address: json['address']?.toString(),
+      role: jsonStr(json['role'] ?? user['userType'], 'student'),
+      joinedAt: jsonDate(json['joinedAt'] ?? user['createdAt']) ??
+          DateTime.fromMillisecondsSinceEpoch(0),
+    );
+  }
 }

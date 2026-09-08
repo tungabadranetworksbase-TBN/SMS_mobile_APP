@@ -1,25 +1,23 @@
+import '../../../../core/config/api_endpoints.dart';
 import '../../../../core/network/api_client.dart';
 import '../../../../core/network/api_response.dart';
+import '../../../../core/network/json_value.dart';
 import '../models/course_dto.dart';
 import '../models/lesson_dto.dart';
 
-/// Tungabadra Networks LMS — Learning API Service
 class LearningApiService {
   final ApiClient _apiClient;
 
   LearningApiService({required ApiClient apiClient}) : _apiClient = apiClient;
 
   Future<ApiResponse<List<CourseDto>>> fetchStudentCourses() async {
-    // Note: Assuming endpoint /student/courses returns a list inside 'data'
     return _apiClient.get<List<CourseDto>>(
-      '/student/courses', // Replace with ApiEndpoints.studentCourses when added
+      ApiEndpoints.enrolledCourses,
       fromJson: (json) {
-        if (json is List) {
-          return json
-              .map((e) => CourseDto.fromJson(e as Map<String, dynamic>))
-              .toList();
-        }
-        return [];
+        final raw = json is List
+            ? json
+            : jsonList(jsonMap(json)['enrolledCourses']);
+        return raw.map((e) => CourseDto.fromJson(jsonMap(e))).toList();
       },
     );
   }
@@ -28,14 +26,18 @@ class LearningApiService {
     String courseId,
   ) async {
     return _apiClient.get<List<ModuleDto>>(
-      '/student/courses/$courseId/modules', // Replace with ApiEndpoints.courseModules when added
+      ApiEndpoints.withParams(ApiEndpoints.courseContent, {'id': courseId}),
       fromJson: (json) {
-        if (json is List) {
-          return json
-              .map((e) => ModuleDto.fromJson(e as Map<String, dynamic>))
-              .toList();
-        }
-        return [];
+        final map = jsonMap(json);
+        final content = jsonMap(map['content']);
+        final raw =
+            map['modules'] ??
+            content['modules'] ??
+            map['courseContent'] ??
+            const [];
+        return jsonList(
+          raw,
+        ).map((e) => ModuleDto.fromJson(jsonMap(e))).toList();
       },
     );
   }

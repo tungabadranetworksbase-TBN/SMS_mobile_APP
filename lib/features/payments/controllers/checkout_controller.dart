@@ -1,91 +1,152 @@
-import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:razorpay_flutter/razorpay_flutter.dart';
-import '../../../../core/config/app_config.dart';
+
+import '../../../../core/config/client_origin.dart';
 import '../../../../core/di/service_locator.dart';
 import '../../../../core/network/api_exception.dart';
-import '../data/services/payment_gateway_service.dart';
+import '../data/services/commerce_api_service.dart';
 
-final paymentGatewayProvider = Provider<PaymentGatewayService>((ref) {
-  final service = locator<PaymentGatewayService>();
-  ref.onDispose(() => service.dispose());
-  return service;
-});
+class CheckoutOutcome {
+  final String? url;
+  final String orderId;
+  final double total;
+  final List<PaymentUpiDto> upi;
+  final List<PaymentQrDto> qrs;
+
+  const CheckoutOutcome({
+    this.url,
+    required this.orderId,
+    this.total = 0,
+    this.upi = const [],
+    this.qrs = const [],
+  });
+
+  bool get isManual => (url == null || url!.isEmpty) && orderId.isNotEmpty;
+}
 
 class CheckoutController extends StateNotifier<AsyncValue<void>> {
-  final PaymentGatewayService _paymentService;
-  final AppConfig _appConfig;
-  late StreamSubscription _successSub;
-  late StreamSubscription _errorSub;
+  final CommerceApiService _commerce;
 
-  CheckoutController({
-    required PaymentGatewayService paymentService,
-    required AppConfig appConfig,
-  }) : _paymentService = paymentService,
-       _appConfig = appConfig,
-       super(const AsyncValue.data(null)) {
-    _successSub = _paymentService.onPaymentSuccess.listen(_onSuccess);
-    _errorSub = _paymentService.onPaymentError.listen(_onError);
-  }
+  CheckoutController({required CommerceApiService commerce})
+    : _commerce = commerce,
+      super(const AsyncValue.data(null));
 
-  @override
-  void dispose() {
-    _successSub.cancel();
-    _errorSub.cancel();
-    super.dispose();
-  }
-
-  // Called to initialize the payment flow
-  Future<void> startCheckout({
-    required String courseId,
-    required double price,
-    required String courseName,
-    required String userEmail,
-  }) async {
+  Future<CheckoutOutcome> startCheckout({required String courseId}) async {
     state = const AsyncValue.loading();
     try {
-      // 1. Call Backend to generate Razorpay Order ID (Mocked for now)
-      // final response = await _apiService.createOrder(courseId);
-      final backendOrderId =
-          'order_mock_${DateTime.now().millisecondsSinceEpoch}';
-
-      // 2. Open Razorpay Checkout Sheet
-      _paymentService.openCheckout(
-        keyId: _appConfig.razorpayKeyId, // Loaded from .env
-        amount: price,
-        name: 'Tungabadra Networks LMS',
-        description: courseName,
-        orderId: backendOrderId,
-        prefillEmail: userEmail,
-        prefillContact: '',
-      );
-      // State remains loading until payment succeeds or fails
+      await _addToCart(courseId);
+      final options = await _paymentOptions();
+      final methods = options.checkoutMethods;
+      if (methods.isEmpty) {
+        throw const ApiException(message: 'No payment method available.');
+      }
+      ApiException? last;
+      for (final method in methods) {
+        try {
+          final checkoutRes = await _checkoutOnce(method);
+          state = const AsyncValue.data(null);
+          return CheckoutOutcome(
+            url: checkoutRes.url,
+            orderId: checkoutRes.orderId,
+            total: checkoutRes.total,
+            upi: options.upi,
+            qrs: options.qrs,
+          );
+        } on ApiException catch (e) {
+          last = e;
+        }
+      }
+      throw last ?? const ApiException(message: 'Checkout failed.');
+    } on ApiException catch (e) {
+      state = AsyncValue.error(e, StackTrace.current);
+      rethrow;
     } catch (e) {
-      state = AsyncValue.error(
-        ApiException(message: e.toString()),
-        StackTrace.current,
-      );
+      final ex = ApiException(message: e.toString());
+      state = AsyncValue.error(ex, StackTrace.current);
+      throw ex;
     }
   }
 
-  void _onSuccess(PaymentSuccessResponse response) {
-    // 3. Verify signature with Backend
-    // await _apiService.verifyPayment(response.paymentId, response.orderId, response.signature);
-    state = const AsyncValue.data(null); // Success
+  Future<void> submitManualPayment({
+    required String orderId,
+    required String receiptPath,
+    required double amount,
+    String? reference,
+  }) async {
+    state = const AsyncValue.loading();
+    try {
+      var res = await _commerce.submitOrderPayment(
+        orderId: orderId,
+        receiptPath: receiptPath,
+        amount: amount,
+        reference: reference,
+      );
+      if (!res.success) {
+        res = await _commerce.submitOrderPayment(
+          orderId: orderId,
+          receiptPath: receiptPath,
+          amount: amount,
+          reference: reference,
+        );
+      }
+      if (!res.success) {
+        throw ApiException(
+          message: res.message ?? 'Could not submit payment proof.',
+        );
+      }
+      state = const AsyncValue.data(null);
+    } on ApiException catch (e) {
+      state = AsyncValue.error(e, StackTrace.current);
+      rethrow;
+    } catch (e) {
+      final ex = ApiException(message: e.toString());
+      state = AsyncValue.error(ex, StackTrace.current);
+      throw ex;
+    }
   }
 
-  void _onError(PaymentFailureResponse response) {
-    state = AsyncValue.error(
-      ApiException(message: response.message ?? 'Payment failed or cancelled.'),
-      StackTrace.current,
+  Future<void> _addToCart(String courseId) async {
+    try {
+      final added = await _commerce.addCourseToCart(courseId);
+      if (!added.success && added.statusCode != 409) {
+        throw ApiException(message: added.message ?? 'Could not add to cart.');
+      }
+    } on ApiException catch (e) {
+      if (e.statusCode != 409) rethrow;
+    }
+  }
+
+  Future<PaymentOptionsDto> _paymentOptions() async {
+    var optionsRes = await _commerce.fetchPaymentOptions();
+    if (!optionsRes.success || optionsRes.data == null) {
+      optionsRes = await _commerce.fetchPaymentOptions();
+    }
+    if (!optionsRes.success || optionsRes.data == null) {
+      throw ApiException(
+        message: optionsRes.message ?? 'Could not load payment options.',
+      );
+    }
+    return optionsRes.data!;
+  }
+
+  Future<CommerceCheckoutDto> _checkoutOnce(String method) async {
+    var checkoutRes = await _commerce.checkout(
+      method: method,
+      origin: clientOrigin(),
     );
+    if (!checkoutRes.success || checkoutRes.data == null) {
+      checkoutRes = await _commerce.checkout(
+        method: method,
+        origin: clientOrigin(),
+      );
+    }
+    if (!checkoutRes.success || checkoutRes.data == null) {
+      throw ApiException(message: checkoutRes.message ?? 'Checkout failed.');
+    }
+    return checkoutRes.data!;
   }
 }
 
 final checkoutControllerProvider =
     StateNotifierProvider<CheckoutController, AsyncValue<void>>((ref) {
-      return CheckoutController(
-        paymentService: ref.watch(paymentGatewayProvider),
-        appConfig: locator<AppConfig>(),
-      );
+      return CheckoutController(commerce: locator<CommerceApiService>());
     });

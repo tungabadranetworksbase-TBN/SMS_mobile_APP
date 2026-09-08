@@ -28,16 +28,10 @@ class OrdersRepository {
     if (DemoMode().isActive) {
       throw const ApiException(message: 'Not found in Demo Mode');
     }
-    try {
-      final response = await _apiService.getOrderDetails(id);
-      if (response.success && response.data != null) {
-        return response.data!;
-      }
-      throw ApiException(
-        message: response.message ?? 'Failed to load order details',
-      );
-    } catch (e) {
-      rethrow;
+    final orders = await getOrders();
+    for (final order in orders) {
+      if (order.id == id) return order;
     }
+    throw const ApiException(message: 'Order not found.');
   }
 }

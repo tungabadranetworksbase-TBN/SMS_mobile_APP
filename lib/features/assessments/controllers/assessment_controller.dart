@@ -22,13 +22,15 @@ class AssessmentController extends StateNotifier<AsyncValue<void>> {
     : _repository = repository,
       super(const AsyncValue.data(null));
 
-  Future<bool> submitAssessment(String id, Map<String, String> answers) async {
+  Future<bool> submitAssessment(
+    String id,
+    Map<String, List<int>> answers,
+  ) async {
     state = const AsyncValue.loading();
     try {
       final result = await _repository.submitAssessment(id, answers);
       state = const AsyncValue.data(null);
-      return result !=
-          null; // true if submitted immediately, false if queued offline
+      return result != null;
     } on ApiException catch (e) {
       state = AsyncValue.error(e, StackTrace.current);
       return false;

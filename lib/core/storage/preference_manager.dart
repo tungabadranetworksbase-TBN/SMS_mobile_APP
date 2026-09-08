@@ -22,6 +22,7 @@ class PreferenceManager {
 
   // ── Keys ──
   static const String _keyServerUrl = 'server_url';
+  static const String _keyClientOrigin = 'client_origin';
 
   // ── String ──
   Future<bool> setString(String key, String value) => _p.setString(key, value);
@@ -30,6 +31,11 @@ class PreferenceManager {
   // ── Server URL ──
   Future<bool> setServerUrl(String url) => setString(_keyServerUrl, url);
   String? getServerUrl() => getString(_keyServerUrl);
+
+  // ── Web client origin (Stripe return URLs) ──
+  Future<bool> setClientOrigin(String origin) =>
+      setString(_keyClientOrigin, origin);
+  String? getClientOrigin() => getString(_keyClientOrigin);
 
   // ── Bool ──
   Future<bool> setBool(String key, bool value) => _p.setBool(key, value);

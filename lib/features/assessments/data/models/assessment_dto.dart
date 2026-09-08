@@ -1,8 +1,5 @@
-import 'package:json_annotation/json_annotation.dart';
+import '../../../../core/network/json_value.dart';
 
-part 'assessment_dto.g.dart';
-
-@JsonSerializable()
 class AssessmentDto {
   final String id;
   final String title;
@@ -11,7 +8,7 @@ class AssessmentDto {
   final int totalMarks;
   final List<QuestionDto> questions;
 
-  AssessmentDto({
+  const AssessmentDto({
     required this.id,
     required this.title,
     required this.description,
@@ -20,23 +17,37 @@ class AssessmentDto {
     required this.questions,
   });
 
-  factory AssessmentDto.fromJson(Map<String, dynamic> json) =>
-      _$AssessmentDtoFromJson(json);
-
-  Map<String, dynamic> toJson() => _$AssessmentDtoToJson(this);
+  /// Accepts either the nested `POST /assessments/:id/start` payload or a
+  /// flat demo-shaped map.
+  factory AssessmentDto.fromJson(Map<String, dynamic> json) {
+    final quiz = jsonMap(json['quiz']);
+    final root = quiz.isNotEmpty ? quiz : json;
+    final questions = jsonList(root['questions'])
+        .map((row) => QuestionDto.fromJson(jsonMap(row)))
+        .toList();
+    final totalMarks = questions.fold<int>(0, (sum, q) => sum + q.marks);
+    return AssessmentDto(
+      id: jsonStr(root['id'] ?? json['id']),
+      title: jsonStr(root['title']),
+      description: jsonStr(root['description']),
+      durationMinutes: jsonInt(
+        root['timeLimitMin'] ?? root['durationMinutes'],
+      ),
+      totalMarks: jsonInt(root['totalMarks'], totalMarks),
+      questions: questions,
+    );
+  }
 }
 
-@JsonSerializable()
 class QuestionDto {
   final String id;
   final String text;
-  final String type; // 'MULTIPLE_CHOICE', 'TRUE_FALSE'
+  final String type;
   final List<String> options;
-  final String?
-  correctAnswer; // Nullable if not sending to client until submission
+  final String? correctAnswer;
   final int marks;
 
-  QuestionDto({
+  const QuestionDto({
     required this.id,
     required this.text,
     required this.type,
@@ -45,8 +56,18 @@ class QuestionDto {
     required this.marks,
   });
 
-  factory QuestionDto.fromJson(Map<String, dynamic> json) =>
-      _$QuestionDtoFromJson(json);
-
-  Map<String, dynamic> toJson() => _$QuestionDtoToJson(this);
+  factory QuestionDto.fromJson(Map<String, dynamic> json) {
+    final optionsRaw = json['options'];
+    final options = optionsRaw is List
+        ? optionsRaw.map((e) => e.toString()).toList()
+        : <String>[];
+    return QuestionDto(
+      id: jsonStr(json['id']),
+      text: jsonStr(json['prompt'] ?? json['text']),
+      type: jsonStr(json['kind'] ?? json['type'], 'MCQ'),
+      options: options,
+      correctAnswer: json['correctAnswer']?.toString(),
+      marks: jsonInt(json['points'] ?? json['marks'], 1),
+    );
+  }
 }

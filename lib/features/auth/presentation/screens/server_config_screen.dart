@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/auth/capabilities.dart';
+import '../../../../core/auth/capabilities_store.dart';
+import '../../../../core/auth/destinations.dart';
+import '../../../../core/config/app_constants.dart';
 import '../../../../core/demo/demo_data.dart';
 import '../../../../core/demo/demo_mode.dart';
 import '../../../../core/di/service_locator.dart';
@@ -70,6 +74,7 @@ class _ServerConfigScreenState extends ConsumerState<ServerConfigScreen> {
     if (isHealthy) {
       // Deactivate demo if active
       DemoMode().deactivate();
+      await locator<PreferenceManager>().remove(AppConstants.keyDemoRole);
 
       // Save valid URL globally
       await locator<PreferenceManager>().setServerUrl(url);
@@ -105,6 +110,10 @@ class _ServerConfigScreenState extends ConsumerState<ServerConfigScreen> {
   void _startDemo(String role) async {
     // 1. Activate demo mode
     DemoMode().activate(role: role);
+    await locator<PreferenceManager>().setString(
+      AppConstants.keyDemoRole,
+      role,
+    );
 
     // 2. Set dummy server URL so router doesn't block access
     await locator<PreferenceManager>().setServerUrl(
@@ -114,13 +123,13 @@ class _ServerConfigScreenState extends ConsumerState<ServerConfigScreen> {
 
     // 3. Save dummy session
     final profile = DemoData.getProfile(role);
+    locator<CapabilitiesStore>().set(Capabilities.demo(role));
     await locator<SessionManager>().saveSession(
       token: 'demo-token',
       refreshToken: 'demo-refresh-token',
       userId: profile.id,
       userName: profile.name,
       userEmail: profile.email,
-      userRole: profile.role,
     );
 
     if (!mounted) return;
@@ -132,14 +141,7 @@ class _ServerConfigScreenState extends ConsumerState<ServerConfigScreen> {
       ),
     );
 
-    // 4. Navigate
-    if (role == 'student') {
-      context.go(RoutePaths.studentDashboard);
-    } else if (role == 'smr') {
-      context.go(RoutePaths.smrDashboard);
-    } else {
-      context.go(RoutePaths.adminDashboard);
-    }
+    context.go(homeRouteFor(Capabilities.demo(role)));
   }
 
   void _showDemoRoleSelector() {

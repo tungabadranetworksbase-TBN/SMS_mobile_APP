@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../core/theme/app_colors.dart';
@@ -7,6 +8,7 @@ import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../core/managers/session_manager.dart';
 import '../../../../core/di/service_locator.dart';
+import '../../../../core/router/route_names.dart';
 import '../../../../shared/widgets/loading/shimmer_loading.dart';
 import '../../../../shared/widgets/error_states/error_state_view.dart';
 import '../../controllers/dashboard_controller.dart';
@@ -52,14 +54,22 @@ class AdminDashboardScreen extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildHeader(user),
-          const SizedBox(height: AppSpacing.xl),
+          const SizedBox(height: AppSpacing.md),
+          Align(
+            alignment: Alignment.centerRight,
+            child: TextButton(
+              onPressed: () => context.push(RoutePaths.staffAnalytics),
+              child: const Text('CRM analytics'),
+            ),
+          ),
+          const SizedBox(height: AppSpacing.md),
           _buildHeroStats(data.stats),
           const SizedBox(height: AppSpacing.xl),
-          _buildSectionTitle('System Alerts'),
+          _buildSectionTitle('Recent activity'),
           const SizedBox(height: AppSpacing.md),
           _buildSystemAlerts(data.systemAlerts),
           const SizedBox(height: AppSpacing.xl),
-          _buildSectionTitle('Revenue Overview'),
+          _buildSectionTitle('Orders (30 days)'),
           const SizedBox(height: AppSpacing.md),
           _buildRevenueChart(data.revenueData),
         ],
@@ -135,12 +145,10 @@ class AdminDashboardScreen extends ConsumerWidget {
           color: AppColors.primary,
         ),
         _StatCard(
-          title: 'Server Uptime',
-          value: '${stats.serverUptime.toStringAsFixed(1)}%',
-          icon: Icons.dns_rounded,
-          color: stats.serverUptime > 99
-              ? AppColors.success
-              : AppColors.warning,
+          title: 'Open alerts',
+          value: '${stats.pendingApprovals}',
+          icon: Icons.flag_rounded,
+          color: AppColors.warning,
         ),
       ],
     );

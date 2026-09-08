@@ -51,23 +51,19 @@ class StudentDashboardScreen extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildHeader(user, data.currentClassName),
+          _buildHeader(user, data.continueLearning?.courseTitle),
           const SizedBox(height: AppSpacing.xl),
           _buildHeroStats(data.stats),
           const SizedBox(height: AppSpacing.xl),
-          _buildSectionTitle('Active Courses'),
+          _buildSectionTitle('Your courses'),
           const SizedBox(height: AppSpacing.md),
-          _buildActiveBatches(data.activeBatches),
-          const SizedBox(height: AppSpacing.xl),
-          _buildSectionTitle('Upcoming Tasks'),
-          const SizedBox(height: AppSpacing.md),
-          _buildUpcomingTasks(data.upcomingTasks),
+          _buildCourses(data.courses),
         ],
       ),
     );
   }
 
-  Widget _buildHeader(SessionManager user, String className) {
+  Widget _buildHeader(SessionManager user, String? continueTitle) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -82,7 +78,9 @@ class StudentDashboardScreen extends ConsumerWidget {
             ),
             const SizedBox(height: AppSpacing.xxs),
             Text(
-              className,
+              continueTitle == null
+                  ? 'Ready to learn'
+                  : 'Continue: $continueTitle',
               style: AppTypography.bodyMedium.copyWith(
                 color: AppColors.primaryLight,
               ),
@@ -108,19 +106,28 @@ class StudentDashboardScreen extends ConsumerWidget {
       children: [
         Expanded(
           child: _StatCard(
-            title: 'Attendance',
-            value: '${(stats.attendancePercentage * 100).toInt()}%',
-            icon: Icons.calendar_today_rounded,
+            title: 'Courses',
+            value: '${stats.enrolledCourses}',
+            icon: Icons.school_rounded,
             color: AppColors.success,
           ),
         ),
         const SizedBox(width: AppSpacing.md),
         Expanded(
           child: _StatCard(
-            title: 'Pending Tasks',
-            value: '${stats.pendingTasksCount}',
-            icon: Icons.assignment_late_rounded,
+            title: 'Lectures',
+            value: '${stats.completedLectures}',
+            icon: Icons.play_circle_outline_rounded,
             color: AppColors.warning,
+          ),
+        ),
+        const SizedBox(width: AppSpacing.md),
+        Expanded(
+          child: _StatCard(
+            title: 'Purchases',
+            value: '${stats.purchases}',
+            icon: Icons.receipt_long_outlined,
+            color: AppColors.info,
           ),
         ),
       ],
@@ -134,18 +141,18 @@ class StudentDashboardScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildActiveBatches(List<StudentBatchDto> batches) {
-    if (batches.isEmpty) {
-      return const _EmptyCard(message: 'No active courses at the moment.');
+  Widget _buildCourses(List<DashboardCourseDto> courses) {
+    if (courses.isEmpty) {
+      return const _EmptyCard(message: 'No enrolled courses yet.');
     }
 
     return ListView.separated(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      itemCount: batches.length,
+      itemCount: courses.length,
       separatorBuilder: (_, __) => const SizedBox(height: AppSpacing.md),
       itemBuilder: (context, index) {
-        final batch = batches[index];
+        final course = courses[index];
         return Container(
           padding: const EdgeInsets.all(AppSpacing.base),
           decoration: BoxDecoration(
@@ -156,89 +163,25 @@ class StudentDashboardScreen extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                batch.courseTitle,
+                course.courseTitle,
                 style: AppTypography.titleMedium.copyWith(
                   color: AppColors.textPrimary,
                 ),
               ),
               const SizedBox(height: AppSpacing.xs),
               Text(
-                batch.name,
+                course.educatorName,
                 style: AppTypography.bodySmall.copyWith(
                   color: AppColors.textSecondary,
                 ),
               ),
               const SizedBox(height: AppSpacing.md),
               LinearProgressIndicator(
-                value: batch.progress,
+                value: course.progress,
                 backgroundColor: AppColors.surfaceContainer,
                 color: AppColors.primary,
                 borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
                 minHeight: 6,
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildUpcomingTasks(List<UpcomingTaskDto> tasks) {
-    if (tasks.isEmpty) {
-      return const _EmptyCard(message: 'You\'re all caught up!');
-    }
-
-    return ListView.separated(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: tasks.length,
-      separatorBuilder: (_, __) => const SizedBox(height: AppSpacing.md),
-      itemBuilder: (context, index) {
-        final task = tasks[index];
-        return Container(
-          padding: const EdgeInsets.all(AppSpacing.base),
-          decoration: BoxDecoration(
-            color: AppColors.cardSurface,
-            borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-          ),
-          child: Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(AppSpacing.sm),
-                decoration: BoxDecoration(
-                  color: AppColors.surfaceContainer,
-                  borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                ),
-                child: const Icon(
-                  Icons.assignment_outlined,
-                  color: AppColors.primary,
-                  size: 24,
-                ),
-              ),
-              const SizedBox(width: AppSpacing.md),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      task.title,
-                      style: AppTypography.titleSmall.copyWith(
-                        color: AppColors.textPrimary,
-                      ),
-                    ),
-                    const SizedBox(height: AppSpacing.xxs),
-                    Text(
-                      task.courseName,
-                      style: AppTypography.bodySmall.copyWith(
-                        color: AppColors.textSecondary,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const Icon(
-                Icons.chevron_right_rounded,
-                color: AppColors.textMuted,
               ),
             ],
           ),

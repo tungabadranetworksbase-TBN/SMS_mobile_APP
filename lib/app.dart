@@ -1,18 +1,45 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'core/auth/capabilities_refresh.dart';
 import 'core/config/app_constants.dart';
+import 'core/demo/demo_mode.dart';
 import 'core/di/service_locator.dart';
+import 'core/managers/session_manager.dart';
 import 'core/managers/theme_manager.dart';
 import 'core/router/app_router.dart';
 import 'core/theme/app_theme.dart';
 
-/// Tungabadra Networks LMS — App Root
-class TbnApp extends ConsumerWidget {
+class TbnApp extends ConsumerStatefulWidget {
   const TbnApp({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<TbnApp> createState() => _TbnAppState();
+}
+
+class _TbnAppState extends ConsumerState<TbnApp> with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state != AppLifecycleState.resumed) return;
+    if (!locator<SessionManager>().isAuthenticated) return;
+    if (DemoMode().isActive) return;
+    refreshCapabilitiesSafely().ignore();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final router = ref.watch(routerProvider);
     final themeManager = locator<ThemeManager>();
 
@@ -22,13 +49,9 @@ class TbnApp extends ConsumerWidget {
         return MaterialApp.router(
           title: AppConstants.appName,
           debugShowCheckedModeBanner: false,
-
-          // Theming
           themeMode: themeManager.themeMode,
-          theme: AppTheme.darkTheme, // We only use dark theme for now
+          theme: AppTheme.darkTheme,
           darkTheme: AppTheme.darkTheme,
-
-          // Routing
           routerConfig: router,
         );
       },

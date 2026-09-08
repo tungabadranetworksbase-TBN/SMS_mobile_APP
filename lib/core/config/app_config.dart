@@ -13,6 +13,13 @@ class AppConfig {
   String get apiBaseUrl =>
       dotenv.env['API_BASE_URL'] ?? 'http://localhost:3000/api';
 
+  /// Public web app origin for payment return URLs (no trailing slash).
+  String? get clientOrigin {
+    final value = dotenv.env['CLIENT_ORIGIN']?.trim();
+    if (value == null || value.isEmpty) return null;
+    return value;
+  }
+
   // ── Razorpay ──
   String get razorpayKeyId => dotenv.env['RAZORPAY_KEY_ID'] ?? '';
 

@@ -1,15 +1,12 @@
-import 'package:json_annotation/json_annotation.dart';
+import '../../../../core/network/json_value.dart';
 
-part 'order_dto.g.dart';
-
-@JsonSerializable()
 class OrderDto {
   final String id;
-  final String displayId; // Human readable like "ORD-2023-001"
+  final String displayId;
   final DateTime createdAt;
   final double totalAmount;
   final String currency;
-  final String status; // 'PENDING', 'PAID', 'FAILED', 'REFUNDED'
+  final String status;
   final String? receiptUrl;
   final List<OrderItemDto> items;
 
@@ -24,17 +21,50 @@ class OrderDto {
     required this.items,
   });
 
-  factory OrderDto.fromJson(Map<String, dynamic> json) =>
-      _$OrderDtoFromJson(json);
+  factory OrderDto.fromJson(Map<String, dynamic> json) {
+    if (json['course'] is Map || json['orderId'] != null) {
+      return OrderDto.fromPurchase(json);
+    }
+    return OrderDto(
+      id: jsonStr(json['id']),
+      displayId: jsonStr(json['displayId'] ?? json['orderNo'] ?? json['id']),
+      createdAt: jsonDate(json['createdAt']) ?? DateTime.now(),
+      totalAmount: jsonDouble(json['totalAmount'] ?? json['amount']),
+      currency: jsonStr(json['currency'], 'INR'),
+      status: jsonStr(json['status']),
+      receiptUrl: json['receiptUrl']?.toString(),
+      items: jsonList(json['items'])
+          .map((e) => OrderItemDto.fromJson(jsonMap(e)))
+          .toList(),
+    );
+  }
 
-  Map<String, dynamic> toJson() => _$OrderDtoToJson(this);
+  factory OrderDto.fromPurchase(Map<String, dynamic> json) {
+    final course = jsonMap(json['course']);
+    final amount = jsonDouble(json['amount']);
+    return OrderDto(
+      id: jsonStr(json['orderId'] ?? json['id']),
+      displayId: jsonStr(json['orderNo'] ?? json['orderId'] ?? json['id']),
+      createdAt: jsonDate(json['createdAt']) ?? DateTime.now(),
+      totalAmount: amount,
+      currency: jsonStr(json['currency'], 'INR'),
+      status: jsonStr(json['status']),
+      items: [
+        OrderItemDto(
+          id: jsonStr(json['id']),
+          title: jsonStr(course['courseTitle'] ?? course['title']),
+          type: 'COURSE',
+          price: amount,
+        ),
+      ],
+    );
+  }
 }
 
-@JsonSerializable()
 class OrderItemDto {
   final String id;
   final String title;
-  final String type; // 'COURSE', 'SUBSCRIPTION'
+  final String type;
   final double price;
 
   OrderItemDto({
@@ -44,8 +74,12 @@ class OrderItemDto {
     required this.price,
   });
 
-  factory OrderItemDto.fromJson(Map<String, dynamic> json) =>
-      _$OrderItemDtoFromJson(json);
-
-  Map<String, dynamic> toJson() => _$OrderItemDtoToJson(this);
+  factory OrderItemDto.fromJson(Map<String, dynamic> json) {
+    return OrderItemDto(
+      id: jsonStr(json['id']),
+      title: jsonStr(json['title'] ?? json['titleSnapshot']),
+      type: jsonStr(json['type'], 'COURSE'),
+      price: jsonDouble(json['price'] ?? json['lineTotal']),
+    );
+  }
 }

@@ -1,13 +1,10 @@
-import 'package:json_annotation/json_annotation.dart';
+import '../../../../core/network/json_value.dart';
 
-part 'notification_message_dto.g.dart';
-
-@JsonSerializable()
 class NotificationMessageDto {
   final String id;
   final String title;
   final String message;
-  final String type; // 'INFO', 'WARNING', 'SUCCESS', 'ALERT'
+  final String type;
   final bool isRead;
   final DateTime createdAt;
   final String? link;
@@ -22,8 +19,15 @@ class NotificationMessageDto {
     this.link,
   });
 
-  factory NotificationMessageDto.fromJson(Map<String, dynamic> json) =>
-      _$NotificationMessageDtoFromJson(json);
-
-  Map<String, dynamic> toJson() => _$NotificationMessageDtoToJson(this);
+  factory NotificationMessageDto.fromJson(Map<String, dynamic> json) {
+    return NotificationMessageDto(
+      id: jsonStr(json['id']),
+      title: jsonStr(json['title']),
+      message: jsonStr(json['body'] ?? json['message']),
+      type: jsonStr(json['kind'] ?? json['type'], 'INFO'),
+      isRead: json['isRead'] == true || json['readAt'] != null,
+      createdAt: jsonDate(json['createdAt']) ?? DateTime.now(),
+      link: json['url']?.toString() ?? json['link']?.toString(),
+    );
+  }
 }

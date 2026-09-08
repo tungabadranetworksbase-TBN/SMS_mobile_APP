@@ -2,50 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/auth/capabilities_store.dart';
+import '../../../../core/auth/destinations.dart';
+import '../../../../core/di/service_locator.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
-import '../../../../core/router/route_names.dart';
 
-class SmrShell extends ConsumerWidget {
+class StaffShell extends ConsumerWidget {
   final Widget child;
 
-  const SmrShell({super.key, required this.child});
+  const StaffShell({super.key, required this.child});
 
-  static const _tabs = [
-    _TabItem(
-      icon: Icons.dashboard_outlined,
-      activeIcon: Icons.dashboard_rounded,
-      label: 'Dashboard',
-      route: RoutePaths.smrDashboard,
-    ),
-    _TabItem(
-      icon: Icons.people_outline_rounded,
-      activeIcon: Icons.people_rounded,
-      label: 'Students',
-      route: RoutePaths.smrStudents,
-    ),
-    _TabItem(
-      icon: Icons.class_outlined,
-      activeIcon: Icons.class_rounded,
-      label: 'Batches',
-      route: RoutePaths.smrBatches,
-    ),
-    _TabItem(
-      icon: Icons.person_outline_rounded,
-      activeIcon: Icons.person_rounded,
-      label: 'Profile',
-      route: RoutePaths.studentProfile,
-    ),
-  ];
-
-  /// Derive the active tab from the current location so that deep links,
-  /// `context.go` from other screens and back-navigation all stay in sync.
-  int _indexForLocation(String location) {
+  int _indexForLocation(String location, List<Destination> tabs) {
     var bestIndex = 0;
     var bestLength = -1;
-    for (var i = 0; i < _tabs.length; i++) {
-      final route = _tabs[i].route;
+    for (var i = 0; i < tabs.length; i++) {
+      final route = tabs[i].route;
       if (location == route || location.startsWith('$route/')) {
         if (route.length > bestLength) {
           bestIndex = i;
@@ -58,17 +31,27 @@ class SmrShell extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final caps = locator<CapabilitiesStore>().current;
+    final tabs = caps == null
+        ? const <Destination>[]
+        : visibleStaffDestinations(caps);
     final location = GoRouterState.of(context).matchedLocation;
-    final currentIndex = _indexForLocation(location);
+    final currentIndex = tabs.isEmpty ? 0 : _indexForLocation(location, tabs);
 
     return Scaffold(
       backgroundColor: AppColors.background,
       body: child,
-      bottomNavigationBar: _buildBottomNav(context, currentIndex),
+      bottomNavigationBar: tabs.isEmpty
+          ? null
+          : _buildBottomNav(context, currentIndex, tabs),
     );
   }
 
-  Widget _buildBottomNav(BuildContext context, int currentIndex) {
+  Widget _buildBottomNav(
+    BuildContext context,
+    int currentIndex,
+    List<Destination> tabs,
+  ) {
     return Container(
       decoration: BoxDecoration(
         color: AppColors.surfaceDim,
@@ -87,8 +70,8 @@ class SmrShell extends ConsumerWidget {
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: List.generate(_tabs.length, (i) {
-              final tab = _tabs[i];
+            children: List.generate(tabs.length, (i) {
+              final tab = tabs[i];
               final isActive = i == currentIndex;
               return _buildNavItem(tab, isActive, () {
                 if (i == currentIndex) return;
@@ -101,7 +84,7 @@ class SmrShell extends ConsumerWidget {
     );
   }
 
-  Widget _buildNavItem(_TabItem tab, bool isActive, VoidCallback onTap) {
+  Widget _buildNavItem(Destination tab, bool isActive, VoidCallback onTap) {
     return GestureDetector(
       onTap: onTap,
       behavior: HitTestBehavior.opaque,
@@ -139,18 +122,4 @@ class SmrShell extends ConsumerWidget {
       ),
     );
   }
-}
-
-class _TabItem {
-  final IconData icon;
-  final IconData activeIcon;
-  final String label;
-  final String route;
-
-  const _TabItem({
-    required this.icon,
-    required this.activeIcon,
-    required this.label,
-    required this.route,
-  });
 }

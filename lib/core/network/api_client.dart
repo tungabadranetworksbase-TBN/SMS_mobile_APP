@@ -12,6 +12,7 @@ import 'interceptors/token_capture_interceptor.dart';
 import 'interceptors/retry_interceptor.dart';
 import 'interceptors/logging_interceptor.dart';
 import 'interceptors/connectivity_interceptor.dart';
+import 'interceptors/gate_interceptor.dart';
 
 /// Tungabadra Networks LMS — Dio API Client
 ///
@@ -54,6 +55,7 @@ class ApiClient {
       ConnectivityInterceptor(networkInfo: networkInfo),
       AuthInterceptor(secureStorage: secureStorage),
       TokenCaptureInterceptor(secureStorage: secureStorage),
+      GateInterceptor(),
       if (kDebugMode) LoggingInterceptor(),
       RetryInterceptor(
         dio: _dio,
@@ -92,10 +94,16 @@ class ApiClient {
     String path, {
     dynamic data,
     Map<String, dynamic>? queryParameters,
+    Map<String, dynamic>? headers,
     T Function(dynamic)? fromJson,
   }) async {
     return _request(
-      () => _dio.post(path, data: data, queryParameters: queryParameters),
+      () => _dio.post(
+        path,
+        data: data,
+        queryParameters: queryParameters,
+        options: headers == null ? null : Options(headers: headers),
+      ),
       fromJson: fromJson,
     );
   }

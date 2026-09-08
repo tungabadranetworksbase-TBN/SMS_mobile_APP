@@ -1,12 +1,14 @@
 import '../../../../core/config/api_endpoints.dart';
 import '../../../../core/network/api_client.dart';
 import '../../../../core/network/api_response.dart';
+import '../../../../core/network/json_value.dart';
 import '../../../../core/network/unsupported_endpoint.dart';
 import '../models/admin_dashboard_dto.dart';
+import '../models/crm_insights_dto.dart';
 import '../models/smr_dashboard_dto.dart';
+import '../models/staff_lists_dto.dart';
 import '../models/student_dashboard_dto.dart';
 
-/// Tungabadra Networks LMS — Dashboard API Service
 class DashboardApiService {
   final ApiClient _apiClient;
 
@@ -16,14 +18,10 @@ class DashboardApiService {
     return _apiClient.get<StudentDashboardDto>(
       ApiEndpoints.studentDashboardV1,
       fromJson: (json) =>
-          StudentDashboardDto.fromJson(json as Map<String, dynamic>),
+          StudentDashboardDto.fromJson(jsonMap(json)),
     );
   }
 
-  /// No SMR dashboard exists server-side. "SMR" is not a backend concept — it
-  /// is one of many runtime-created staff roles, so there is no single endpoint
-  /// to serve it. Stage B composes this view from `/students` and `/batches`
-  /// filtered by the caller's permissions.
   Future<ApiResponse<SmrDashboardDto>> fetchSmrDashboard() async {
     throw unsupportedEndpoint('SMR dashboard');
   }
@@ -31,8 +29,40 @@ class DashboardApiService {
   Future<ApiResponse<AdminDashboardDto>> fetchAdminDashboard() async {
     return _apiClient.get<AdminDashboardDto>(
       ApiEndpoints.insightsDashboard,
-      fromJson: (json) =>
-          AdminDashboardDto.fromJson(json as Map<String, dynamic>),
+      fromJson: (json) => AdminDashboardDto.fromJson(jsonMap(json)),
+    );
+  }
+
+  Future<ApiResponse<List<StaffRosterRowDto>>> fetchStaffStudents({
+    String? search,
+  }) async {
+    return _apiClient.get<List<StaffRosterRowDto>>(
+      ApiEndpoints.students,
+      queryParameters: {
+        'page': 1,
+        'pageSize': 50,
+        if (search != null && search.isNotEmpty) 'search': search,
+      },
+      fromJson: (json) => jsonList(jsonMap(json)['students'])
+          .map((e) => StaffRosterRowDto.fromJson(jsonMap(e)))
+          .toList(),
+    );
+  }
+
+  Future<ApiResponse<List<StaffBatchRowDto>>> fetchStaffBatches() async {
+    return _apiClient.get<List<StaffBatchRowDto>>(
+      ApiEndpoints.batches,
+      queryParameters: {'page': 1, 'pageSize': 50},
+      fromJson: (json) => jsonList(jsonMap(json)['batches'])
+          .map((e) => StaffBatchRowDto.fromJson(jsonMap(e)))
+          .toList(),
+    );
+  }
+
+  Future<ApiResponse<CrmInsightsDto>> fetchCrmInsights() {
+    return _apiClient.get<CrmInsightsDto>(
+      ApiEndpoints.analyticsCrm,
+      fromJson: (json) => CrmInsightsDto.fromJson(jsonMap(json)),
     );
   }
 }

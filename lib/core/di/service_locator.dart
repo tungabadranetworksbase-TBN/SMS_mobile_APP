@@ -1,5 +1,8 @@
 import 'package:get_it/get_it.dart';
 
+import '../auth/capabilities_refresh.dart';
+import '../auth/capabilities_store.dart';
+import '../auth/gate_store.dart';
 import '../config/app_config.dart';
 import '../managers/connectivity_manager.dart';
 import '../managers/download_manager.dart';
@@ -15,6 +18,7 @@ import '../storage/secure_storage.dart';
 import '../storage/cache_manager.dart';
 import '../../features/auth/data/repositories/auth_repository.dart';
 import '../../features/auth/data/services/auth_api_service.dart';
+import '../../features/auth/data/services/registration_api_service.dart';
 import '../../features/auth/data/services/users_api_service.dart';
 import '../../features/dashboard/data/repositories/dashboard_repository.dart';
 import '../../features/dashboard/data/services/dashboard_api_service.dart';
@@ -26,6 +30,7 @@ import '../../features/assessments/data/repositories/assessments_repository.dart
 import '../../features/assessments/data/services/assessments_api_service.dart';
 import '../../features/orders/data/repositories/orders_repository.dart';
 import '../../features/orders/data/services/orders_api_service.dart';
+import '../../features/payments/data/services/commerce_api_service.dart';
 import '../../features/payments/data/services/payment_gateway_service.dart';
 import '../../features/profile/data/repositories/profile_repository.dart';
 import '../../features/profile/data/services/profile_api_service.dart';
@@ -51,6 +56,8 @@ Future<void> setupLocator() async {
 
   // ── Managers (Zentriva Singleton Pattern) ──
   locator.registerLazySingleton<SessionManager>(() => SessionManager());
+  locator.registerLazySingleton<CapabilitiesStore>(() => CapabilitiesStore());
+  locator.registerLazySingleton<GateStore>(() => GateStore());
   locator.registerLazySingleton<ThemeManager>(() => ThemeManager());
   locator.registerLazySingleton<ConnectivityManager>(
     () => ConnectivityManager(),
@@ -86,12 +93,20 @@ Future<void> setupLocator() async {
   locator.registerLazySingleton<UsersApiService>(
     () => UsersApiService(apiClient: locator<ApiClient>()),
   );
+  locator.registerLazySingleton<RegistrationApiService>(
+    () => RegistrationApiService(apiClient: locator<ApiClient>()),
+  );
   locator.registerLazySingleton<AuthRepository>(
     () => AuthRepository(
       apiService: locator<AuthApiService>(),
+      usersApi: locator<UsersApiService>(),
+      registrationApi: locator<RegistrationApiService>(),
       sessionManager: locator<SessionManager>(),
+      capabilitiesStore: locator<CapabilitiesStore>(),
+      gateStore: locator<GateStore>(),
     ),
   );
+  capabilitiesRefresh = () => locator<AuthRepository>().refreshCapabilities();
 
   // ── Dashboard Module ──
   locator.registerLazySingleton<DashboardApiService>(
@@ -138,6 +153,9 @@ Future<void> setupLocator() async {
   );
 
   // ── Payments Module ──
+  locator.registerLazySingleton<CommerceApiService>(
+    () => CommerceApiService(apiClient: locator<ApiClient>()),
+  );
   locator.registerLazySingleton<PaymentGatewayService>(
     () => PaymentGatewayService(),
   );

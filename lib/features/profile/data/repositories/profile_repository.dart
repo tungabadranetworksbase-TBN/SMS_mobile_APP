@@ -17,7 +17,7 @@ class ProfileRepository {
 
   Future<ProfileDto> getProfile() async {
     if (DemoMode().isActive) {
-      return DemoData.getProfile(_sessionManager.userRole ?? 'student');
+      return DemoData.getProfile(DemoMode().selectedRole);
     }
     try {
       final response = await _apiService.getProfile();
@@ -32,7 +32,7 @@ class ProfileRepository {
 
   Future<ProfileDto> updateProfile(Map<String, dynamic> data) async {
     if (DemoMode().isActive) {
-      final currentRole = _sessionManager.userRole ?? 'student';
+      final currentRole = DemoMode().selectedRole;
       final updated = ProfileDto(
         id: 'stud-001',
         name: data['name'] ?? 'John Doe',
@@ -47,34 +47,29 @@ class ProfileRepository {
         userId: updated.id,
         userName: updated.name,
         userEmail: updated.email,
-        userRole: updated.role,
         userAvatar: updated.avatarUrl,
       );
       return updated;
     }
     try {
       final response = await _apiService.updateProfile(data);
-      if (response.success && response.data != null) {
-        final profile = response.data!;
-        // Fetch tokens before saving
-        final token = await _sessionManager.token;
-        final refreshToken = await _sessionManager.refreshToken;
-
-        // Update local session data with new name/avatar
-        await _sessionManager.saveSession(
-          token: token ?? '',
-          refreshToken: refreshToken,
-          userId: profile.id,
-          userName: profile.name,
-          userEmail: profile.email,
-          userRole: profile.role,
-          userAvatar: profile.avatarUrl,
+      if (!response.success) {
+        throw ApiException(
+          message: response.message ?? 'Failed to update profile',
         );
-        return profile;
       }
-      throw ApiException(
-        message: response.message ?? 'Failed to update profile',
+      final profile = await getProfile();
+      final token = await _sessionManager.token;
+      final refreshToken = await _sessionManager.refreshToken;
+      await _sessionManager.saveSession(
+        token: token ?? '',
+        refreshToken: refreshToken,
+        userId: profile.id,
+        userName: profile.name,
+        userEmail: profile.email,
+        userAvatar: profile.avatarUrl,
       );
+      return profile;
     } catch (e) {
       rethrow;
     }
@@ -82,8 +77,7 @@ class ProfileRepository {
 
   Future<ProfileDto> uploadAvatar(String filePath) async {
     if (DemoMode().isActive) {
-      final currentRole = _sessionManager.userRole ?? 'student';
-      return DemoData.getProfile(currentRole);
+      return DemoData.getProfile(DemoMode().selectedRole);
     }
     try {
       final response = await _apiService.uploadAvatar(filePath);
@@ -98,7 +92,6 @@ class ProfileRepository {
           userId: profile.id,
           userName: profile.name,
           userEmail: profile.email,
-          userRole: profile.role,
           userAvatar: profile.avatarUrl,
         );
         return profile;

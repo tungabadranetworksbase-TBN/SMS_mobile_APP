@@ -58,6 +58,12 @@ class LearningRepository {
       return DemoData.getCourseModules(courseId);
     }
     try {
+      final enrolled = await getStudentCourses();
+      for (final course in enrolled) {
+        if (course.id == courseId && course.modules.isNotEmpty) {
+          return course.modules;
+        }
+      }
       final response = await _apiService.fetchCourseModules(courseId);
       if (response.success && response.data != null) {
         return response.data!;

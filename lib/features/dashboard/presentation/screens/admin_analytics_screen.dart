@@ -1,16 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../shared/components/app_card.dart';
+import '../../../../shared/widgets/error_states/error_state_view.dart';
+import '../../controllers/dashboard_controller.dart';
+import '../../data/models/crm_insights_dto.dart';
 
-class AdminAnalyticsScreen extends StatelessWidget {
+class AdminAnalyticsScreen extends ConsumerWidget {
   const AdminAnalyticsScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
+    final state = ref.watch(crmInsightsProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -18,70 +23,104 @@ class AdminAnalyticsScreen extends StatelessWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.download_rounded),
-            onPressed: () => _exportReport(context),
+            onPressed: () {
+              final data = state.asData?.value;
+              if (data != null) _exportReport(context, data);
+            },
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(AppSpacing.s16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Sales Funnel', style: AppTypography.titleLarge),
-            const SizedBox(height: AppSpacing.s16),
-            AppCard(
+      body: state.when(
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (error, _) => ErrorStateView(
+          message: error.toString(),
+          onRetry: () => ref.invalidate(crmInsightsProvider),
+        ),
+        data: (data) {
+          return RefreshIndicator(
+            onRefresh: () async => ref.invalidate(crmInsightsProvider),
+            child: SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding: const EdgeInsets.all(AppSpacing.s16),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildFunnelRow('Total Leads', '1,245', colorScheme.primary),
-                  const Divider(),
-                  _buildFunnelRow(
-                    'Contacted',
-                    '830',
-                    colorScheme.primary.withValues(alpha: 0.8),
+                  Text('Sales funnel', style: AppTypography.titleLarge),
+                  const SizedBox(height: AppSpacing.s16),
+                  AppCard(
+                    child: Column(
+                      children: [
+                        _buildFunnelRow(
+                          'Total leads',
+                          '${data.totalLeads}',
+                          colorScheme.primary,
+                        ),
+                        const Divider(),
+                        _buildFunnelRow(
+                          'Converted',
+                          '${data.convertedLeads}',
+                          const Color(0xFF10B981),
+                        ),
+                        const Divider(),
+                        _buildFunnelRow(
+                          'Conversion',
+                          '${data.conversionRatePct}%',
+                          colorScheme.primary.withValues(alpha: 0.7),
+                        ),
+                      ],
+                    ),
                   ),
-                  const Divider(),
-                  _buildFunnelRow(
-                    'Qualified',
-                    '450',
-                    colorScheme.primary.withValues(alpha: 0.6),
+                  const SizedBox(height: AppSpacing.s32),
+                  Text('Pipeline', style: AppTypography.titleLarge),
+                  const SizedBox(height: AppSpacing.s16),
+                  AppCard(
+                    child: data.pipeline.isEmpty
+                        ? const Text('No pipeline data.')
+                        : Column(
+                            children: [
+                              for (final e in data.pipeline.entries) ...[
+                                _buildFunnelRow(
+                                  e.key,
+                                  '${e.value}',
+                                  colorScheme.primary,
+                                ),
+                                if (e.key != data.pipeline.keys.last)
+                                  const Divider(),
+                              ],
+                            ],
+                          ),
                   ),
-                  const Divider(),
-                  _buildFunnelRow(
-                    'Enrolled',
-                    '120',
-                    const Color(0xFF10B981),
-                  ), // Success green
+                  const SizedBox(height: AppSpacing.s32),
+                  Text('Follow-ups', style: AppTypography.titleLarge),
+                  const SizedBox(height: AppSpacing.s16),
+                  AppCard(
+                    child: Column(
+                      children: [
+                        _buildFunnelRow(
+                          'Pending',
+                          '${data.pendingFollowUps}',
+                          colorScheme.primary,
+                        ),
+                        const Divider(),
+                        _buildFunnelRow(
+                          'Overdue',
+                          '${data.overdueFollowUps}',
+                          const Color(0xFFEF4444),
+                        ),
+                        const Divider(),
+                        _buildFunnelRow(
+                          'Stuck records',
+                          '${data.stuckRecords}',
+                          const Color(0xFFF59E0B),
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ),
-            const SizedBox(height: AppSpacing.s32),
-            Text('Recent Enrollments', style: AppTypography.titleLarge),
-            const SizedBox(height: AppSpacing.s16),
-            ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: 4,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  leading: const CircleAvatar(
-                    child: Icon(Icons.person_rounded),
-                  ),
-                  title: Text(
-                    'Student ${index + 1}',
-                    style: AppTypography.titleMedium,
-                  ),
-                  subtitle: const Text('Enrolled in Cisco CCNA'),
-                  trailing: Text(
-                    '₹15,000',
-                    style: AppTypography.labelLarge.copyWith(
-                      color: const Color(0xFF10B981),
-                    ),
-                  ),
-                );
-              },
-            ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
@@ -114,30 +153,20 @@ class AdminAnalyticsScreen extends StatelessWidget {
     );
   }
 
-  Future<void> _exportReport(BuildContext context) async {
-    try {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Generating report...')));
-
-      const csvData =
-          'Metric,Value\n'
-          'Total Leads,1245\n'
-          'Contacted,830\n'
-          'Qualified,450\n'
-          'Enrolled,120\n';
-
-      if (context.mounted) {
-        await SharePlus.instance.share(
-          ShareParams(text: csvData, subject: 'Analytics Report'),
-        );
-      }
-    } catch (e) {
-      if (context.mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Failed to export report: $e')));
-      }
-    }
+  Future<void> _exportReport(
+    BuildContext context,
+    CrmInsightsDto data,
+  ) async {
+    final csv =
+        'Metric,Value\n'
+        'Total Leads,${data.totalLeads}\n'
+        'Converted,${data.convertedLeads}\n'
+        'Conversion %,${data.conversionRatePct}\n'
+        'Pending follow-ups,${data.pendingFollowUps}\n'
+        'Overdue,${data.overdueFollowUps}\n'
+        'Stuck,${data.stuckRecords}\n';
+    await SharePlus.instance.share(
+      ShareParams(text: csv, subject: 'Analytics Report'),
+    );
   }
 }

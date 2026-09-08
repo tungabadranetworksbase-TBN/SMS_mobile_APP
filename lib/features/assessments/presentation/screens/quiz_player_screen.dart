@@ -24,7 +24,7 @@ class QuizPlayerScreen extends ConsumerStatefulWidget {
 
 class _QuizPlayerScreenState extends ConsumerState<QuizPlayerScreen> {
   int _currentIndex = 0;
-  final Map<String, String> _answers = {};
+  final Map<String, List<int>> _answers = {};
   Timer? _timer;
   int _secondsRemaining = 0;
 
@@ -220,12 +220,13 @@ class _QuizPlayerScreenState extends ConsumerState<QuizPlayerScreen> {
                         const SizedBox(height: AppSpacing.sm),
                     itemBuilder: (context, index) {
                       final option = question.options[index];
-                      final isSelected = _answers[question.id] == option;
+                      final selected = _answers[question.id] ?? const <int>[];
+                      final isSelected = selected.contains(index);
 
                       return InkWell(
                         onTap: () {
                           setState(() {
-                            _answers[question.id] = option;
+                            _answers[question.id] = [index];
                           });
                         },
                         borderRadius: BorderRadius.circular(

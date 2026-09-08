@@ -29,13 +29,7 @@ class StudentShell extends ConsumerWidget {
       icon: Icons.notifications_outlined,
       activeIcon: Icons.notifications_rounded,
       label: 'Alerts',
-      route: RoutePaths.studentAttendance,
-    ),
-    _TabItem(
-      icon: Icons.support_agent_outlined,
-      activeIcon: Icons.support_agent_rounded,
-      label: 'Support',
-      route: RoutePaths.studentSupport,
+      route: RoutePaths.notifications,
     ),
     _TabItem(
       icon: Icons.person_outline_rounded,

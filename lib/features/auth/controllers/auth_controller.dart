@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/di/service_locator.dart';
 import '../../../../core/network/api_exception.dart';
+import '../data/models/registration_status_dto.dart';
 import '../data/repositories/auth_repository.dart';
 
 /// Provider for the AuthRepository
@@ -32,11 +33,13 @@ class AuthController extends StateNotifier<AsyncValue<void>> {
       state = const AsyncValue.data(null);
     } on ApiException catch (e) {
       state = AsyncValue.error(e, StackTrace.current);
+      rethrow;
     } catch (e) {
       state = AsyncValue.error(
         const ApiException.unknown(),
         StackTrace.current,
       );
+      rethrow;
     }
   }
 
@@ -68,6 +71,102 @@ class AuthController extends StateNotifier<AsyncValue<void>> {
 
   Future<bool> checkServerHealth() async {
     return _repository.checkServerHealth();
+  }
+
+  Future<void> sendEmailVerificationOtp(String email) async {
+    state = const AsyncValue.loading();
+    try {
+      await _repository.sendEmailVerificationOtp(email);
+      state = const AsyncValue.data(null);
+    } on ApiException catch (e) {
+      state = AsyncValue.error(e, StackTrace.current);
+      rethrow;
+    } catch (e) {
+      state = AsyncValue.error(
+        const ApiException.unknown(),
+        StackTrace.current,
+      );
+      rethrow;
+    }
+  }
+
+  Future<void> verifyEmailOtp(String email, String otp) async {
+    state = const AsyncValue.loading();
+    try {
+      await _repository.verifyEmailOtp(email, otp);
+      state = const AsyncValue.data(null);
+    } on ApiException catch (e) {
+      state = AsyncValue.error(e, StackTrace.current);
+      rethrow;
+    } catch (e) {
+      state = AsyncValue.error(
+        const ApiException.unknown(),
+        StackTrace.current,
+      );
+      rethrow;
+    }
+  }
+
+  Future<void> changePassword({
+    required String currentPassword,
+    required String newPassword,
+  }) async {
+    state = const AsyncValue.loading();
+    try {
+      await _repository.changePassword(
+        currentPassword: currentPassword,
+        newPassword: newPassword,
+      );
+      state = const AsyncValue.data(null);
+    } on ApiException catch (e) {
+      state = AsyncValue.error(e, StackTrace.current);
+      rethrow;
+    } catch (e) {
+      state = AsyncValue.error(
+        const ApiException.unknown(),
+        StackTrace.current,
+      );
+      rethrow;
+    }
+  }
+
+  Future<RegistrationStatusDto> registrationStatus() {
+    return _repository.registrationStatus();
+  }
+
+  Future<void> submitRegistrationReceipt(String filePath) async {
+    state = const AsyncValue.loading();
+    try {
+      await _repository.submitRegistrationReceipt(filePath);
+      state = const AsyncValue.data(null);
+    } on ApiException catch (e) {
+      state = AsyncValue.error(e, StackTrace.current);
+      rethrow;
+    } catch (e) {
+      state = AsyncValue.error(
+        const ApiException.unknown(),
+        StackTrace.current,
+      );
+      rethrow;
+    }
+  }
+
+  Future<String?> startRegistrationCheckout() async {
+    state = const AsyncValue.loading();
+    try {
+      final url = await _repository.startRegistrationCheckout();
+      state = const AsyncValue.data(null);
+      return url;
+    } on ApiException catch (e) {
+      state = AsyncValue.error(e, StackTrace.current);
+      rethrow;
+    } catch (e) {
+      state = AsyncValue.error(
+        const ApiException.unknown(),
+        StackTrace.current,
+      );
+      rethrow;
+    }
   }
 
   Future<void> forgotPassword(String email) async {

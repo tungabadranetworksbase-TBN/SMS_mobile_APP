@@ -1,6 +1,7 @@
 import '../../../../core/network/api_client.dart';
 import '../../../../core/network/api_response.dart';
 import '../../../../core/config/api_endpoints.dart';
+import '../../../../core/network/json_value.dart';
 import '../models/notification_message_dto.dart';
 
 class NotificationsApiService {
@@ -13,11 +14,9 @@ class NotificationsApiService {
     return _apiClient.get<List<NotificationMessageDto>>(
       ApiEndpoints.notifications,
       fromJson: (json) {
-        final list = json as List;
-        return list
-            .map(
-              (e) => NotificationMessageDto.fromJson(e as Map<String, dynamic>),
-            )
+        final raw = json is List ? json : jsonList(jsonMap(json)['notifications']);
+        return raw
+            .map((e) => NotificationMessageDto.fromJson(jsonMap(e)))
             .toList();
       },
     );

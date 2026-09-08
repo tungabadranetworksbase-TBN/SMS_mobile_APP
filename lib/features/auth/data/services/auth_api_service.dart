@@ -3,29 +3,18 @@ import '../../../../core/network/api_response.dart';
 import '../../../../core/config/api_endpoints.dart';
 import '../models/login_request_dto.dart';
 import '../models/signup_request_dto.dart';
-import '../models/login_response_dto.dart';
 
 class AuthApiService {
   final ApiClient _apiClient;
 
   AuthApiService({required ApiClient apiClient}) : _apiClient = apiClient;
 
-  Future<ApiResponse<LoginResponseDto>> login(LoginRequestDto req) async {
-    return _apiClient.post<LoginResponseDto>(
-      ApiEndpoints.signIn,
-      data: req.toJson(),
-      fromJson: (json) =>
-          LoginResponseDto.fromJson(json as Map<String, dynamic>),
-    );
+  Future<ApiResponse<void>> login(LoginRequestDto req) async {
+    return _apiClient.post<void>(ApiEndpoints.signIn, data: req.toJson());
   }
 
-  Future<ApiResponse<LoginResponseDto>> signUp(SignupRequestDto req) async {
-    return _apiClient.post<LoginResponseDto>(
-      ApiEndpoints.signUp,
-      data: req.toJson(),
-      fromJson: (json) =>
-          LoginResponseDto.fromJson(json as Map<String, dynamic>),
-    );
+  Future<ApiResponse<void>> signUp(SignupRequestDto req) async {
+    return _apiClient.post<void>(ApiEndpoints.signUp, data: req.toJson());
   }
 
   Future<ApiResponse<void>> logout() async {
@@ -34,6 +23,33 @@ class AuthApiService {
 
   Future<ApiResponse<void>> checkServerHealth() async {
     return _apiClient.get<void>(ApiEndpoints.serverHealth);
+  }
+
+  Future<ApiResponse<void>> sendEmailVerificationOtp(String email) async {
+    return _apiClient.post<void>(
+      ApiEndpoints.sendVerificationOtp,
+      data: {'email': email, 'type': 'email-verification'},
+    );
+  }
+
+  Future<ApiResponse<void>> verifyEmailOtp(String email, String otp) async {
+    return _apiClient.post<void>(
+      ApiEndpoints.verifyEmailOtp,
+      data: {'email': email, 'otp': otp},
+    );
+  }
+
+  Future<ApiResponse<void>> changePassword({
+    required String currentPassword,
+    required String newPassword,
+  }) async {
+    return _apiClient.post<void>(
+      ApiEndpoints.changePassword,
+      data: {
+        'currentPassword': currentPassword,
+        'newPassword': newPassword,
+      },
+    );
   }
 
   Future<ApiResponse<void>> forgotPassword(String email) async {

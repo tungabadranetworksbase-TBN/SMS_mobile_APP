@@ -50,8 +50,16 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
   @override
   Widget build(BuildContext context) {
     // Listen to auth state to show errors
-    ref.listen<AsyncValue<void>>(authControllerProvider, (_, state) {
+    ref.listen<AsyncValue<void>>(authControllerProvider, (prev, state) {
       state.whenOrNull(
+        data: (_) {
+          if (prev?.isLoading == true) {
+            context.goNamed(
+              RouteNames.verifyEmail,
+              extra: {'email': _emailController.text.trim()},
+            );
+          }
+        },
         error: (error, _) {
           final message = error is ApiException
               ? error.message

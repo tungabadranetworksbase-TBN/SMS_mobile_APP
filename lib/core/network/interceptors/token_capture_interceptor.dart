@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:dio/dio.dart';
 
 import '../../config/app_constants.dart';
@@ -24,8 +22,10 @@ class TokenCaptureInterceptor extends Interceptor {
   ) {
     final token = response.headers.value('set-auth-token');
     if (token != null && token.isNotEmpty) {
-      // Fire-and-forget: the response must not block on the keystore.
-      unawaited(_secureStorage.write(AppConstants.keySessionToken, token));
+      _secureStorage.write(AppConstants.keySessionToken, token).whenComplete(
+        () => handler.next(response),
+      );
+      return;
     }
     handler.next(response);
   }

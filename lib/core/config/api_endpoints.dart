@@ -50,6 +50,8 @@ class ApiEndpoints {
   static const String purchases = '/student/purchases';
   static const String registrationStatus = '/student/registration/status';
   static const String registrationReceipt = '/student/registration/receipt';
+  static const String registrationCheckout = '/student/registration/checkout';
+  static const String registrationAbandoned = '/student/registration/abandoned';
 
   // ══════════════════════════════════════════════
   // LEARNING
@@ -58,6 +60,7 @@ class ApiEndpoints {
   static const String fileDownload = '/learning/files/{id}/download';
   static const String assessments = '/learning/assessments';
   static const String startAssessment = '/learning/assessments/{id}/start';
+  static const String submitAssessment = '/learning/assessments/{id}/submit';
   static const String assessmentResult = '/learning/assessments/{id}/result';
   static const String quizzes = '/learning/quizzes';
   static const String quizDetail = '/learning/quizzes/{id}';
@@ -93,6 +96,7 @@ class ApiEndpoints {
   static const String paymentOptions = '/commerce/payment-options';
   static const String commerceOrders = '/commerce/orders';
   static const String commerceOrderDetail = '/commerce/orders/{id}';
+  static const String commerceOrderPayments = '/commerce/orders/{id}/payments';
 
   // ══════════════════════════════════════════════
   // STAFF — STUDENTS
@@ -148,10 +152,13 @@ class ApiEndpoints {
     purchases,
     registrationStatus,
     registrationReceipt,
+    registrationCheckout,
+    registrationAbandoned,
     courseContent,
     fileDownload,
     assessments,
     startAssessment,
+    submitAssessment,
     assessmentResult,
     quizzes,
     quizDetail,
@@ -175,6 +182,7 @@ class ApiEndpoints {
     paymentOptions,
     commerceOrders,
     commerceOrderDetail,
+    commerceOrderPayments,
     students,
     studentDetail,
     studentMaster,

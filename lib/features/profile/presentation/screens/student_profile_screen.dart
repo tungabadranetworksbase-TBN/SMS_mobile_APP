@@ -150,7 +150,9 @@ class StudentProfileScreen extends ConsumerWidget {
             _buildDetailRow(
               Icons.calendar_today_outlined,
               'Joined',
-              dateFormat.format(profile.joinedAt),
+              profile.joinedAt.millisecondsSinceEpoch == 0
+                  ? '—'
+                  : dateFormat.format(profile.joinedAt),
             ),
 
             const SizedBox(height: AppSpacing.xxxl),

@@ -55,3 +55,6 @@ app.*.map.json
 
 # Subagent-driven-development scratch: ledgers, task briefs, review packages.
 /.superpowers/
+
+# Generated knowledge-graph output (5MB of regenerable HTML/JSON artifacts).
+/graphify-out/

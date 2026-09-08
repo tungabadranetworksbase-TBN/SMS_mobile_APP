@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/auth/session_gates.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
@@ -29,11 +30,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     super.dispose();
   }
 
-  void _handleLogin() {
-    if (_formKey.currentState?.validate() ?? false) {
-      ref
+  Future<void> _handleLogin() async {
+    if (!(_formKey.currentState?.validate() ?? false)) return;
+    try {
+      await ref
           .read(authControllerProvider.notifier)
           .login(_emailController.text.trim(), _passwordController.text);
+    } catch (_) {
+      // Errors are shown by the provider listener.
     }
   }
 
@@ -43,6 +47,22 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     ref.listen<AsyncValue<void>>(authControllerProvider, (_, state) {
       state.whenOrNull(
         error: (error, _) {
+          if (error is ApiException && SessionGates.needsEmailOtp(error)) {
+            context.goNamed(
+              RouteNames.verifyEmail,
+              extra: {
+                'email': _emailController.text.trim(),
+                'password': _passwordController.text,
+              },
+            );
+            return;
+          }
+          if (error is ApiException && error.isAccountNotActive) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(error.message)),
+            );
+            return;
+          }
           final message = error is ApiException
               ? error.message
               : 'An unexpected error occurred.';

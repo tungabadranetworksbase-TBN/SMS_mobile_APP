@@ -4,6 +4,7 @@
 import '../../features/dashboard/data/models/student_dashboard_dto.dart';
 import '../../features/dashboard/data/models/smr_dashboard_dto.dart';
 import '../../features/dashboard/data/models/admin_dashboard_dto.dart';
+import '../../features/dashboard/data/models/staff_lists_dto.dart';
 import '../../features/learning/data/models/course_dto.dart';
 import '../../features/learning/data/models/lesson_dto.dart';
 import '../../features/profile/data/models/profile_dto.dart';
@@ -54,52 +55,32 @@ class DemoData {
 
   // ── Student Dashboard ──
   static StudentDashboardDto get studentDashboard => StudentDashboardDto(
-    currentClassName: 'Full-Stack Web Development – Batch 14',
     stats: DashboardStatsDto(
-      attendancePercentage: 0.87,
-      pendingTasksCount: 3,
-      lastClassDate: DateTime.now().subtract(const Duration(days: 1)),
-      activeCoursesCount: 2,
-      classesAttendedCount: 42,
-      tasksSubmittedCount: 18,
+      enrolledCourses: 2,
+      completedLectures: 25,
+      purchases: 2,
     ),
-    activeBatches: [
-      StudentBatchDto(
-        id: 'batch-001',
-        name: 'Batch 14 • Mon/Wed/Fri',
-        courseId: 'course-001',
+    continueLearning: DashboardCourseDto(
+      id: 'course-001',
+      courseTitle: 'Full-Stack Web Development',
+      educatorName: 'Rajesh Kumar',
+      completedLectures: 15,
+      totalLectures: 24,
+    ),
+    courses: [
+      DashboardCourseDto(
+        id: 'course-001',
         courseTitle: 'Full-Stack Web Development',
-        progress: 0.65,
+        educatorName: 'Rajesh Kumar',
+        completedLectures: 15,
+        totalLectures: 24,
       ),
-      StudentBatchDto(
-        id: 'batch-002',
-        name: 'Batch 8 • Tue/Thu',
-        courseId: 'course-002',
+      DashboardCourseDto(
+        id: 'course-002',
         courseTitle: 'Data Science with Python',
-        progress: 0.32,
-      ),
-    ],
-    upcomingTasks: [
-      UpcomingTaskDto(
-        id: 'task-001',
-        title: 'Build a REST API with Express.js',
-        courseName: 'Full-Stack Web Development',
-        dueDate: DateTime.now().add(const Duration(days: 2)),
-        status: TaskStatus.upcoming,
-      ),
-      UpcomingTaskDto(
-        id: 'task-002',
-        title: 'Pandas Data Cleaning Exercise',
-        courseName: 'Data Science with Python',
-        dueDate: DateTime.now().add(const Duration(days: 4)),
-        status: TaskStatus.inProgress,
-      ),
-      UpcomingTaskDto(
-        id: 'task-003',
-        title: 'React Portfolio Project',
-        courseName: 'Full-Stack Web Development',
-        dueDate: DateTime.now().add(const Duration(days: 1)),
-        status: TaskStatus.critical,
+        educatorName: 'Priya Sharma',
+        completedLectures: 10,
+        totalLectures: 30,
       ),
     ],
   );
@@ -403,4 +384,42 @@ class DemoData {
       status: 'GRADED',
     );
   }
+
+  static List<StaffRosterRowDto> get staffStudents => [
+    StaffRosterRowDto(
+      id: 'stud-001',
+      name: 'John Doe',
+      email: 'john.doe@gmail.com',
+      status: 'ACTIVE',
+      course: 'Full-Stack Web Development',
+      batchLabel: 'Batch 14',
+    ),
+    StaffRosterRowDto(
+      id: 'stud-002',
+      name: 'Asha Rao',
+      email: 'asha@example.com',
+      status: 'ACTIVE',
+      course: 'Data Science with Python',
+      batchLabel: 'Batch 8',
+    ),
+  ];
+
+  static List<StaffBatchRowDto> get staffBatches => [
+    StaffBatchRowDto(
+      id: 'batch-001',
+      name: 'Full-Stack Batch 14',
+      courseTitle: 'Full-Stack Web Development',
+      memberCount: 24,
+      status: 'ACTIVE',
+      trainerName: 'Rajesh Kumar',
+    ),
+    StaffBatchRowDto(
+      id: 'batch-002',
+      name: 'Data Science Batch 8',
+      courseTitle: 'Data Science with Python',
+      memberCount: 18,
+      status: 'ACTIVE',
+      trainerName: 'Priya Sharma',
+    ),
+  ];
 }
