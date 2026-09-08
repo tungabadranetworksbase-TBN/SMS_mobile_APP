@@ -2,10 +2,8 @@ import '../../../../core/config/api_endpoints.dart';
 import '../../../../core/network/api_client.dart';
 import '../../../../core/network/api_response.dart';
 import '../../../../core/network/json_value.dart';
-import '../../../../core/network/unsupported_endpoint.dart';
 import '../models/admin_dashboard_dto.dart';
 import '../models/crm_insights_dto.dart';
-import '../models/smr_dashboard_dto.dart';
 import '../models/staff_lists_dto.dart';
 import '../models/student_dashboard_dto.dart';
 
@@ -27,10 +25,6 @@ class DashboardApiService {
       fromJson: (json) =>
           StudentDashboardDto.fromJson(jsonMap(json)),
     );
-  }
-
-  Future<ApiResponse<SmrDashboardDto>> fetchSmrDashboard() async {
-    throw unsupportedEndpoint('SMR dashboard');
   }
 
   Future<ApiResponse<AdminDashboardDto>> fetchAdminDashboard() async {

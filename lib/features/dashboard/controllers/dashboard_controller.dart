@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/di/service_locator.dart';
 import '../data/models/admin_dashboard_dto.dart';
 import '../data/models/crm_insights_dto.dart';
-import '../data/models/smr_dashboard_dto.dart';
 import '../data/models/staff_lists_dto.dart';
 import '../data/models/student_dashboard_dto.dart';
 import '../data/repositories/dashboard_repository.dart';
@@ -22,24 +21,6 @@ class StudentDashboardNotifier extends AsyncNotifier<StudentDashboardDto> {
   Future<StudentDashboardDto> build() async {
     final repo = ref.watch(dashboardRepositoryProvider);
     return repo.getStudentDashboard();
-  }
-
-  Future<void> refresh() async {
-    state = const AsyncValue.loading();
-    state = await AsyncValue.guard(() => build());
-  }
-}
-
-final smrDashboardProvider =
-    AsyncNotifierProvider<SmrDashboardNotifier, SmrDashboardDto>(
-      SmrDashboardNotifier.new,
-    );
-
-class SmrDashboardNotifier extends AsyncNotifier<SmrDashboardDto> {
-  @override
-  Future<SmrDashboardDto> build() async {
-    final repo = ref.watch(dashboardRepositoryProvider);
-    return repo.getSmrDashboard();
   }
 
   Future<void> refresh() async {

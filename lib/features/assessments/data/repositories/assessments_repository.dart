@@ -4,7 +4,6 @@ import '../../../../core/demo/demo_mode.dart';
 import '../../../../core/managers/offline_sync_manager.dart';
 import '../../../../core/network/api_exception.dart';
 import '../models/assessment_dto.dart';
-import '../models/assignment_dto.dart';
 import '../models/submission_dto.dart';
 import '../services/assessments_api_service.dart';
 
@@ -57,40 +56,6 @@ class AssessmentsRepository {
         );
         return null;
       }
-      rethrow;
-    }
-  }
-
-  Future<AssignmentDto> getAssignment(String id) async {
-    if (DemoMode().isActive) {
-      return DemoData.getAssignment(id);
-    }
-    try {
-      final response = await _apiService.getAssignment(id);
-      if (response.success && response.data != null) {
-        return response.data!;
-      }
-      throw ApiException(
-        message: response.message ?? 'Failed to load assessment',
-      );
-    } catch (e) {
-      rethrow;
-    }
-  }
-
-  Future<SubmissionDto> submitAssignment(String id, String filePath) async {
-    if (DemoMode().isActive) {
-      return DemoData.getSubmission(id, 'ASSIGNMENT');
-    }
-    try {
-      final response = await _apiService.submitAssignment(id, filePath);
-      if (response.success && response.data != null) {
-        return response.data!;
-      }
-      throw ApiException(
-        message: response.message ?? 'Failed to submit assignment',
-      );
-    } catch (e) {
       rethrow;
     }
   }

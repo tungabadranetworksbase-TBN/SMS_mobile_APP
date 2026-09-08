@@ -2,14 +2,12 @@
 //
 // Provides realistic mock data for all features when demo mode is active.
 import '../../features/dashboard/data/models/student_dashboard_dto.dart';
-import '../../features/dashboard/data/models/smr_dashboard_dto.dart';
 import '../../features/dashboard/data/models/admin_dashboard_dto.dart';
 import '../../features/dashboard/data/models/staff_lists_dto.dart';
 import '../../features/learning/data/models/course_dto.dart';
 import '../../features/learning/data/models/lesson_dto.dart';
 import '../../features/profile/data/models/profile_dto.dart';
 import '../../features/assessments/data/models/assessment_dto.dart';
-import '../../features/assessments/data/models/assignment_dto.dart';
 import '../../features/assessments/data/models/submission_dto.dart';
 
 class DemoData {
@@ -81,59 +79,6 @@ class DemoData {
         educatorName: 'Priya Sharma',
         completedLectures: 10,
         totalLectures: 30,
-      ),
-    ],
-  );
-
-  // ── SMR Dashboard ──
-  static SmrDashboardDto get smrDashboard => SmrDashboardDto(
-    stats: SmrStatsDto(
-      totalStudents: 156,
-      activeBatches: 8,
-      pendingTickets: 5,
-      todayAttendance: 128,
-    ),
-    activeBatches: [
-      ActiveBatchDto(
-        id: 'batch-001',
-        name: 'Full-Stack Batch 14',
-        studentCount: 24,
-        trainerName: 'Rajesh Kumar',
-        progress: 0.65,
-      ),
-      ActiveBatchDto(
-        id: 'batch-002',
-        name: 'Data Science Batch 8',
-        studentCount: 18,
-        trainerName: 'Priya Sharma',
-        progress: 0.32,
-      ),
-      ActiveBatchDto(
-        id: 'batch-003',
-        name: 'Mobile Dev Batch 6',
-        studentCount: 20,
-        trainerName: 'Arun Reddy',
-        progress: 0.78,
-      ),
-    ],
-    recentActivities: [
-      RecentActivityDto(
-        id: 'act-001',
-        description: 'New student enrolled in Full-Stack Batch 14',
-        timestamp: DateTime.now().subtract(const Duration(hours: 2)),
-        type: 'enrollment',
-      ),
-      RecentActivityDto(
-        id: 'act-002',
-        description: 'Attendance marked for Data Science Batch 8',
-        timestamp: DateTime.now().subtract(const Duration(hours: 4)),
-        type: 'attendance',
-      ),
-      RecentActivityDto(
-        id: 'act-003',
-        description: 'Support ticket #45 resolved',
-        timestamp: DateTime.now().subtract(const Duration(hours: 6)),
-        type: 'ticket',
       ),
     ],
   );
@@ -360,17 +305,6 @@ class DemoData {
           marks: 10,
         ),
       ],
-    );
-  }
-
-  static AssignmentDto getAssignment(String id) {
-    return AssignmentDto(
-      id: id,
-      title: 'Responsive Portfolio Website Design',
-      description:
-          'Implement a fully responsive portfolio page using Flexbox or Grid. Make sure it looks flawless on mobile devices.',
-      dueDate: DateTime.now().add(const Duration(days: 3)),
-      totalMarks: 50,
     );
   }
 

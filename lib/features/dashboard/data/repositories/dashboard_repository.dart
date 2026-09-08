@@ -3,7 +3,6 @@ import '../../../../core/demo/demo_mode.dart';
 import '../../../../core/network/api_exception.dart';
 import '../models/admin_dashboard_dto.dart';
 import '../models/crm_insights_dto.dart';
-import '../models/smr_dashboard_dto.dart';
 import '../models/staff_lists_dto.dart';
 import '../models/student_dashboard_dto.dart';
 import '../services/dashboard_api_service.dart';
@@ -24,21 +23,6 @@ class DashboardRepository {
         return response.data!;
       }
       return StudentDashboardDto.empty();
-    } catch (e) {
-      rethrow;
-    }
-  }
-
-  Future<SmrDashboardDto> getSmrDashboard() async {
-    if (DemoMode().isActive) {
-      return DemoData.smrDashboard;
-    }
-    try {
-      final response = await _apiService.fetchSmrDashboard();
-      if (response.success && response.data != null) {
-        return response.data!;
-      }
-      return SmrDashboardDto.empty();
     } catch (e) {
       rethrow;
     }

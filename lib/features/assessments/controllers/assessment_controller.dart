@@ -42,24 +42,6 @@ class AssessmentController extends StateNotifier<AsyncValue<void>> {
       return false;
     }
   }
-
-  Future<bool> submitAssignment(String id, String filePath) async {
-    state = const AsyncValue.loading();
-    try {
-      await _repository.submitAssignment(id, filePath);
-      state = const AsyncValue.data(null);
-      return true;
-    } on ApiException catch (e) {
-      state = AsyncValue.error(e, StackTrace.current);
-      return false;
-    } catch (e) {
-      state = AsyncValue.error(
-        const ApiException.unknown(),
-        StackTrace.current,
-      );
-      return false;
-    }
-  }
 }
 
 final assessmentControllerProvider =
