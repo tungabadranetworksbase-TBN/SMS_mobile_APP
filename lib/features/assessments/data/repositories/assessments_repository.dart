@@ -1,3 +1,4 @@
+import '../../../../core/config/api_endpoints.dart';
 import '../../../../core/demo/demo_data.dart';
 import '../../../../core/demo/demo_mode.dart';
 import '../../../../core/managers/offline_sync_manager.dart';
@@ -46,9 +47,13 @@ class AssessmentsRepository {
     } on ApiException catch (e) {
       if (e.isNetwork || e.technicalMessage == 'TimeoutException') {
         await _offlineSyncManager.queueAction(
-          endpoint: '/learning/assessments/$id/submit',
+          // Replay sends these verbatim, so the path and body must match
+          // exactly what AssessmentsApiService.submitAssessment would send.
+          endpoint: ApiEndpoints.withParams(ApiEndpoints.submitAssessment, {
+            'id': id,
+          }),
           method: 'POST',
-          payload: {'id': id, 'answers': answers},
+          payload: {'answers': answers},
         );
         return null;
       }
