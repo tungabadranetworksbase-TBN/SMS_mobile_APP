@@ -26,8 +26,6 @@ import '../../features/dashboard/data/repositories/dashboard_repository.dart';
 import '../../features/dashboard/data/services/dashboard_api_service.dart';
 import '../../features/learning/data/repositories/learning_repository.dart';
 import '../../features/learning/data/services/learning_api_service.dart';
-import '../../features/learning/data/repositories/certificates_repository.dart';
-import '../../features/learning/data/services/certificates_api_service.dart';
 import '../../features/assessments/data/repositories/assessments_repository.dart';
 import '../../features/assessments/data/services/assessments_api_service.dart';
 import '../../features/orders/data/repositories/orders_repository.dart';
@@ -135,12 +133,6 @@ Future<void> setupLocator() async {
       apiService: locator<LearningApiService>(),
       cacheManager: locator<CacheManager>(),
     ),
-  );
-  locator.registerLazySingleton<CertificatesApiService>(
-    () => CertificatesApiService(apiClient: locator<ApiClient>()),
-  );
-  locator.registerLazySingleton<CertificatesRepository>(
-    () => CertificatesRepository(apiService: locator<CertificatesApiService>()),
   );
 
   // ── Assessments Module ──

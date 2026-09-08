@@ -1,10 +1,8 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:dio/dio.dart';
 
+import '../../../../core/di/service_locator.dart';
+import '../../../../core/managers/download_manager.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
@@ -36,33 +34,22 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
   }
 
   Future<void> _downloadAndSavePdf() async {
-    try {
-      final dir = await getApplicationDocumentsDirectory();
-      // Generate a unique filename based on the URL
-      final filename = widget.url.split('/').last.split('?').first;
-      final file = File('${dir.path}/$filename');
-
-      if (await file.exists()) {
-        setState(() {
-          _localPath = file.path;
-          _isLoading = false;
-        });
-        return;
-      }
-
-      final dio = Dio();
-      await dio.download(widget.url, file.path);
-
-      setState(() {
-        _localPath = file.path;
-        _isLoading = false;
-      });
-    } catch (e) {
-      setState(() {
+    // DownloadManager already caches by filename in the documents directory
+    // and returns the existing file rather than refetching it.
+    final filename = widget.url.split('/').last.split('?').first;
+    final file = await locator<DownloadManager>().downloadFile(
+      widget.url,
+      filename,
+    );
+    if (!mounted) return;
+    setState(() {
+      if (file == null) {
         _error = 'Failed to load PDF document.';
-        _isLoading = false;
-      });
-    }
+      } else {
+        _localPath = file.path;
+      }
+      _isLoading = false;
+    });
   }
 
   @override
