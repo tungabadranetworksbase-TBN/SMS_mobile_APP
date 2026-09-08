@@ -23,9 +23,6 @@ class AppConfig {
   // ── Razorpay ──
   String get razorpayKeyId => dotenv.env['RAZORPAY_KEY_ID'] ?? '';
 
-  // ── MinIO ──
-  String get minioEndpoint => dotenv.env['MINIO_ENDPOINT'] ?? '';
-
   // ── Timeouts ──
   Duration get connectTimeout => const Duration(seconds: 15);
   Duration get receiveTimeout => const Duration(seconds: 30);
@@ -34,18 +31,4 @@ class AppConfig {
   // ── Retry ──
   int get maxRetries => 3;
   Duration get retryDelay => const Duration(seconds: 1);
-
-  // ── Notification Polling (Zentriva pattern) ──
-  Duration get notificationPollInterval => const Duration(seconds: 10);
-
-  // ── Cache ──
-  Duration get cacheTtl => const Duration(minutes: 15);
-
-  // ── Pagination ──
-  int get defaultPageSize => 20;
-
-  // ── Feature Flags ──
-  bool get enableOfflineMode => true;
-  bool get enableBiometricAuth => true;
-  bool get enablePushNotifications => true;
 }

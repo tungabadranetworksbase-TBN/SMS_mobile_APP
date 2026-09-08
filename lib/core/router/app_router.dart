@@ -44,15 +44,6 @@ import '../managers/session_manager.dart';
 import '../storage/preference_manager.dart';
 import 'route_names.dart';
 
-// Placeholder widgets for other features
-class PlaceholderScreen extends StatelessWidget {
-  final String title;
-  const PlaceholderScreen({super.key, required this.title});
-  @override
-  Widget build(BuildContext context) =>
-      Scaffold(body: Center(child: Text(title)));
-}
-
 /// Provider for the GoRouter instance.
 /// Listens to auth state changes to trigger redirects.
 final routerProvider = Provider<GoRouter>((ref) {
