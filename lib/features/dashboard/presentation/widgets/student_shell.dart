@@ -26,6 +26,12 @@ class StudentShell extends ConsumerWidget {
       route: RoutePaths.studentCourses,
     ),
     _TabItem(
+      icon: Icons.groups_outlined,
+      activeIcon: Icons.groups_rounded,
+      label: 'Batches',
+      route: RoutePaths.studentBatches,
+    ),
+    _TabItem(
       icon: Icons.notifications_outlined,
       activeIcon: Icons.notifications_rounded,
       label: 'Alerts',

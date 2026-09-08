@@ -20,6 +20,8 @@ import '../../features/auth/data/repositories/auth_repository.dart';
 import '../../features/auth/data/services/auth_api_service.dart';
 import '../../features/auth/data/services/registration_api_service.dart';
 import '../../features/auth/data/services/users_api_service.dart';
+import '../../features/batches/data/repositories/batches_repository.dart';
+import '../../features/batches/data/services/batches_api_service.dart';
 import '../../features/dashboard/data/repositories/dashboard_repository.dart';
 import '../../features/dashboard/data/services/dashboard_api_service.dart';
 import '../../features/learning/data/repositories/learning_repository.dart';
@@ -114,6 +116,14 @@ Future<void> setupLocator() async {
   );
   locator.registerLazySingleton<DashboardRepository>(
     () => DashboardRepository(apiService: locator<DashboardApiService>()),
+  );
+
+  // ── Batches Module ──
+  locator.registerLazySingleton<BatchesApiService>(
+    () => BatchesApiService(apiClient: locator<ApiClient>()),
+  );
+  locator.registerLazySingleton<BatchesRepository>(
+    () => BatchesRepository(apiService: locator<BatchesApiService>()),
   );
 
   // ── Learning Module ──

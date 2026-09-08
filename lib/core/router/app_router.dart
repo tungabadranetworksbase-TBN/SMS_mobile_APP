@@ -22,6 +22,7 @@ import '../../features/dashboard/presentation/screens/student_dashboard_screen.d
 import '../../features/learning/presentation/screens/course_details_screen.dart';
 import '../../features/learning/presentation/screens/student_courses_screen.dart';
 import '../../features/assessments/presentation/screens/quiz_player_screen.dart';
+import '../../features/batches/presentation/screens/student_batches_screen.dart';
 import '../../features/orders/presentation/screens/order_history_screen.dart';
 import '../../features/orders/presentation/screens/order_details_screen.dart';
 import '../../features/payments/presentation/screens/checkout_screen.dart';
@@ -273,6 +274,11 @@ final routerProvider = Provider<GoRouter>((ref) {
             path: RoutePaths.studentCourses,
             name: RouteNames.studentCourses,
             builder: (context, state) => const StudentCoursesScreen(),
+          ),
+          GoRoute(
+            path: RoutePaths.studentBatches,
+            name: RouteNames.studentBatches,
+            builder: (context, state) => const StudentBatchesScreen(),
           ),
           GoRoute(
             path: RoutePaths.courseDetails,

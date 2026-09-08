@@ -18,6 +18,7 @@ class RouteNames {
   // ── Student ──
   static const String studentDashboard = 'student-dashboard';
   static const String studentCourses = 'student-courses';
+  static const String studentBatches = 'student-batches';
   static const String courseDetails = 'course-details';
   static const String videoPlayer = 'video-player';
   static const String pdfViewer = 'pdf-viewer';
@@ -58,6 +59,7 @@ class RoutePaths {
   // ── Student ──
   static const String studentDashboard = '/student/dashboard';
   static const String studentCourses = '/student/courses';
+  static const String studentBatches = '/student/batches';
   static const String courseDetails = '/student/courses/:id';
   static const String videoPlayer = '/student/media/video';
   static const String pdfViewer = '/student/media/pdf';
