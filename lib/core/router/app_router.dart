@@ -34,11 +34,9 @@ import '../../features/profile/presentation/screens/student_profile_screen.dart'
 import '../../features/notifications/presentation/screens/notifications_screen.dart';
 import '../../features/dashboard/presentation/widgets/staff_shell.dart';
 import '../../features/dashboard/presentation/widgets/student_shell.dart';
-import '../auth/capabilities.dart';
 import '../auth/capabilities_store.dart';
 import '../auth/gate_store.dart';
 import '../auth/session_gates.dart';
-import '../auth/destinations.dart';
 import '../di/service_locator.dart';
 import '../managers/navigation_manager.dart';
 import '../managers/session_manager.dart';
@@ -66,90 +64,13 @@ final routerProvider = Provider<GoRouter>((ref) {
     initialLocation: RoutePaths.splash,
     refreshListenable: refresh,
     debugLogDiagnostics: true,
-    redirect: (context, state) {
-      final isLoggedIn = sessionManager.isAuthenticated;
-
-      if (!isLoggedIn) {
-        final atServerConfig = state.matchedLocation == RoutePaths.serverConfig;
-
-        final hasServerUrl =
-            locator<PreferenceManager>().getServerUrl() != null;
-        if (!hasServerUrl) {
-          return atServerConfig ? null : RoutePaths.serverConfig;
-        }
-
-        final isAuthRoute =
-            state.matchedLocation == RoutePaths.login ||
-            state.matchedLocation == RoutePaths.signup ||
-            state.matchedLocation == RoutePaths.forgotPassword ||
-            state.matchedLocation == RoutePaths.resetPassword ||
-            state.matchedLocation == RoutePaths.verifyEmail ||
-            atServerConfig;
-
-        if (isAuthRoute) return null;
-        return RoutePaths.login;
-      }
-
-      final caps = capsStore.current;
-      if (caps == null) {
-        // Authenticated but caps missing — never stay on splash forever.
-        // Boot hydration should have filled or cleared the session; if not,
-        // bounce to login so the user is not stuck behind the spinner.
-        if (state.matchedLocation == RoutePaths.splash ||
-            state.matchedLocation == RoutePaths.login) {
-          return RoutePaths.login;
-        }
-        return RoutePaths.login;
-      }
-
-      final loc = state.matchedLocation;
-      final dest = SessionGates.destination(
-        caps: caps,
-        regFeeRequired: gateStore.regFeeRequired,
-      );
-
-      if (loc == RoutePaths.forcedPasswordChange ||
-          loc == RoutePaths.registration) {
-        return loc == dest ? null : dest;
-      }
-
-      final isGoingToAuth =
-          loc == RoutePaths.login ||
-          loc == RoutePaths.signup ||
-          loc == RoutePaths.forgotPassword ||
-          loc == RoutePaths.resetPassword ||
-          loc == RoutePaths.verifyEmail ||
-          loc == RoutePaths.serverConfig;
-
-      final isGoingToSplash = loc == RoutePaths.splash;
-
-      if (isGoingToAuth || isGoingToSplash) {
-        return dest;
-      }
-
-      if (dest == RoutePaths.forcedPasswordChange ||
-          dest == RoutePaths.registration) {
-        return dest;
-      }
-
-      if (caps.tier == UserTier.student && loc.startsWith('/staff')) {
-        return RoutePaths.studentDashboard;
-      }
-
-      if (caps.tier != UserTier.student && loc.startsWith('/staff')) {
-        if (loc == RoutePaths.staffUnavailable) {
-          return visibleStaffDestinations(caps).isEmpty
-              ? null
-              : dest;
-        }
-        final allowed = visibleStaffDestinations(caps).any(
-          (d) => loc == d.route || loc.startsWith('${d.route}/'),
-        );
-        if (!allowed) return dest;
-      }
-
-      return null;
-    },
+    redirect: (context, state) => SessionGates.redirect(
+      isLoggedIn: sessionManager.isAuthenticated,
+      hasServerUrl: locator<PreferenceManager>().getServerUrl() != null,
+      caps: capsStore.current,
+      regFeeRequired: gateStore.regFeeRequired,
+      location: state.matchedLocation,
+    ),
     routes: [
       GoRoute(
         path: RoutePaths.splash,
